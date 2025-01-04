@@ -1,0 +1,7 @@
+{
+    "header": "Estaciones de pedido",
+    "description1": "Una estación de pedido es un espacio donde se preparan los productos para su entrega. Un ejemplo puede ser la cocina de un restaurante, la barra de un bar, la bodega.",
+    "description2": "Crea estaciones y asigna impresoras a dichas estaciones.",
+    "addStationTitle": "Agregar Nueva Estación",
+    "noStations": "No existen estaciones creadas. Haga clic aquí para agregar una."        
+}

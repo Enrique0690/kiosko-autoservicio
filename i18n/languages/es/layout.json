@@ -1,0 +1,13 @@
+{
+    "header": "Configuraciones",
+    "categorys": {
+        "businessInfo": "👁️ Información General",
+        "printers": "🖨️ Impresoras",
+        "paymentMethods": " Métodos de Pago",
+        "integrations": "Integraciones con otras Apps",
+        "tabletConfiguration": "🍽️ Configuración de Mesas",
+        "security": "🔒 Seguridad",
+        "advancedOptions": "⚙️ Opciones Avanzadas",
+        "orderingstations": "👨‍🍳 Estaciones de Pedidos"
+    }
+}

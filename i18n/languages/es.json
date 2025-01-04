@@ -1,0 +1,235 @@
+{
+    "layout": {
+        "header": "Configuraciones",
+        "menuItems": {
+            "businessInfo": "Información del Negocio",
+            "printers": "Impresoras",
+            "paymentMethods": "Métodos de Pago",
+            "integrations": "Integraciones con otras Apps",
+            "tabletConfiguration": "Configuración de Mesas",
+            "security": "Seguridad",
+            "advancedOptions": "Opciones Avanzadas",
+            "taxConfigurationEC": "Configuración de Tributaria",
+            "orderingstations": "Estaciones de Pedidos"
+        }
+    },
+    "businessInfo": {
+        "header": "Información Fiscal",
+        "name": "Nombre del Negocio",
+        "address": "Dirección",
+        "phone": "Número de teléfono",
+        "email": "Correo",
+        "businessType": "Tipo de Negocio",
+        "currency": "Moneda",
+        "uploadImage": "Subir Imagen",
+        "loading": "Cargando...",
+        "loadError": "Error al cargar",
+        "goBackHome": "Volver a inicio",
+        "permissionDenied": "Permiso denegado"
+    },
+    "stations": {
+        "loading": "Cargando estaciones de pedido...",
+        "loadError": "No se pudieron cargar las estaciones de pedido. Por favor, regresa a la página de inicio.",
+        "goBackHome": "Regresar al inicio",
+        "header": "Estaciones de pedido",
+        "description1": "Una estación de pedido es un espacio donde se preparan los productos para su entrega. Un ejemplo puede ser la cocina de un restaurante, la barra de un bar, la bodega.",
+        "description2": "Crea estaciones y asigna impresoras a dichas estaciones.",
+        "addStationTitle": "Agregar Nueva Estación",
+        "saveError": "No se pudieron guardar los cambios.",
+        "noStations": "No existen estaciones creadas. Haga clic aquí para agregar una."        
+    },
+    "printers": {
+        "header": "Impresoras",
+        "addPrinter": "Agregar impresora",
+        "editPrinter": "Editar impresora",
+        "titleindex": "Lista de impresoras",
+        "loading": "Cargando impresoras...",
+        "errorLoadingData": "No se pudo cargar los datos.",
+        "errorStoringPrinterId": "Error al seleccionar la impresora.",
+        "goBackHome": "Volver a inicio",
+        "noPrinters": "No hay impresoras registradas, Haga click aqui para agregar una",
+        "printerName": "Nombre de la impresora",
+        "writeNameHere": "Escribe el nombre aquí",
+        "printingSettings": "Configuración de impresión",
+        "deliveryNote": "Nota de entrega",
+        "invoice": "Factura",
+        "preInvoice": "Pre-factura",
+        "reports": "Reportes",
+        "order": "Pedidos",
+        "stations": "Estaciones de pedidos",
+        "kitchen": "Cocina",
+        "bar": "Bar",
+        "noStation": "Sin estación asignada",
+        "connection": "Conexión",
+        "usb": "USB",
+        "ethernet": "Ethernet",
+        "bluetooth": "Bluetooth",
+        "savePrinter": "Guardar impresora",
+        "errorSaving": "Error al guardar la impresora."
+    },
+    "paymentMethods": {
+        "header": "Métodos de Pago",
+        "errorLoading": "Error al cargar los métodos de pago.",
+        "errorSaving": "Error al guardar los métodos de pago.",
+        "emptyList": "No hay métodos de pago disponibles.",
+        "newpayment": "Nuevo Método de Pago",
+        "paymentNamePlaceholder": "Ingresa el nombre",
+        "iconLabel": "Seleccionar un ícono",
+        "selectIcon": "Elige un ícono",
+        "selectNameIcon": "Por favor ingresa un nombre y selecciona un ícono.",
+        "saveButtonText": "Guardar Método de Pago",
+        "successTitle": "Éxito",
+        "successMessage": "Método de pago guardado correctamente.",
+        "validationError": "Error",
+        "saveError": "Hubo un error al guardar el método de pago."
+    },
+    "integrations": {
+        "header": "Integraciones",
+        "viewMore": "Ver más",
+        "viewLess": "Ver menos",
+        "connectButton": "Conectar"
+    },
+    "tabletConfiguration": {
+        "header": "Configuración de la Mesa",
+        "loading": "Cargando configuración...",
+        "loadError": "Hubo un error al cargar los datos.",
+        "showUser": "Mostrar usuario",
+        "showTime": "Mostrar tiempo que la mesa lleva ocupada",
+        "showCommercialName": "Mostrar 'Nombre Comercial' del cliente",
+        "userName": "Nombre Usuario",
+        "commercialName": "Nombre Comercial",
+        "tableNumber": "# Mesa",
+        "time": "Tiempo",
+        "totalAmount": "$ Total de mesa"
+    },
+    "security": {
+        "header": "Seguridad",
+        "deleteProductReason": "La eliminación de productos requiere un motivo de",
+        "cancelInvoiceReason": "La anulación de una factura requiere un motivo de",
+        "cancelOrderReason": "La anulación de un pedido requiere un motivo de",
+        "characters": "caracteres",
+        "users": "Usuarios",
+        "roles": "Roles",
+        "loading": "Cargando...",
+        "loadError": "Error al cargar los datos.",
+        "user": {
+            "header": "Lista de Usuarios",
+            "loading": "Cargando...",
+            "loadError": "Hubo un error al cargar los usuarios.",
+            "noUsers": "No hay usuarios registrados, Haga click aqui para agregar uno",
+            "editUser": "Editar Usuario",
+            "userNotFound": "Usuario no encontrado",
+            "goBack": "Volver",
+            "namePlaceholder": "Nombre",
+            "emailPlaceholder": "Correo Electrónico",
+            "rolePlaceholder": "Rol",
+            "passwordPlaceholder": "Contraseña",
+            "colorIdentifier": "Identificador de color",
+            "hue": "Tono",
+            "saturation": "Saturación",
+            "lightness": "Luminosidad",
+            "save": "Guardar",
+            "saving": "Guardando...",
+            "Newuser": "Nuevo Usuario",
+            "colorLabel": "Color identificador:",
+            "saveButton": "Guardar",
+            "userSaved": "Usuario guardado con éxito",
+            "saveError": "Hubo un error al guardar el usuario"
+        },
+        "role": {
+            "header": "Lista de Roles",
+            "loading": "Cargando roles...",
+            "loadError": "Hubo un error al cargar los roles.",
+            "goBack": "Volver",
+            "roleNotFound": "Rol no encontrado",
+            "noRoles": "No hay roles registrados, Haga click aqui para agregar uno",
+            "addNewRole": "Agregar Nuevo Rol",
+            "editRole": "Editar Rol",
+            "roleName": "Nombre del Rol",
+            "selectAllPermissions": "Seleccionar Todos los Permisos",
+            "save": "Guardar",
+            "SALES": "Ventas",
+            "INVENTORY": "Inventario",
+            "CONFIGURATION": "Configuración",
+            "SPECIALPERMISSIONS": "Permisos Especiales",
+            "CLIENTS": "Clientes",
+            "REPORT": "Reportes",
+            "sales": {
+                "directSale": "Venta Directa",
+                "tableOrder": "Pedido en Mesa",
+                "cashRegister": "Arqueo de Caja",
+                "expenseRecord": "Registro de Gastos",
+                "closureQuery": "Consulta de Cierre"
+            },
+            "inventory": {
+                "articles": "Artículos",
+                "inventoryEntry": "Ingreso de Inventario",
+                "inventoryExit": "Egreso de Inventario",
+                "kardex": "Kardex",
+                "viewMovements": "Ver Movimientos",
+                "transformation": "Transformación",
+                "production": "Producción"
+            },
+            "configuration": {
+                "config": "Configuración"
+            },
+            "specialPermissions": {
+                "singleWaiter":"La mesa sólo puede ser atendida por un mesero",
+                "cancelTables": "Cancelar Mesas",
+                "cancelCashClosures": "Cancelar Cierres de Caja",
+                "cancelSales": "Cancelar Ventas",
+                "cancelInventoryMovements": "Cancelar Movimientos de Inventario",
+                "removeItemsFromOrder": "Eliminar Artículos del Pedido",
+                "verifyCashClosures": "Verificar Cierres de Caja",
+                "chargePendingOrders": "Cobrar Pedidos Pendientes",
+                "accessAnyTable": "Acceder a Cualquier Mesa",
+                "reprintSalesDocuments": "Reimprimir Documentos de Venta",
+                "modifySalesData": "Modificar Datos de Venta",
+                "moveOrderItems": "Mover Artículos de Pedido"
+            },
+            "clients": {
+                "clientQuery": "Consulta de Clientes"
+            },
+            "report": {
+                "salesReport": "Informe de Ventas",
+                "inventoryReport": "Informe de Inventario"
+            }
+        }
+    },
+    "taxConfigurationEC": {
+        "infoTributaria": {
+            "sectionTitle": "INFORMACIÓN TRIBUTARIA",
+            "ruc": "RUC",
+            "razonSocial": "Razón Social",
+            "direccionMatriz": "Dirección Matriz",
+            "obligadollevarcontabilidad": "Obligado a llevar contabilidad",
+            "agenteRetencion": "Agente de Retención",
+            "regimenContribuyente": "Régimen del contribuyente",
+            "numeroCalificacionArtesanal": "Número de Calificación Artesanal",
+            "sitioWebFacturaElectronica": "Sitio Web Factura Electrónica",
+            "correoEnvioComprobantes": "Correo Electrónico para Envío de Comprobantes",
+            "editDialogTitle": "Editar Información"
+        },
+        "secuenciaFactura": {
+            "sectionTitle": "SECUENCIA DE FACTURA",
+            "todosLosDispositivos": "Todos los dispositivos",
+            "asignaSecuenciaDispositivos": "Asigna una secuencia para dispositivos específicos:",
+            "caja1": "Caja 1",
+            "caja2": "Caja 2",
+            "caja3": "Caja 3",
+            "cambiarSecuencia": "Cambia la secuencia de las facturas cuando se facture con - Tarjeta/Efectivo a",
+            "editDialogTitle": "Editar Secuencia"
+        },
+        "reglas": {
+            "sectionTitle": "REGLAS PARA NOTAS DE ENTREGA Y FACTURAS",
+            "cambiarFacturaMetodo": "Cambiar la factura cuando el metodo de paso sea \"tarjeta\" o \"transferencia\"",
+            "cambiarFacturaDatos": "Cambiar la factura cuando la venta se realice con datos",
+            "cambiarNotaEntregaMonto": "Cambiar nota de entrega si el monto es menor SSS",
+            "notaEntregaHora": "Cambiar nota de entrega si se genera después de",
+            "editDialogTitle": "Editar Hora"
+        }
+    },
+    "search": {
+        "placeholder": "Buscar..."
+    }
+}

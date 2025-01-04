@@ -1,0 +1,76 @@
+{
+    "header": "Security",
+    "deleteProductReason": "Deleting products requires a reason of {{value}} characters",
+    "cancelInvoiceReason": "Cancelling an invoice requires a reason of {{value}} characters",
+    "cancelOrderReason": "Cancelling an order requires a reason of {{value}} characters",
+    "characters": "characters",
+    "users": "Users",
+    "roles": "Roles",
+    "user": {
+        "header": "User List",
+        "noUsers": "No users registered. Click here to add one.",
+        "editUser": "Edit User",
+        "userNotFound": "User not found",
+        "namePlaceholder": "Name",
+        "emailPlaceholder": "Email",
+        "rolePlaceholder": "Role",
+        "passwordPlaceholder": "Password",
+        "colorIdentifier": "Color Identifier",
+        "Newuser": "New User"
+    },
+    "role": {
+        "roleNotFound": "Role not found",
+        "noRoles": "No roles registered. Click here to add one.",
+        "addNewRole": "Add New Role",
+        "editRole": "Edit Role",
+        "roleName": "Role Name",
+        "selectAllPermissions": "Select All Permissions",
+        "save": "Save",
+        "sales": {
+            "header": "Sales",
+            "directSale": "Direct Sale",
+            "tableOrder": "Table Order",
+            "cashRegister": "Cash Register",
+            "expenseRecord": "Expense Record",
+            "closureQuery": "Closure Query"
+        },
+        "inventory": {
+            "header": "Inventory",
+            "articles": "Articles",
+            "inventoryEntry": "Inventory Entry",
+            "inventoryExit": "Inventory Exit",
+            "kardex": "Kardex",
+            "viewMovements": "View Movements",
+            "transformation": "Transformation",
+            "production": "Production"
+        },
+        "configuration": {
+            "header": "Configuration",
+            "config": "Settings"
+        },
+        "specialPermissions": {
+            "header": "Special Permissions",
+            "singleWaiter": "The table can only be served by one waiter",
+            "cancelTables": "Cancel Tables",
+            "cancelCashClosures": "Cancel Cash Closures",
+            "cancelSales": "Cancel Sales",
+            "cancelInventoryMovements": "Cancel Inventory Movements",
+            "removeItemsFromOrder": "Remove Items from Order",
+            "verifyCashClosures": "Verify Cash Closures",
+            "chargePendingOrders": "Charge Pending Orders",
+            "accessAnyTable": "Access Any Table",
+            "reprintSalesDocuments": "Reprint Sales Documents",
+            "modifySalesData": "Modify Sales Data",
+            "moveOrderItems": "Move Order Items"
+        },
+        "clients": {
+            "header": "Clients",
+            "clientQuery": "Client Query"
+        },
+        "report": {
+            "header": "Reports",
+            "salesReport": "Sales Report",
+            "inventoryReport": "Inventory Report"
+        }
+    }
+}

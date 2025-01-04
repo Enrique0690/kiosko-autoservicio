@@ -1,0 +1,10 @@
+{
+    "header": "Payment Methods",
+    "emptyList": "No payment methods available.",
+    "newpayment": "New Payment Method",
+    "paymentNamePlaceholder": "Enter the name",
+    "iconLabel": "Select an icon",
+    "selectIcon": "Choose an icon",
+    "selectNameIcon": "Please enter a name and select an icon.",
+    "saveButtonText": "Save Payment Method"
+}

@@ -1,0 +1,13 @@
+{
+    "header": "Settings",
+    "categorys": {
+        "businessInfo": "👁️ Business Information",
+        "printers": "🖨️ Printers",
+        "paymentMethods": "Payment Methods",
+        "integrations": "Integrations with other Apps",
+        "tabletConfiguration": "🍽️ Table Configuration",
+        "security": "🔒 Security",
+        "advancedOptions": "⚙️ Advanced Options",
+        "orderingstations": "👨‍🍳 Ordering Stations"
+    }
+}

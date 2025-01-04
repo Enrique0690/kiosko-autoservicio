@@ -1,0 +1,38 @@
+{
+    "header": "General Information",
+    "name": "Business Name",
+    "address": "Address",
+    "phone": "Phone Number",
+    "email": "Email",
+    "businessType": "Business Type",
+    "currency": "Currency",
+    "taxinfo": {
+        "header": "Tax Information",
+        "ruc": "RUC",
+        "razonSocial": "Company Name",
+        "direccionMatriz": "Headquarters Address",
+        "obligadollevarcontabilidad": "Required to Keep Accounting",
+        "agenteRetencion": "Withholding Agent",
+        "agente_retencion_microempresa_resolucion": "Withholding Agent Resolution",
+        "regimenContribuyente": "Taxpayer Regime",
+        "numeroCalificacionArtesanal": "Artisan Qualification Number",
+        "sitioWebFacturaElectronica": "Electronic Invoice Website",
+        "correoEnvioComprobantes": "Email for Sending Receipts"
+    },
+    "secuenciaFactura": {
+        "header": "Invoice Sequence",
+        "todosLosDispositivos": "All devices",
+        "asignaSecuenciaDispositivos": "Assign a sequence for specific devices:",
+        "caja1": "Box 1",
+        "caja2": "Box 2",
+        "caja3": "Box 3",
+        "cambiarSecuencia": "Change the invoice sequence when billing with - Card/Cash to"
+    },
+    "reglas": {
+        "header": "Rules for Delivery Notes and Invoices",
+        "cambiarFacturaMetodo": "Change the invoice when the payment method is \"card\" or \"transfer\"",
+        "cambiarFacturaDatos": "Change the invoice when the sale is made with customer data",
+        "cambiarNotaEntregaMonto": "Change the delivery note if the amount is less than SSS",
+        "notaEntregaHora": "Change the delivery note if it is generated after"
+    }
+}

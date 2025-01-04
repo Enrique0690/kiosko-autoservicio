@@ -1,0 +1,16 @@
+{
+    "save": "Guardar",
+    "loading": "Cargando {{value}}...",
+    "error": "Error",
+    "uploadImage": "Subir Imagen",
+    "loadError": "Error al cargar",
+    "goBackHome": "Volver a inicio",
+    "goBack": "Volver",
+    "permissionDenied": "Permiso denegado",
+    "saveError": "No se pudieron guardar los cambios.",
+    "search": "Buscar",
+    "noResults": "No se encontraron resultados",
+    "search.placeholder": "Seleccione la barra de busqueda para buscar una configuración",
+    "searchtitle": "Resultados de Busqueda",
+    "fieldCannotBeEmpty": "El campo no puede estar vacio"
+}

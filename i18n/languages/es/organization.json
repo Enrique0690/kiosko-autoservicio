@@ -1,0 +1,38 @@
+{
+    "header": "Información General",
+    "name": "Nombre del Negocio",
+    "address": "Dirección",
+    "phone": "Número de teléfono",
+    "email": "Correo",
+    "businessType": "Tipo de Negocio",
+    "currency": "Moneda",
+    "taxinfo": {
+        "header": "Información Fiscal",
+        "ruc": "RUC",
+        "razonSocial": "Razón Social",
+        "direccionMatriz": "Dirección Matriz",
+        "obligadollevarcontabilidad": "Obligado a llevar contabilidad",
+        "agenteRetencion": "Agente de Retención",
+        "agente_retencion_microempresa_resolucion": "Resolución del agente de retención",
+        "regimenContribuyente": "Régimen del contribuyente",
+        "numeroCalificacionArtesanal": "Número de Calificación Artesanal",
+        "sitioWebFacturaElectronica": "Sitio Web Factura Electrónica",
+        "correoEnvioComprobantes": "Correo Electrónico para Envío de Comprobantes"
+    },
+    "secuenciaFactura": {
+        "header": "Secuencia de Factura",
+        "todosLosDispositivos": "Todos los dispositivos",
+        "asignaSecuenciaDispositivos": "Asigna una secuencia para dispositivos específicos:",
+        "caja1": "Caja 1",
+        "caja2": "Caja 2",
+        "caja3": "Caja 3",
+        "cambiarSecuencia": "Cambia la secuencia de las facturas cuando se facture con - Tarjeta/Efectivo a"
+    },
+    "reglas": {
+        "header": "Reglas para Notas de Entrega y Facturas",
+        "cambiarFacturaMetodo": "Cambiar la factura cuando el metodo de paso sea \"tarjeta\" o \"transferencia\"",
+        "cambiarFacturaDatos": "Cambiar la factura cuando la venta se realice con datos",
+        "cambiarNotaEntregaMonto": "Cambiar nota de entrega si el monto es menor SSS",
+        "notaEntregaHora": "Cambiar nota de entrega si se genera después de"
+    }
+}

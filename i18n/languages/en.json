@@ -1,0 +1,235 @@
+{
+    "layout": {
+        "header": "Settings",
+        "menuItems": {
+            "businessInfo": "Business Information",
+            "printers": "Printers",
+            "paymentMethods": "Payment Methods",
+            "integrations": "Integrations with Other Apps",
+            "tabletConfiguration": "Table Configuration",
+            "security": "Security",
+            "advancedOptions": "Advanced Options",
+            "taxConfigurationEC": "Tax Configuration",
+            "ordering stations": "Ordering Stations"
+        }
+    },
+    "businessInfo": {
+        "header": "Business Information",
+        "name": "Business Name",
+        "address": "Address",
+        "phone": "Phone Number",
+        "email": "Email",
+        "businessType": "Business Type",
+        "currency": "Currency",
+        "uploadImage": "Upload Image",
+        "loading": "Loading...",
+        "loadError": "Error loading",
+        "goBackHome": "Go back to home",
+        "permissionDenied": "Permission denied"
+    },
+    "stations": {
+        "loading": "Loading ordering stations...",
+        "loadError": "Failed to load ordering stations. Please go back to the home page.",
+        "goBackHome": "Go back to Home",
+        "header": "Ordering Stations",
+        "description1": "An ordering station is a space where products are prepared for delivery. An example could be a restaurant's kitchen, a bar's counter, or a storage room.",
+        "description2": "Create stations and assign printers to those stations.",
+        "addStationTitle": "Add New Station",
+        "saveError": "Failed to save changes.",
+        "noStations": "No stations created. Click here to add one."
+    },
+    "printers": {
+        "header": "Printers",
+        "addPrinter": "Add Printer",
+        "editPrinter": "Edit Printer",
+        "titleindex": "Printers List",
+        "loading": "Loading printers...",
+        "errorLoadingData": "Unable to load data.",
+        "errorStoringPrinterId": "Error selecting the printer.",
+        "goBackHome": "Go back to home",
+        "noPrinters": "No printers registered",
+        "printerName": "Printer Name",
+        "writeNameHere": "Write the name here",
+        "printingSettings": "Printing Settings",
+        "deliveryNote": "Delivery Note",
+        "invoice": "Invoice",
+        "preInvoice": "Pre Invoice",
+        "reports": "Reports",
+        "order": "Order",
+        "stations": "Order Stations",
+        "kitchen": "Kitchen",
+        "bar": "Bar",
+        "noStation": "No Station Assigned",
+        "connection": "Connection",
+        "usb": "USB",
+        "ethernet": "Ethernet",
+        "bluetooth": "Bluetooth",
+        "savePrinter": "Save Printer",
+        "errorSaving": "Failed to save printer."
+    },
+    "paymentMethods": {
+        "header": "Payment Methods",
+        "errorLoading": "Error loading payment methods.",
+        "errorSaving": "Error saving payment methods.",
+        "emptyList": "No payment methods available.",
+        "newpayment": "Payment Method Name",
+        "paymentNamePlaceholder": "Enter the name",
+        "iconLabel": "Select an icon",
+        "selectIcon": "Choose an icon",
+        "selectNameIcon": "Please enter a name and select an icon.",
+        "saveButtonText": "Save Payment Method",
+        "successTitle": "Success",
+        "successMessage": "Payment method saved successfully.",
+        "validationError": "Error",
+        "saveError": "There was an error saving the payment method."
+    },
+    "integrations": {
+        "header": "Integrations",
+        "viewMore": "View more",
+        "viewLess": "View less",
+        "connectButton": "Connect"
+    },
+    "tabletConfiguration": {
+        "header": "Tablet Configuration",
+        "loading": "Loading configuration...",
+        "loadError": "There was an error loading the data.",
+        "showUser": "Show user",
+        "showTime": "Show time the table has been occupied",
+        "showCommercialName": "Show customer's 'Commercial Name'",
+        "userName": "User Name",
+        "commercialName": "Commercial Name",
+        "tableNumber": "# Table",
+        "time": "Time ⏰",
+        "totalAmount": "$ Total de table"
+    },
+    "security": {
+        "header": "Security",
+        "deleteProductReason": "Deleting products requires a reason of",
+        "cancelInvoiceReason": "Canceling an invoice requires a reason of",
+        "cancelOrderReason": "Canceling an order requires a reason of",
+        "characters": "characters",
+        "users": "Users",
+        "roles": "Roles",
+        "loading": "Loading...",
+        "loadError": "Error loading data.",
+        "user": {
+            "header": "User List",
+            "loading": "Loading...",
+            "loadError": "There was an error loading the users.",
+            "noUsers": "No users registered",
+            "editUser": "Edit User",
+            "userNotFound": "User not found",
+            "goBack": "Go Back",
+            "name": "Name",
+            "email": "Email",
+            "role": "Role",
+            "password": "Password",
+            "colorIdentifier": "Color Identifier",
+            "hue": "Hue",
+            "saturation": "Saturation",
+            "lightness": "Lightness",
+            "save": "Save",
+            "saving": "Saving...",
+            "Newuser": "New User",
+            "colorLabel": "Identifier Color:",
+            "saveButton": "Save",
+            "userSaved": "User saved successfully",
+            "saveError": "There was an error saving the user"
+        },
+        "role": {
+            "header": "Role List",
+            "loading": "Loading roles...",
+            "loadError": "There was an error loading the roles.",
+            "goBack": "Go Back",
+            "roleNotFound": "Role not found",
+            "noRoles": "No roles registered",
+            "addNewRole": "Add New Role",
+            "editRole": "Edit Role",
+            "roleName": "Role Name",
+            "selectAllPermissions": "Select All Permissions",
+            "save": "Save",
+            "SALES": "SALES",
+            "INVENTORY": "INVENTORY",
+            "CONFIGURATION": "CONFIGURATION",
+            "SPECIALPERMISSIONS": "SPECIAL PERMISSIONS",
+            "CLIENTS": "CLIENTS",
+            "REPORT": "REPORTS",
+            "sales": {
+                "directSale": "Direct Sale",
+                "tableOrder": "Table Order",
+                "cashRegister": "Cash Register",
+                "expenseRecord": "Expense Record",
+                "closureQuery": "Closure Query"
+            },
+            "inventory": {
+                "articles": "Articles",
+                "inventoryEntry": "Inventory Entry",
+                "inventoryExit": "Inventory Exit",
+                "kardex": "Kardex",
+                "viewMovements": "View Movements",
+                "transformation": "Transformation",
+                "production": "Production"
+            },
+            "configuration": {
+                "config": "Configuration"
+            },
+            "specialPermissions": {
+                "singleWaiter":"The table can only be served by one waiter",
+                "cancelTables": "Cancel Tables",
+                "cancelCashClosures": "Cancel Cash Closures",
+                "cancelSales": "Cancel Sales",
+                "cancelInventoryMovements": "Cancel Inventory Movements",
+                "removeItemsFromOrder": "Remove Items from Order",
+                "verifyCashClosures": "Verify Cash Closures",
+                "chargePendingOrders": "Charge Pending Orders",
+                "accessAnyTable": "Access Any Table",
+                "reprintSalesDocuments": "Reprint Sales Documents",
+                "modifySalesData": "Modify Sales Data",
+                "moveOrderItems": "Move Order Items"
+            },
+            "clients": {
+                "clientQuery": "Client Query"
+            },
+            "report": {
+                "salesReport": "Sales Report",
+                "inventoryReport": "Inventory Report"
+            }
+        }
+    },
+    "taxConfigurationEC": {
+        "infoTributaria": {
+            "sectionTitle": "TAX INFORMATION",
+            "ruc": "RUC",
+            "razonSocial": "Company Name",
+            "direccionMatriz": "Headquarters Address",
+            "obligadollevarcontabilidad": "Required to keep accounting records",
+            "agenteRetencion": "Retention Agent",
+            "regimenContribuyente": "Taxpayer Regime",
+            "numeroCalificacionArtesanal": "Artisan Certification Number",
+            "sitioWebFacturaElectronica": "Electronic Invoice Website",
+            "correoEnvioComprobantes": "Email for Sending Invoices",
+            "editDialogTitle": "Edit Information"
+        },
+        "secuenciaFactura": {
+            "sectionTitle": "INVOICE SEQUENCE",
+            "todosLosDispositivos": "All devices",
+            "asignaSecuenciaDispositivos": "Assign sequence for specific devices:",
+            "caja1": "Cash Register 1",
+            "caja2": "Cash Register 2",
+            "caja3": "Cash Register 3",
+            "cambiarSecuencia": "Change invoice sequence when billed with - Card/Cash to",
+            "editDialogTitle": "Edit Sequence"
+        },
+        "reglas": {
+            "sectionTitle": "RULES FOR DELIVERY NOTES AND INVOICES",
+            "cambiarFacturaMetodo": "Change invoice for \"card\" or \"transfer\"",
+            "cambiarFacturaDatos": "Change invoice with sales data",
+            "cambiarNotaEntregaMonto": "Change delivery note if the amount is less",
+            "notaEntregaHora": "Change delivery note if generated after",
+            "editDialogTitle": "Edit Time"
+        }
+    },
+    "search": {
+        "placeholder": "Search..."
+    }
+}

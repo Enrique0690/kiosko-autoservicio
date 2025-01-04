@@ -1,0 +1,7 @@
+{
+    "header": "Ordering Stations",
+    "description1": "An ordering station is a space where products are prepared for delivery. An example could be a restaurant kitchen, a bar counter, or a storage room.",
+    "description2": "Create stations and assign printers to these stations.",
+    "addStationTitle": "Add New Station",
+    "noStations": "No stations created. Click here to add one."
+}

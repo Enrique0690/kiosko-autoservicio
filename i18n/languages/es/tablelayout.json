@@ -1,0 +1,11 @@
+{
+    "header": "Configuración de la Mesa",
+    "showUser": "Mostrar usuario",
+    "showTime": "Mostrar tiempo que la mesa lleva ocupada",
+    "showCommercialName": "Mostrar 'Nombre Comercial' del cliente",
+    "userName": "Nombre Usuario",
+    "commercialName": "Nombre Comercial",
+    "tableNumber": "# Mesa",
+    "time": "Tiempo",
+    "totalAmount": "$ Total de mesa"
+}

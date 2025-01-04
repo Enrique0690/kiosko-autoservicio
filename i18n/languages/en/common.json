@@ -1,0 +1,16 @@
+{
+    "save": "Save",
+    "loading": "Loading {{value}}...",
+    "error": "Error",
+    "uploadImage": "Upload Image",
+    "loadError": "Error loading",
+    "goBackHome": "Go back home",
+    "goBack": "Go back",
+    "permissionDenied": "Permission denied",
+    "saveError": "Changes could not be saved.",
+    "search": "Search",
+    "noResults": "No results found",
+    "search.placeholder": "Select the search bar to search for a configuration",
+    "searchtitle": "Search Results",
+    "fieldCannotBeEmpty": "Field cannot be empty"
+}

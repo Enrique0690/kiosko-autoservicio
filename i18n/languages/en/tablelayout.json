@@ -1,0 +1,11 @@
+{
+    "header": "Table Configuration",
+    "showUser": "Show user",
+    "showTime": "Show how long the table has been occupied",
+    "showCommercialName": "Show client's 'Commercial Name'",
+    "userName": "User Name",
+    "commercialName": "Commercial Name",
+    "tableNumber": "Table #",
+    "time": "Time",
+    "totalAmount": "Table Total $"
+}
