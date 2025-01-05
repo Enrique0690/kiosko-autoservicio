@@ -1,6 +1,6 @@
-import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useDataContext } from "@/components/menu/datacontext";
 
 export interface Product {
   id: number;
@@ -12,13 +12,9 @@ export interface Product {
   dinamicoLineas?: any[];
 }
 
-interface RenderItemProps {
-  item: Product | { empty: boolean };
-  onProductSelect: (product: Product) => void;
-}
-
-function RenderProductItem({ item, onProductSelect }: RenderItemProps) {
+function RenderProductItem({ item }: { item: Product | { empty: boolean }; }) {
   const router = useRouter();
+  const { addToCart } = useDataContext();
 
   if ('empty' in item) {
     return <View style={[styles.productContainer, styles.emptyItem]} />;
@@ -28,7 +24,7 @@ function RenderProductItem({ item, onProductSelect }: RenderItemProps) {
     if (item.dinamicoLineas && Array.isArray(item.dinamicoLineas) && item.dinamicoLineas.length > 0) {
       router.push(`/menu/${item.id}`);
     } else {
-      onProductSelect(item);
+      addToCart(item);
     }
   };
 

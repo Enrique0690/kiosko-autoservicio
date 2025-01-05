@@ -16,9 +16,11 @@ interface Product {
 const DynamicProducts = () => {
   const router = useRouter();
   const { dynamicproductId } = useLocalSearchParams();
-  const { products, lines } = useDataContext();
+  const { products, lines, addToCart } = useDataContext();
   const [currentProduct, setCurrentProduct] = useState<any | null>(null);
-  const [quantities, setQuantities] = React.useState<{ [key: string]: number }>({});
+  const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
+  const [total, setTotal] = useState<number>(0);
+  const [lineQuantities, setLineQuantities] = useState<{ [key: string]: number }>({});  
 
   useEffect(() => {
     const product = products.find((p) => p.id === Number(dynamicproductId));
@@ -27,41 +29,73 @@ const DynamicProducts = () => {
         ...product,
         dinamicoLineas: product.dinamicoLineas || [],
       });
+      setTotal(product.pvp1);
     } else {
       setCurrentProduct(null);
     }
   }, []);
 
-  const handleIncrease = (id: number) => {
-    setQuantities((prev) => ({
-      ...prev,
-      [id]: (prev[id] || 0) + 1,
-    }));
+  const handleIncrease = (id: number, pvp1: number, cantidadIncluye: number, idLinea: number) => {
+    setQuantities((prev) => {
+      const newQuantity = (prev[id] || 0) + 1;
+      setLineQuantities((prevLineQuantities) => {
+        const newLineQuantity = prevLineQuantities[idLinea] ? prevLineQuantities[idLinea] + 1 : 1;
+        if (newLineQuantity > cantidadIncluye) {
+          setTotal((prevTotal) => prevTotal + pvp1);
+        }
+        return { ...prevLineQuantities, [idLinea]: newLineQuantity };
+      });
+      return { ...prev, [id]: newQuantity };
+    });
   };
 
-  const handleDecrease = (id: number) => {
-    setQuantities((prev) => ({
-      ...prev,
-      [id]: Math.max((prev[id] || 0) - 1, 0),
-    }));
+  const handleDecrease = (id: number, pvp1: number, cantidadIncluye: number, idLinea: number) => {
+    setQuantities((prev) => {
+      const newQuantity = Math.max((prev[id] || 0) - 1, 0);
+      setLineQuantities((prevLineQuantities) => {
+        const newLineQuantity = prevLineQuantities[idLinea] > 0 ? prevLineQuantities[idLinea] - 1 : 0;
+        if (newLineQuantity >= cantidadIncluye) {
+          setTotal((prevTotal) => prevTotal - pvp1);
+        }
+        return { ...prevLineQuantities, [idLinea]: newLineQuantity };
+      });
+      return { ...prev, [id]: newQuantity };
+    });
   };
 
   const renderProduct = ({ item }: { item: Product }) => {
     if (!item.habilitado) return null;
+
+    const cantidadIncluye = item.idLinea 
+      ? currentProduct?.dinamicoLineas.find((linea: any) => linea.id === item.idLinea)?.cantidadIncluye || 0
+      : 0;
+
     return (
       <View style={styles.itemRow}>
         <Text style={styles.itemName}> {item.descripcion} ({item.pvp1} $)</Text>
         <View style={styles.counter}>
-          <TouchableOpacity onPress={() => handleDecrease(item.id)}>
+          <TouchableOpacity onPress={() => handleDecrease(item.id, item.pvp1, cantidadIncluye, item.idLinea)}>
             <Ionicons name="remove-circle-outline" size={24} color="#007AFF" />
           </TouchableOpacity>
           <Text style={styles.itemCount}>{quantities[item.id] || 0}</Text>
-          <TouchableOpacity onPress={() => handleIncrease(item.id)}>
+          <TouchableOpacity onPress={() => handleIncrease(item.id, item.pvp1, cantidadIncluye, item.idLinea)}>
             <Ionicons name="add-circle-outline" size={24} color="#007AFF" />
           </TouchableOpacity>
         </View>
       </View>
     );
+  };
+
+  const handleAddToCart = () => {
+    if (currentProduct) {
+      const productToAdd = {
+        id: currentProduct.id,
+        descripcion: currentProduct.descripcion,
+        pvp1: total,  
+      };
+      addToCart(productToAdd); 
+      router.push('/menu');  
+    }
   };
 
   if (!currentProduct) {
@@ -104,10 +138,11 @@ const DynamicProducts = () => {
             </View>
           );
         })}
+        <Text>Total: {total} $</Text>
       </View>
       <View style={styles.footer}>
         <Button title="Salir" onPress={() => router.back()} color="#000" />
-        <Button title="Continuar" onPress={() => { }} color="#34C759" />
+        <Button title="Continuar" onPress={handleAddToCart} color="#34C759" />
       </View>
     </View>
   );

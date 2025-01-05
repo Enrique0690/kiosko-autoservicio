@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { useDataContext } from "@/components/menu/datacontext";
 import RenderProductItem from './renderproductitem';
@@ -14,7 +14,7 @@ interface Product {
 }
 const NUM_COLUMNS = 3;
 
-const Products = ({ categoryRefs, onProductSelect }: { categoryRefs: React.RefObject<{ [key: number]: any }>; onProductSelect: (product: Product) => void; }) => {
+const Products = ({ categoryRefs }: { categoryRefs: React.RefObject<{ [key: number]: any }>;}) => {
   const { lines, products } = useDataContext();
   // Filtrar líneas habilitadas y productos habilitados
   const enabledLines = lines.filter((line) => line.usarEnVentas);
@@ -54,7 +54,7 @@ const Products = ({ categoryRefs, onProductSelect }: { categoryRefs: React.RefOb
           <FlatList
             data={fillLastRow(item.products, NUM_COLUMNS)}
             renderItem={({ item }) => (
-              <RenderProductItem item={item} onProductSelect={onProductSelect} />
+              <RenderProductItem item={item} />
             )}
             keyExtractor={(prod, index) => prod.id?.toString() || `empty-${index}`}
             numColumns={NUM_COLUMNS}

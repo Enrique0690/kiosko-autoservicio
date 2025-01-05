@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useMemo, ReactNode } from 'react';
 import linesData from '../../constants/pruebas/lines.json';
 import productsData from '../../constants/pruebas/products.json';
 
@@ -24,12 +24,13 @@ interface DataContextType {
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
-export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const DataProvider = ({ children }: { children: ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
 
+  // Función para agregar al carrito
   const addToCart = (product: Product) => {
-    setCart(prevCart => {
-      const existingProductIndex = prevCart.findIndex(item => item.id === product.id);
+    setCart((prevCart) => {
+      const existingProductIndex = prevCart.findIndex((item) => item.id === product.id);
       if (existingProductIndex > -1) {
         const updatedCart = [...prevCart];
         updatedCart[existingProductIndex].cantidad += 1;
@@ -39,21 +40,34 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
   };
 
+  // Función para eliminar del carrito
   const removeFromCart = (id: number) => {
-    setCart(prevCart => prevCart.filter(item => item.id !== id));
+    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
   };
 
-  const clearCart = () => {
-    setCart([]);
-  };
+  // Función para limpiar el carrito
+  const clearCart = () => setCart([]);
 
-  const total = cart.reduce((acc, item) => acc + item.cantidad * item.pvp1, 0);
+  // Calcular el total del carrito con memoización
+  const total = useMemo(() => {
+    return cart.reduce((acc, item) => acc + item.cantidad * item.pvp1, 0);
+  }, [cart]);
 
-  return (
-    <DataContext.Provider value={{ lines: linesData, products: productsData, cart, addToCart, removeFromCart, clearCart, total }}>
-      {children}
-    </DataContext.Provider>
+  // Memoizar el valor del contexto
+  const contextValue = useMemo(
+    () => ({
+      lines: linesData,
+      products: productsData,
+      cart,
+      addToCart,
+      removeFromCart,
+      clearCart,
+      total,
+    }),
+    [cart, total]
   );
+
+  return <DataContext.Provider value={contextValue}>{children}</DataContext.Provider>;
 };
 
 export const useDataContext = () => {

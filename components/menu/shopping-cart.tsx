@@ -1,26 +1,25 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useDataContext } from '@/components/menu/datacontext';
 
-interface CartProps {
-  items: { id: number; descripcion: string; cantidad: number }[];
-  total: number;
-  onPay: () => void;
-}
+const ShoppingCart = () => {
+  const { cart, total } = useDataContext();
+  const router = useRouter();
+  if (cart.length === 0) return null;
 
-const ShoppingCart = ({ items, total, onPay }: CartProps) => {
   return (
-    items.length > 0 && (
-      <View style={styles.cartContainer}>
-        <View style={styles.cartContent}>
-          <Text style={styles.cartText}>
-            {items.length} producto{items.length > 1 ? 's' : ''} seleccionado{items.length > 1 ? 's' : ''} - Total: ${total.toFixed(2)}
-          </Text>
-          <TouchableOpacity style={styles.payButton} onPress={onPay}>
-            <Text style={styles.payButtonText}>Pagar</Text>
-          </TouchableOpacity>
-        </View>
+    <View style={styles.cartContainer}>
+      <View style={styles.cartContent}>
+        <Text style={styles.cartText}>
+          {cart.length} producto{cart.length > 1 ? 's' : ''} seleccionado
+          {cart.length > 1 ? 's' : ''} - Total: ${total.toFixed(2)}
+        </Text>
+        <TouchableOpacity style={styles.payButton} onPress={() => router.push('/pago')}>
+          <Text style={styles.payButtonText}>Pagar</Text>
+        </TouchableOpacity>
       </View>
-    )
+    </View>
   );
 };
 

@@ -6,7 +6,7 @@ import ShoppingCart from '../../components/menu/shopping-cart';
 import { useDataContext } from "@/components/menu/datacontext";
 
 const MenuScreen=() => {
-  const {cart, addToCart, total } = useDataContext();
+  const {cart, total } = useDataContext();
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   const categoryRefs = useRef<{ [key: string]: any }>({}); 
 
@@ -17,16 +17,8 @@ const MenuScreen=() => {
     }
     setSelectedCategoryId(idLinea);
   };
-  const handleProductSelect = (product: { id: number; descripcion: string; pvp1: number }) => {
-    addToCart(product);
-  };
-
-  const handlePay = () => {
-    alert('Pago realizado');
-  };
 
   const handleScroll = (event: any) => {
-    const contentOffsetY = event.nativeEvent.contentOffset.y;
     let currentCategoryId: number | null = null;
     Object.keys(categoryRefs.current).forEach(id => {
       const ref = categoryRefs.current[id];
@@ -47,10 +39,9 @@ const MenuScreen=() => {
     <View style={styles.container}>
       <Lines onCategoryPress={handleCategoryPress} selectedCategoryId={selectedCategoryId}/>
       <ScrollView onScroll={handleScroll} scrollEventThrottle={16}>
-        <Products categoryRefs={categoryRefs} onProductSelect={handleProductSelect} />
-        {cart.length > 0 && <View style={styles.cartSpacer} />}
+        <Products categoryRefs={categoryRefs} />
       </ScrollView>
-      {cart.length > 0 && <ShoppingCart items={cart} total={total} onPay={handlePay} />}
+      <ShoppingCart/>
     </View>
   );
 };
