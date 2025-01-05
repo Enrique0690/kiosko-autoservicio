@@ -40,6 +40,7 @@ const MenuScreen=() => {
       <Lines onCategoryPress={handleCategoryPress} selectedCategoryId={selectedCategoryId}/>
       <ScrollView onScroll={handleScroll} scrollEventThrottle={16}>
         <Products categoryRefs={categoryRefs} />
+        <View style={styles.cartSpacer} />
       </ScrollView>
       <ShoppingCart/>
     </View>

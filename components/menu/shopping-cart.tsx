@@ -12,8 +12,7 @@ const ShoppingCart = () => {
     <View style={styles.cartContainer}>
       <View style={styles.cartContent}>
         <Text style={styles.cartText}>
-          {cart.length} producto{cart.length > 1 ? 's' : ''} seleccionado
-          {cart.length > 1 ? 's' : ''} - Total: ${total.toFixed(2)}
+          {cart.length} producto{cart.length > 1 ? 's' : ''} seleccionado{cart.length > 1 ? 's' : ''} - Total: ${total.toFixed(2)}
         </Text>
         <TouchableOpacity style={styles.payButton} onPress={() => router.push('/pago')}>
           <Text style={styles.payButtonText}>Pagar</Text>
