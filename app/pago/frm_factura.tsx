@@ -65,7 +65,7 @@ const frmFactura = () => {
       email,
     });
     setIsInvoiceRequested(true);
-    router.push('/pago/payment-method');
+    router.push('/pago');
   };
 
   return (

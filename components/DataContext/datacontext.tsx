@@ -46,6 +46,7 @@ interface DataContextType {
   setIsInvoiceRequested: (value: boolean) => void;
   clientData: ClientData;
   setClientData: (data: ClientData) => void;
+  sendOrderData: (orderData: any) => Promise<void>;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -186,6 +187,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     setIsInvoiceRequested,
     clientData,
     setClientData,
+    sendOrderData,
   };
 
   return (

@@ -83,7 +83,7 @@ const ShoppingCart = () => {
         <TouchableOpacity style={styles.clearButton} onPress={clearCart}>
           <Text style={styles.clearButtonText}>Limpiar carrito</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.payButton} onPress={() => router.push('/pago/payment-method')}>
+        <TouchableOpacity style={styles.payButton} onPress={() => router.push('/pago')}>
           <Text style={styles.payButtonText}>Pagar</Text>
         </TouchableOpacity>
       </View>

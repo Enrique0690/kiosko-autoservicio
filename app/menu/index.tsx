@@ -20,7 +20,7 @@ const Menu = () => {
     <View style={styles.container}>
       <Header
         rightComponent={
-          <TouchableOpacity style={styles.headerItem} onPress={() => router.push('/pago/shopping-cart')}>
+          <TouchableOpacity style={styles.headerItem} onPress={() => router.push('/menu/shopping-cart')}>
             <Ionicons name="cart" size={24} color="#fff" />
             <Text style={styles.totalText}>
               Ver carrito ({totalItems})
@@ -45,7 +45,7 @@ const Menu = () => {
       {totalItems > 0 && (
         <TouchableOpacity
           style={styles.floatingButton}
-          onPress={() => router.push('/pago/shopping-cart')}
+          onPress={() => router.push('/menu/shopping-cart')}
         >
           <View style={styles.innerCircle}>
             <Ionicons name="cart-outline" size={22} color="#4CAF50" />
