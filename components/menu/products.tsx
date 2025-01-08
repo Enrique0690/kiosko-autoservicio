@@ -1,102 +1,82 @@
-import React from "react";
-import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { useDataContext } from "@/components/menu/datacontext";
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { useDataContext } from '@/components/DataContext/datacontext';
 import RenderProductItem from './renderproductitem';
+import RenderProductItemDinamic from './renderproductitemdinamic';
 
-interface Product {
-  id: number;
-  idLinea: number;
-  descripcion: string;
-  habilitado: boolean;
-  existencia: number;
-  pvp1: number;
-  dinamicoLineas?: any[];
-}
 const NUM_COLUMNS = 3;
 
-const Products = ({ categoryRefs }: { categoryRefs: React.RefObject<{ [key: number]: any }>;}) => {
-  const { lines, products } = useDataContext();
-  // Filtrar líneas habilitadas y productos habilitados
-  const enabledLines = lines.filter((line) => line.usarEnVentas);
-  const filteredProducts = products
-    .filter((product) => product.habilitado)
-    .filter((product) => enabledLines.some((line) => line.id === product.idLinea))
-    .sort((a, b) => a.idLinea - b.idLinea || a.id - b.id);
-
-  // Agrupar productos por línea
-  const groupedProducts = enabledLines.map((line) => ({
-    line,
-    products: filteredProducts.filter((product) => product.idLinea === line.id),
-  }));
-
-  // Rellenar la última fila con elementos vacíos
-  const fillLastRow = (data: Product[], columns: number) => {
-    const fullRows = Math.floor(data.length / columns);
-    const remainingItems = data.length - fullRows * columns;
-
-    if (remainingItems > 0) {
-      const emptyItems = Array.from({ length: columns - remainingItems }).map(() => ({
-        id: Math.random(),
-        empty: true,
-      }));
-      return [...data, ...emptyItems];
+const Products = ({ selectedCategoryId, ProdutDinamic }: { selectedCategoryId: number | null, ProdutDinamic?: boolean }) => {
+  const { products } = useDataContext();
+  const filteredProducts = products.filter(
+    (product) => product.habilitado && product.idLinea === selectedCategoryId
+  );
+  
+  const chunkArray = (data: any[], numColumns: number) => {
+    const result = [];
+    for (let i = 0; i < data.length; i += numColumns) {
+      result.push(data.slice(i, i + numColumns));
     }
-    return data;
+    return result;
   };
 
+  const productRows = chunkArray(filteredProducts, NUM_COLUMNS);
+
   return (
-    <FlatList
-      data={groupedProducts}
-      keyExtractor={(item) => item.line.id.toString()}
-      renderItem={({ item }) => (
-        <View ref={(ref) => (categoryRefs.current![item.line.id] = ref)}>
-          <Text style={styles.categoryTitle}>{item.line.descripcion}</Text>
-          <FlatList
-            data={fillLastRow(item.products, NUM_COLUMNS)}
-            renderItem={({ item }) => (
-              <RenderProductItem item={item} />
-            )}
-            keyExtractor={(prod, index) => prod.id?.toString() || `empty-${index}`}
-            numColumns={NUM_COLUMNS}
-            contentContainerStyle={styles.grid}
-          />
-        </View>
+    <View style={styles.container}>
+      {selectedCategoryId && filteredProducts.length > 0 ? (
+        productRows.map((row, rowIndex) => (
+          <View key={`row-${rowIndex}`} style={styles.row}>
+            {row.map((item) => (
+                <RenderProductItem key={item.id} item={item} />
+            ))}
+            {row.length < NUM_COLUMNS &&
+              [...Array(NUM_COLUMNS - row.length)].map((_, index) => (
+                <View key={`empty-${index}`} style={[styles.itemContainer, styles.emptyItem]} />
+              ))}
+          </View>
+        ))
+      ) : (
+        <Text style={styles.noProductsText}>
+          {selectedCategoryId
+            ? 'No hay productos en esta categoría.'
+            : 'Selecciona una categoría para ver los productos.'}
+        </Text>
       )}
-      contentContainerStyle={styles.categoriesContainer}
-    />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  categoriesContainer: {
-    padding: 10,
+  container: {
+    flex: 1,
+    padding: 15,
+    backgroundColor: '#FFF',
   },
-  categoryTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 10,
   },
-  grid: {
-    width: '100%',
+  noProductsText: {
+    fontSize: 16,
+    color: '#BDBDBD',
+    textAlign: 'center',
+    marginTop: 20,
   },
-  productContainer: {
+  itemContainer: {
     flex: 1,
+    aspectRatio: 1,
+    margin: 5,
     alignItems: 'center',
     justifyContent: 'center',
-    margin: 10,
-    maxWidth: `${100 / NUM_COLUMNS}%`,
-  },
-  productImage: {
-    width: 150,
-    height: 150,
-    marginBottom: 5,
-  },
-  productText: {
-    fontSize: 12,
-    textAlign: 'center',
+    backgroundColor: '#F5F5F5',
+    borderRadius: 12,
+    elevation: 4,
   },
   emptyItem: {
     backgroundColor: 'transparent',
+    borderWidth: 0,
   },
 });
 

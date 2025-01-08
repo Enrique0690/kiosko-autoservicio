@@ -1,7 +1,7 @@
 import { Stack } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StyleSheet, View } from "react-native";
-import { DataProvider } from "@/components/menu/datacontext";
+import { DataProvider } from "@/components/DataContext/datacontext";
 
 export default function Layout() {
   const insets = useSafeAreaInsets();

@@ -1,25 +1,52 @@
-import React from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import { useRouter } from "expo-router";
+import React from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useDataContext } from '@/components/DataContext/datacontext';
+import { Ionicons } from '@expo/vector-icons';
+import Header from '@/components/header';
 
 const PaymentMethod = () => {
   const router = useRouter();
+  const { total, clearCart } = useDataContext();
+  const cash = () => {
+    clearCart();
+    router.push('/pago/completed');
+  }
+  const deuna = () => {
+    clearCart();
+    router.push('/pago/completed');
+  }
+  const card = () => {
+    clearCart();
+    router.push('/pago/completed');
+  }
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.totalText}>Total:</Text>
-        <Text style={styles.totalAmount}>30.00</Text>
-      </View>
-      <View style={styles.buttonsContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => router.push("/pago/completed")}>
-          <Text style={styles.buttonText}>Efectivo</Text>
+      <Header rightComponent={<Text style={styles.totalText}>Total: ${total.toFixed(2)}</Text>} />
+
+      <View style={styles.body}>
+        <Text style={styles.paymentTitle}>¿Te gustaría agregar datos de facturación?</Text>
+        <TouchableOpacity style={styles.addInvoiceDataButton} onPress={() => router.push('/pago/frm_factura')}>
+          <Ionicons name="file-tray" size={22} color="#fff" />
+          <Text style={styles.addInvoiceDataText}>Agregar los datos de facturación</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => router.push("/pago/completed")}>
-          <Text style={styles.buttonText}>Deuna</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => router.push("/pago/completed")}>
-          <Text style={styles.buttonText}>Tarjeta</Text>
-        </TouchableOpacity>
+
+        <Text style={styles.paymentTitle}>Elige el método de pago</Text>
+
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity style={styles.button} onPress={cash}>
+            <Ionicons name="cash-outline" size={30} color="#fff" />
+            <Text style={styles.buttonText}>Efectivo</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={deuna}>
+            <Ionicons name="qr-code-outline" size={30} color="#fff" />
+            <Text style={styles.buttonText}>Deuna</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={card}>
+            <Ionicons name="card-outline" size={30} color="#fff" />
+            <Text style={styles.buttonText}>Tarjeta</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -28,42 +55,70 @@ const PaymentMethod = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#fff",
-    padding: 20,
-  },
-  headerContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-    marginBottom: 20,
+    backgroundColor: '#F7F7F7',
   },
   totalText: {
-    fontSize: 18,
-    fontWeight: "bold",
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
-  totalAmount: {
-    fontSize: 18,
-    fontWeight: "bold",
+  body: {
+    marginTop: 100,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+  },
+  paymentTitle: {
+    fontSize: 26,
+    fontWeight: '800',
+    color: '#333',
+    marginBottom: 20,
+    textAlign: 'center',
+    letterSpacing: 2,
+    marginTop: 30,
+  },
+  addInvoiceDataButton: {
+    backgroundColor: '#388E3C',
+    paddingVertical: 18,
+    paddingHorizontal: 30,
+    borderRadius: 35,
+    marginVertical: 25,
+    width: '80%',
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    elevation: 8, // Sombras suaves para darle más profundidad
+  },
+  addInvoiceDataText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 15,
   },
   buttonsContainer: {
-    width: "100%",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    width: '100%',
+    marginTop: 40,
   },
   button: {
-    backgroundColor: "#007bff",
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 10,
-    marginVertical: 10,
-    width: "80%",
-    alignItems: "center",
+    backgroundColor: '#388E3C',
+    paddingVertical: 20,
+    paddingHorizontal: 32,
+    borderRadius: 30,
+    width: '28%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 10,
+    marginVertical: 15,
   },
   buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '700',
+    marginTop: 8,
+    textAlign: 'center',
   },
 });
 

@@ -19,7 +19,7 @@ interface RenderProductItemProps {
   hidePrice?: boolean; 
 }
 
-function RenderProductItem({ item }: { item: Product | { empty: boolean }; }) {
+function RenderProductItemDinamic({ item, hidePrice = false }: RenderProductItemProps) {
   const router = useRouter();
   const { addToCart, cart } = useDataContext();
 
@@ -50,7 +50,9 @@ function RenderProductItem({ item }: { item: Product | { empty: boolean }; }) {
       >
         <ProductImage descripcion={item.descripcion} style={styles.productImage} />
         <Text style={styles.productName}>{item.descripcion}</Text>
-        <Text style={styles.productPrice}>${item.pvp1.toFixed(2)}</Text>
+        {!hidePrice && (  
+          <Text style={styles.productPrice}>${item.pvp1.toFixed(2)}</Text>
+        )}
         {quantity > 0 && (
           <View style={styles.quantityBadge}>
             <Text style={styles.quantityText}>{quantity}</Text>
@@ -102,7 +104,7 @@ const styles = StyleSheet.create({
   quantityBadge: {
     position: 'absolute',
     top: 10,
-    right: 10,
+    right: 40,
     backgroundColor: '#4CAF50', 
     borderRadius: 50, 
     paddingHorizontal: 8,
@@ -116,4 +118,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RenderProductItem;
+export default RenderProductItemDinamic;

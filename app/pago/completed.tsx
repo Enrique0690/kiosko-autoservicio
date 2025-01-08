@@ -1,11 +1,13 @@
 import React from "react";
 import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
 import { useRouter } from "expo-router";
+import { useDataContext } from "@/components/DataContext/datacontext";
 
 const Completed = () => {
   const router = useRouter();
-
+  const { stopTimer } = useDataContext();
   const handleNewOrder = () => {
+    stopTimer();
     router.push("/");
   };
 

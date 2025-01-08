@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList, Button } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Button } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { useDataContext } from "@/components/menu/datacontext";
-import BackButton from '@/components/elements/backbutton';
+import { useDataContext } from "@/components/DataContext/datacontext";
+import ProductImage from '@/components/menu/productimage';
 
 interface Product {
   id: number;
-  descripcion: string;
   idLinea: number;
-  pvp1: number;
+  descripcion: string;
   habilitado: boolean;
+  existencia: number;
+  pvp1: number;
+  dinamicoLineas?: any[];
 }
 
 const DynamicProducts = () => {
@@ -20,7 +22,7 @@ const DynamicProducts = () => {
   const [currentProduct, setCurrentProduct] = useState<any | null>(null);
   const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
   const [total, setTotal] = useState<number>(0);
-  const [lineQuantities, setLineQuantities] = useState<{ [key: string]: number }>({});  
+  const [lineQuantities, setLineQuantities] = useState<{ [key: string]: number }>({});
 
   useEffect(() => {
     const product = products.find((p) => p.id === Number(dynamicproductId));
@@ -66,7 +68,7 @@ const DynamicProducts = () => {
   const renderProduct = ({ item }: { item: Product }) => {
     if (!item.habilitado) return null;
 
-    const cantidadIncluye = item.idLinea 
+    const cantidadIncluye = item.idLinea
       ? currentProduct?.dinamicoLineas.find((linea: any) => linea.id === item.idLinea)?.cantidadIncluye || 0
       : 0;
 
@@ -91,10 +93,10 @@ const DynamicProducts = () => {
       const productToAdd = {
         id: currentProduct.id,
         descripcion: currentProduct.descripcion,
-        pvp1: total,  
+        pvp1: total,
       };
-      addToCart(productToAdd); 
-      router.push('/menu');  
+      addToCart(productToAdd);
+      router.push('/menu');
     }
   };
 
@@ -108,16 +110,16 @@ const DynamicProducts = () => {
 
   return (
     <View style={styles.container}>
-      <BackButton />
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.headerItem} onPress={() => router.back()}>
+          <Ionicons name='arrow-back' size={24} color='#fff' />
+          <Text style={styles.headerText}>{currentProduct.descripcion}</Text>
+        </TouchableOpacity>
+      </View>
       <View style={styles.imageContainer}>
-        <Image
-          source={require('../../assets/images/placeholder/products.webp')}
-          style={styles.image}
-          resizeMode="contain"
-        />
+      <ProductImage descripcion={currentProduct.descripcion} style={styles.productImage} />
       </View>
       <View style={styles.content}>
-        <Text style={styles.productName}>{currentProduct.descripcion}</Text>
         {currentProduct.dinamicoLineas.map((linea: any) => {
           const relatedLine = lines.find((l) => l.id === linea.id);
           const productsForLine = products
@@ -129,7 +131,13 @@ const DynamicProducts = () => {
             }));
           return (
             <View key={linea.id}>
-              <Text style={styles.sectionTitle}> Inlcuye {linea.cantidadIncluye} {relatedLine?.descripcion}</Text>
+              <Text style={styles.sectionTitle}> Incluye {linea.cantidadIncluye} {relatedLine?.descripcion}(Obligatorio)</Text>
+              <FlatList
+                data={productsForLine}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={renderProduct}
+              />
+              <Text style={styles.sectionTitle}> Extras {relatedLine?.descripcion}(Adicionales)</Text>
               <FlatList
                 data={productsForLine}
                 keyExtractor={(item) => item.id.toString()}
@@ -141,7 +149,6 @@ const DynamicProducts = () => {
         <Text>Total: {total} $</Text>
       </View>
       <View style={styles.footer}>
-        <Button title="Salir" onPress={() => router.back()} color="#000" />
         <Button title="Continuar" onPress={handleAddToCart} color="#34C759" />
       </View>
     </View>
@@ -152,7 +159,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F9F9F9',
-    padding: 16,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#388E3C',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#B1D0B0',
+  },
+  headerItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '700',
+    marginLeft: 10,
+    letterSpacing: 1,
   },
   imageContainer: {
     alignItems: 'center',
@@ -198,6 +225,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 16,
+  },
+  productImage: {
+    width: 110, 
+    height: 110,
+    marginVertical: 16,
+    borderRadius: 12,
+    resizeMode: 'cover', 
   },
 });
 
