@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useDataContext } from '@/components/DataContext/datacontext';
 import Header from '@/components/header';
@@ -9,11 +9,13 @@ import axios from 'axios';
 const frmFactura = () => {
   const router = useRouter();
   const { total, setClientData, setIsInvoiceRequested } = useDataContext();
-  const [id, setId] = useState<'Cedula' | 'Ruc' | 'Pasaporte'>('Cedula'); 
+  const [id, setId] = useState<'Cedula' | 'Ruc' | 'Pasaporte'>('Cedula');
   const [idValue, setIdValue] = useState('');
   const [razonSocial, setRazonSocial] = useState('');
   const [telefono, setTelefono] = useState('');
   const [email, setEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const documentTexts = {
     Cedula: {
@@ -31,16 +33,26 @@ const frmFactura = () => {
   };
 
   const handleSearchPress = async () => {
-    console.log('Buscando datos de la persona...', id);
+    setIsLoading(true);
+    setErrorMessage('');
     try {
-      const response = await axios.get(`https://ec-s1.runfoodapp.com/apps/demo-digital-mind/api/v1/sri/person-public-data/?identificacion=${idValue}`);
-      console.log('Resultado de la consulta:', response.data);
+      const response = await axios.get(
+        `https://ec-s1.runfoodapp.com/apps/demo-digital-mind/api/v1/sri/person-public-data/?identificacion=${idValue}`
+      );
       const data = response.data;
-      setRazonSocial(data.razonSocial || '');
-      setTelefono(data.telefono || ''); 
-      setEmail(data.email || '');
+      if (data) {
+        setRazonSocial(data.razonSocial || '');
+        setTelefono(data.telefono || '');
+        setEmail(data.email || '');
+      } else {
+        throw new Error('No encontrado');
+      }
     } catch (error) {
-      console.error('Error al realizar la consulta:', error);
+      setErrorMessage(
+        `No se pudo encontrar el numero de ${id.toLowerCase()} proporcionado.`
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -50,6 +62,7 @@ const frmFactura = () => {
     setRazonSocial('');
     setTelefono('');
     setEmail('');
+    setErrorMessage('');
   };
 
   const handleContinuePress = () => {
@@ -70,8 +83,13 @@ const frmFactura = () => {
 
   return (
     <View style={styles.container}>
+      {isLoading && (
+        <View style={styles.spinnerOverlay}>
+          <ActivityIndicator size="large" color="#fff" />
+        </View>
+      )}
       <Header rightComponent={<Text style={styles.totalText}>Total: ${total.toFixed(2)}</Text>} />
-      
+
       <View style={styles.formContainer}>
         <Text style={styles.formTitle}>Datos de facturación</Text>
 
@@ -91,48 +109,51 @@ const frmFactura = () => {
 
         <View style={styles.inputGroup}>
           <View style={styles.inputWrapper}>
-            <TextInput 
-              style={styles.input} 
-              placeholder={documentTexts[id].placeholder} 
-              value={idValue} 
+            <TextInput
+              style={styles.input}
+              placeholder={documentTexts[id].placeholder}
+              value={idValue}
               onChangeText={setIdValue}
             />
-            <TouchableOpacity 
-              style={styles.icon} 
-              onPress={handleSearchPress} 
+            <TouchableOpacity
+              style={styles.icon}
+              onPress={handleSearchPress}
             >
-              <Ionicons name="search" size={24} color="#000" />  
+              <Ionicons name="search" size={24} color="#000" />
             </TouchableOpacity>
           </View>
+          {errorMessage?.trim() !== '' && (
+            <Text style={styles.errorText}>{errorMessage}</Text>
+          )}
           <Text style={styles.helpText}>{documentTexts[id].helpText}</Text>
 
-          <TextInput 
-            style={styles.input} 
-            placeholder="Razón Social" 
+          <TextInput
+            style={styles.input}
+            placeholder="Razón Social"
             value={razonSocial}
             onChangeText={setRazonSocial}
           />
           <Text style={styles.helpText}>Escribe el nombre completo de la empresa.</Text>
 
-          <TextInput 
-            style={styles.input} 
-            placeholder="Teléfono" 
+          <TextInput
+            style={styles.input}
+            placeholder="Teléfono"
             keyboardType="phone-pad"
             value={telefono}
             onChangeText={setTelefono}
           />
           <Text style={styles.helpText}>Ingresa un número de teléfono válido.</Text>
 
-          <TextInput 
-            style={styles.input} 
-            placeholder="Email" 
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
             keyboardType="email-address"
             value={email}
             onChangeText={setEmail}
           />
           <Text style={styles.helpText}>Introduce el correo electrónico de contacto.</Text>
         </View>
-        
+
         <TouchableOpacity style={styles.continueButton} onPress={handleContinuePress}>
           <Text style={styles.continueButtonText}>Continuar</Text>
         </TouchableOpacity>
@@ -171,17 +192,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '40%',
     borderRadius: 8,
-    overflow: 'hidden', 
+    overflow: 'hidden',
     backgroundColor: '#F7F7F7',
-    marginBottom: 10, 
+    marginBottom: 10,
     borderWidth: 1,
-    borderColor: '#ddd', 
+    borderColor: '#ddd',
   },
   buttonItem: {
-    flex: 1, 
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 8, 
+    paddingVertical: 8,
   },
   documentButton: {
     backgroundColor: 'transparent',
@@ -190,12 +211,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#388E3C',
   },
   documentButtonText: {
-    fontSize: 14, 
+    fontSize: 14,
     fontWeight: '600',
     color: '#333',
   },
   selectedButtonText: {
-    color: '#fff', 
+    color: '#fff',
   },
   inputGroup: {
     width: '85%',
@@ -207,12 +228,12 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   input: {
-    height: 45, 
+    height: 45,
     width: '100%',
     borderColor: '#ccc',
     borderWidth: 1,
     borderRadius: 8,
-    marginBottom: 10, 
+    marginBottom: 10,
     paddingHorizontal: 15,
     fontSize: 16,
     backgroundColor: '#fff',
@@ -247,6 +268,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     letterSpacing: 1,
+  },
+  spinnerOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 14,
+    marginBottom: 10,
   },
 });
 

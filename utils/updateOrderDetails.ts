@@ -1,4 +1,3 @@
-// utils/updateOrderDetails.ts
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Generar un código alfanumérico único
@@ -15,7 +14,7 @@ const generateUniqueCode = (): string => {
 
 // Obtener o reiniciar el número de pedido
 const getOrderNumber = async (): Promise<number> => {
-  const today = new Date().toISOString().split('T')[0]; // Fecha en formato "YYYY-MM-DD"
+  const today = new Date().toISOString().split('T')[0]; 
   const storedData = await AsyncStorage.getItem('orderData');
   const orderData = storedData ? JSON.parse(storedData) : {};
 

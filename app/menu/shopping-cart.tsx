@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, TextInput } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, TextInput, Keyboard } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useDataContext } from '@/components/DataContext/datacontext';
@@ -20,6 +20,8 @@ const ShoppingCart = () => {
   const { cart, total, addToCart, removeFromCart, clearCart, totalItems, setOrderDetails } = useDataContext();
   const router = useRouter();
   const [observations, setObservations] = useState('');
+  const inputRef = useRef<TextInput>(null); // Referencia al TextInput
+
   const handleIncrement = (product: CartItem) => addToCart(product);
 
   const handleDecrement = (product: CartItem) => {
@@ -38,7 +40,13 @@ const ShoppingCart = () => {
       Observaciones: observations,
     }));
     router.push('/pago');
-  }
+  };
+
+  const handleFocusInput = () => {
+    if (inputRef.current) {
+      inputRef.current.focus(); // Focaliza el input manualmente
+    }
+  };
 
   const renderProductItem = ({ item }: { item: CartItem }) => (
     <View style={styles.productItem}>
@@ -78,13 +86,16 @@ const ShoppingCart = () => {
 
       <View style={styles.observationsContainer}>
         <Text style={styles.observationsLabel}>Observaciones:</Text>
-        <TextInput
-          style={styles.observationsInput}
-          placeholder="Escribe tus observaciones aquí..."
-          value={observations}
-          onChangeText={setObservations}
-          multiline
-        />
+        <TouchableOpacity onPress={handleFocusInput}>
+          <TextInput
+            ref={inputRef} 
+            style={styles.observationsInput}
+            placeholder="Escribe tus observaciones aquí..."
+            value={observations}
+            onChangeText={setObservations}
+            multiline
+          />
+        </TouchableOpacity>
       </View>
 
       <View style={styles.footer}>

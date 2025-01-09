@@ -4,11 +4,11 @@ import { useRouter } from 'expo-router';
 import { useDataContext } from '@/components/DataContext/datacontext';
 import Header from '@/components/header';
 import { updateOrderDetails } from '@/utils/updateOrderDetails';
-import QRCode from 'react-native-qrcode-svg';
+import RNPrint from 'react-native-print';
 
 const CashPaymentMethod = () => {
   const router = useRouter();
-  const { total, clearCart, orderDetails, cart, clientData, setOrderDetails } = useDataContext();
+  const { total, clearCart, orderDetails, cart, clientData, setOrderDetails, sendOrderData } = useDataContext();
 
   useEffect(() => {
     updateOrderDetails(setOrderDetails);
@@ -22,6 +22,61 @@ const CashPaymentMethod = () => {
     console.log('Datos del cliente:', clientData);
   };
 
+  const handlePrintOrderDetails = async () => {
+    const generateQRCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(orderDetails.uniqueCode || 'No disponible')}`;
+
+    const htmlContent = `
+      <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; }
+            .container { padding: 20px; }
+            .order-info { margin-bottom: 10px; font-size: 14px; }
+            .qr-code { margin-top: 20px; }
+            .pending { font-weight: bold; color: red; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <h3>Detalles del Pedido</h3>
+            <div class="order-info">Fecha: ${orderDetails.date || 'No disponible'}</div>
+            <div class="order-info">Número de Pedido: ${orderDetails.orderNumber}</div>
+            <div class="qr-code">
+              <img src="${generateQRCodeUrl}" alt="QR Code" />
+            </div>
+            <div class="order-info">Identificador: ${orderDetails.uniqueCode || 'No disponible'}</div>
+            <div class="order-info">Método de pago: PENDIENTE DE PAGO (EFECTIVO)</div>
+          </div>
+        </body>
+      </html>
+    `;
+    try {
+      await RNPrint.print({ html: htmlContent });
+    } catch (error) {
+      console.error('Error al imprimir los detalles del pedido:', error);
+    }
+  };
+
+  const handleSendOrder = async () => {
+    try {
+      const orderData = {
+        total,
+        items: cart.map(item => ({
+          ...item,
+        })),
+        orderDetails: {
+          ...orderDetails,
+        },
+        clientData: {
+          ...clientData
+        },
+      };
+      await sendOrderData(orderData);
+    } catch (error) {
+      console.error('Error al enviar los datos del pedido:', error);
+    }
+  };
+  
   const formatDate = (date: string) => {
     const newDate = new Date(date);
     return newDate.toLocaleString(); 
@@ -40,15 +95,20 @@ const CashPaymentMethod = () => {
           <Text style={styles.orderInfoText}>---------------------------------------</Text>
           <Text style={styles.orderInfoText}>Fecha: {orderDetails.date ? formatDate(orderDetails.date) : 'No disponible'}</Text>
           <Text style={styles.orderInfoText}>Número de pedido: {orderDetails.orderNumber}</Text>
-          <QRCode value={orderDetails.uniqueCode || 'No disponible'} size={150} />
+          <View style={styles.qrContainer}>
+            <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(orderDetails.uniqueCode || 'No disponible')}`} alt="QR Code" />
+          </View>
           <Text style={styles.orderInfoText}>Identificador: {orderDetails.uniqueCode}</Text>
           <Text style={styles.orderInfoText}>---------------------------------------</Text>
           <Text style={styles.orderInfoText}>Metodo de pago</Text>
           <Text style={styles.pendingText}>PENDIENTE DE PAGO (EFECTIVO)</Text>
           <Text style={styles.orderInfoText}>---------------------------------------</Text>
         </View>
-        <TouchableOpacity style={styles.showDataButton} >
+        <TouchableOpacity style={styles.showDataButton} onPress={handleSendOrder}>
           <Text style={styles.showDataText}>Pagar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.showDataButton} onPress={handlePrintOrderDetails}>
+          <Text style={styles.showDataText}>Imprimir Detalles del Pedido</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -112,6 +172,10 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginTop: 10,
   },
+  qrContainer: {
+    marginTop: 20,
+    alignItems: 'center',
+  }
 });
 
 export default CashPaymentMethod;
