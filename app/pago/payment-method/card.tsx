@@ -1,20 +1,55 @@
-import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
+import React, { useEffect } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useDataContext } from '@/components/DataContext/datacontext';
-import { Ionicons } from '@expo/vector-icons';
 import Header from '@/components/header';
+import { updateOrderDetails } from '@/utils/updateOrderDetails';
+import QRCode from 'react-native-qrcode-svg';
 
 const cardMethod = () => {
   const router = useRouter();
-  const { total, clearCart } = useDataContext();
+  const { total, clearCart, orderDetails, cart, clientData, setOrderDetails } = useDataContext();
+
+  useEffect(() => {
+    updateOrderDetails(setOrderDetails);
+  }, []);
+
+  const handleShowData = () => {
+    console.log('Datos almacenados en el contexto:');
+    console.log('Total:', total);
+    console.log('Carrito:', cart);
+    console.log('Detalles del pedido:', orderDetails);
+    console.log('Datos del cliente:', clientData);
+  };
+
+  const formatDate = (date: string) => {
+    const newDate = new Date(date);
+    return newDate.toLocaleString(); // Puedes personalizar el formato según tu necesidad
+  };
+
   return (
     <View style={styles.container}>
       <Header rightComponent={<Text style={styles.totalText}>Total: ${total.toFixed(2)}</Text>} />
 
       <View style={styles.body}>
-        
-        
+        <TouchableOpacity style={styles.showDataButton} onPress={handleShowData}>
+          <Text style={styles.showDataText}>Mostrar Datos</Text>
+        </TouchableOpacity>
+
+        <View style={styles.orderDetailsContainer}>
+          <Text style={styles.orderInfoText}>---------------------------------------</Text>
+          <Text style={styles.orderInfoText}>Fecha: {orderDetails.date ? formatDate(orderDetails.date) : 'No disponible'}</Text>
+          <Text style={styles.orderInfoText}>Número de pedido: {orderDetails.orderNumber}</Text>
+          <QRCode value={orderDetails.uniqueCode || 'No disponible'} size={150} />
+          <Text style={styles.orderInfoText}>Identificador: {orderDetails.uniqueCode}</Text>
+          <Text style={styles.orderInfoText}>---------------------------------------</Text>
+          <Text style={styles.orderInfoText}>Metodo de pago</Text>
+          <Text style={styles.pendingText}>Visa Mastercard</Text>
+          <Text style={styles.orderInfoText}>---------------------------------------</Text>
+        </View>
+        <TouchableOpacity style={styles.showDataButton} >
+          <Text style={styles.showDataText}>Pagar</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -31,62 +66,51 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   body: {
-    marginTop: 100,
+    marginTop: 30,
     paddingHorizontal: 20,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'transparent',
   },
-  paymentTitle: {
-    fontSize: 26,
-    fontWeight: '800',
-    color: '#333',
-    marginBottom: 20,
-    textAlign: 'center',
-    letterSpacing: 2,
-    marginTop: 30,
-  },
-  addInvoiceDataButton: {
+  showDataButton: {
     backgroundColor: '#388E3C',
     paddingVertical: 18,
     paddingHorizontal: 30,
     borderRadius: 35,
-    marginVertical: 25,
-    width: '80%',
     alignItems: 'center',
-    flexDirection: 'row',
     justifyContent: 'center',
     elevation: 8,
+    marginVertical: 20,
   },
-  addInvoiceDataText: {
+  showDataText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
-    marginLeft: 15,
   },
-  buttonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
+  orderDetailsContainer: {
+    marginTop: 30,
+    padding: 20,
+    backgroundColor: '#fff',
+    borderRadius: 10,
     width: '100%',
-    marginTop: 40,
-  },
-  button: {
-    backgroundColor: '#388E3C',
-    paddingVertical: 20,
-    paddingHorizontal: 32,
-    borderRadius: 30,
-    width: '28%',
     alignItems: 'center',
     justifyContent: 'center',
-    elevation: 10,
-    marginVertical: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '700',
-    marginTop: 8,
+  orderInfoText: {
+    fontSize: 14,
+    fontWeight: '500',
     textAlign: 'center',
+    marginVertical: 5,
+  },
+  pendingText: {
+    fontSize: 16,
+    fontWeight: '700',
+    marginTop: 10,
   },
 });
 
