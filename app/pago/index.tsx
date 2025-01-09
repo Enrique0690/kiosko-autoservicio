@@ -7,16 +7,40 @@ import Header from '@/components/header';
 
 const PaymentMethod = () => {
   const router = useRouter();
-  const { total, clearCart } = useDataContext();
-  const cash = () => {
-    router.push('/pago/payment-method/cash-payment');
-  }
-  const deuna = () => {
-    router.push('/pago/payment-method/deuna');
-  }
-  const card = () => {
-    router.push('/pago/payment-method/card');
-  }
+  const { total, isInvoiceRequested, setClientData, setOrderDetails } = useDataContext();
+  const handlePaymentMethod = (method: 'cash' | 'deuna' | 'card') => {
+    if (!isInvoiceRequested) {
+      setClientData({
+        identification: '9999999999999',
+        razonSocial: 'Consumidor Final',
+        telefono: '',
+        email: '',
+      });
+      setOrderDetails((prevDetails: any) => ({
+        ...prevDetails,
+        documento: 'Nota de entrega',
+      }));
+    }
+    else
+    {
+      setOrderDetails((prevDetails: any) => ({
+        ...prevDetails,
+        documento: 'Factura',
+      }));
+    }
+
+    switch (method) {
+      case 'cash':
+        router.push('/pago/payment-method/cash-payment');
+        break;
+      case 'deuna':
+        router.push('/pago/payment-method/deuna');
+        break;
+      case 'card':
+        router.push('/pago/payment-method/card');
+        break;
+    }
+  };
   return (
     <View style={styles.container}>
       <Header rightComponent={<Text style={styles.totalText}>Total: ${total.toFixed(2)}</Text>} />
@@ -31,15 +55,15 @@ const PaymentMethod = () => {
         <Text style={styles.paymentTitle}>Elige el método de pago</Text>
 
         <View style={styles.buttonsContainer}>
-          <TouchableOpacity style={styles.button} onPress={cash}>
+          <TouchableOpacity style={styles.button} onPress={() => handlePaymentMethod('cash')}>
             <Ionicons name="cash-outline" size={30} color="#fff" />
             <Text style={styles.buttonText}>Pago en caja</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={deuna}>
+          <TouchableOpacity style={styles.button} onPress={() => handlePaymentMethod('deuna')}>
             <Ionicons name="qr-code-outline" size={30} color="#fff" />
             <Text style={styles.buttonText}>Deuna</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={card}>
+          <TouchableOpacity style={styles.button} onPress={() => handlePaymentMethod('card')}>
             <Ionicons name="card-outline" size={30} color="#fff" />
             <Text style={styles.buttonText}>Tarjeta</Text>
           </TouchableOpacity>

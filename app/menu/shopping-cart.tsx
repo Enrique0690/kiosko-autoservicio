@@ -17,9 +17,9 @@ interface CartItem extends Product {
 }
 
 const ShoppingCart = () => {
-  const { cart, total, addToCart, removeFromCart, clearCart, totalItems, observations, setObservations } = useDataContext();
+  const { cart, total, addToCart, removeFromCart, clearCart, totalItems, setOrderDetails } = useDataContext();
   const router = useRouter();
-
+  const [observations, setObservations] = useState('');
   const handleIncrement = (product: CartItem) => addToCart(product);
 
   const handleDecrement = (product: CartItem) => {
@@ -31,6 +31,14 @@ const ShoppingCart = () => {
       addToCart(updatedProduct);
     }
   };
+
+  const handlePay = () => {
+    setOrderDetails((prevDetails: any) => ({
+      ...prevDetails,
+      Observaciones: observations,
+    }));
+    router.push('/pago');
+  }
 
   const renderProductItem = ({ item }: { item: CartItem }) => (
     <View style={styles.productItem}>
@@ -83,7 +91,7 @@ const ShoppingCart = () => {
         <TouchableOpacity style={styles.clearButton} onPress={clearCart}>
           <Text style={styles.clearButtonText}>Limpiar carrito</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.payButton} onPress={() => router.push('/pago')}>
+        <TouchableOpacity style={styles.payButton} onPress={handlePay}>
           <Text style={styles.payButtonText}>Pagar</Text>
         </TouchableOpacity>
       </View>

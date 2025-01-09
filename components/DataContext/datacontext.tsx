@@ -36,8 +36,6 @@ interface DataContextType {
   loading: boolean;
   error: string | null;
   retry: () => void;
-  observations?: string;
-  setObservations: (observations: string) => void;
   startTimer: () => void;
   stopTimer: () => void;
   resetTimer: () => void;
@@ -47,6 +45,8 @@ interface DataContextType {
   clientData: ClientData;
   setClientData: (data: ClientData) => void;
   sendOrderData: (orderData: any) => Promise<void>;
+  orderDetails: any;
+  setOrderDetails: (details: any) => void;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -55,7 +55,6 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [lines, setLines] = useState<any[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
-  const [observations, setObservations] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [idleTimeLeft, setIdleTimeLeft] = useState<number>(60);
@@ -67,6 +66,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     telefono: '',
     email: '',
   });
+  const [orderDetails, setOrderDetails] = useState<any>({});
   const router = useRouter();
 
   const fetchData = async () => {
@@ -128,13 +128,13 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const startTimer = () => {
-    setIdleTimeLeft(300); 
+    setIdleTimeLeft(500); 
     const interval = setInterval(() => {
       setIdleTimeLeft((prev) => {
         if (prev <= 1) {
           clearCart();
           router.push('/'); 
-          clearInterval(interval);
+          stopTimer();
           return 0;
         }
         return prev - 1; 
@@ -158,11 +158,6 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   
   useEffect(() => {
     fetchData();
-    return () => {
-      if (timer) {
-        clearInterval(timer);
-      }
-    };
   }, []);
 
   const contextValue = {
@@ -177,8 +172,6 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     loading,
     error,
     retry,
-    observations,
-    setObservations,
     startTimer,
     stopTimer,
     resetTimer,
@@ -188,6 +181,8 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     clientData,
     setClientData,
     sendOrderData,
+    orderDetails, 
+    setOrderDetails,
   };
 
   return (

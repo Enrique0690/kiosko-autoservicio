@@ -1,20 +1,34 @@
-import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
+import React, { useEffect } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useDataContext } from '@/components/DataContext/datacontext';
-import { Ionicons } from '@expo/vector-icons';
 import Header from '@/components/header';
+import { updateOrderDetails } from '@/utils/updateOrderDetails';
 
-const cashpaymentMethod = () => {
+const CashPaymentMethod = () => {
   const router = useRouter();
-  const { total, clearCart } = useDataContext();
+  const { total, clearCart, orderDetails, cart, clientData, setOrderDetails } = useDataContext();
+
+  useEffect(() => {
+    updateOrderDetails(setOrderDetails);
+  }, []);
+
+  const handleShowData = () => {
+    console.log('Datos almacenados en el contexto:');
+    console.log('Total:', total);
+    console.log('Carrito:', cart);
+    console.log('Detalles del pedido:', orderDetails);
+    console.log('Datos del cliente:', clientData);
+  };
+
   return (
     <View style={styles.container}>
       <Header rightComponent={<Text style={styles.totalText}>Total: ${total.toFixed(2)}</Text>} />
 
       <View style={styles.body}>
-        
-        
+        <TouchableOpacity style={styles.showDataButton} onPress={handleShowData}>
+          <Text style={styles.showDataText}>Mostrar Datos</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -37,57 +51,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'transparent',
   },
-  paymentTitle: {
-    fontSize: 26,
-    fontWeight: '800',
-    color: '#333',
-    marginBottom: 20,
-    textAlign: 'center',
-    letterSpacing: 2,
-    marginTop: 30,
-  },
-  addInvoiceDataButton: {
+  showDataButton: {
     backgroundColor: '#388E3C',
     paddingVertical: 18,
     paddingHorizontal: 30,
     borderRadius: 35,
-    marginVertical: 25,
-    width: '80%',
     alignItems: 'center',
-    flexDirection: 'row',
     justifyContent: 'center',
     elevation: 8,
   },
-  addInvoiceDataText: {
+  showDataText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
-    marginLeft: 15,
-  },
-  buttonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    width: '100%',
-    marginTop: 40,
-  },
-  button: {
-    backgroundColor: '#388E3C',
-    paddingVertical: 20,
-    paddingHorizontal: 32,
-    borderRadius: 30,
-    width: '28%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 10,
-    marginVertical: 15,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '700',
-    marginTop: 8,
-    textAlign: 'center',
   },
 });
 
-export default cashpaymentMethod;
+export default CashPaymentMethod;

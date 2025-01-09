@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useDataContext } from '@/components/DataContext/datacontext';
 import RenderProductItem from './renderproductitem';
-import RenderProductItemDinamic from './renderproductitemdinamic';
 
 const NUM_COLUMNS = 3;
 

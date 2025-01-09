@@ -6,15 +6,24 @@ import { useDataContext } from "@/components/DataContext/datacontext";
 
 const Pedido = () => {
   const router = useRouter();
-  const { startTimer } = useDataContext();
+  const { startTimer, setOrderDetails } = useDataContext();
 
   const handleComerAqui = () => {
     startTimer();
+    setOrderDetails((prevDetails: any) => ({
+      ...prevDetails,
+      formaDespacho: 'llevar',
+    }));
     router.push("/menu");
   };
 
   const handleParaLlevar = () => {
+    console.log('Iniciando temporizador...');
     startTimer();
+    setOrderDetails((prevDetails: any) => ({
+      ...prevDetails,
+      formaDespacho: 'mesa',
+    }));
     router.push("/menu");
   };
 

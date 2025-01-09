@@ -1,28 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Button } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Button, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { useDataContext } from "@/components/DataContext/datacontext";
+import { useDataContext } from '@/components/DataContext/datacontext';
 import ProductImage from '@/components/menu/productimage';
+import ProductListDynamic from '@/components/menu/productlistdynamic';
 
-interface Product {
-  id: number;
-  idLinea: number;
-  descripcion: string;
-  habilitado: boolean;
-  existencia: number;
-  pvp1: number;
-  dinamicoLineas?: any[];
-}
+type Quantities = Record<number, number>;
 
 const DynamicProducts = () => {
   const router = useRouter();
   const { dynamicproductId } = useLocalSearchParams();
   const { products, lines, addToCart } = useDataContext();
   const [currentProduct, setCurrentProduct] = useState<any | null>(null);
-  const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
   const [total, setTotal] = useState<number>(0);
-  const [lineQuantities, setLineQuantities] = useState<{ [key: string]: number }>({});
+  const [dynamicLinesInfo, setDynamicLinesInfo] = useState<any[]>([]);
+  const [includedQuantities, setIncludedQuantities] = useState<Quantities>({});
+  const [extraQuantities, setExtraQuantities] = useState<Quantities>({});
 
   useEffect(() => {
     const product = products.find((p) => p.id === Number(dynamicproductId));
@@ -31,71 +25,123 @@ const DynamicProducts = () => {
         ...product,
         dinamicoLineas: product.dinamicoLineas || [],
       });
+      const linesInfo = product.dinamicoLineas!.map((dynamicLine) => {
+        const line = lines.find((l) => l.id === dynamicLine.id);
+        const productsForLine = products.filter((p) => p.idLinea === dynamicLine.id && p.habilitado);
+        return {
+          lineDescription: line ? line.descripcion : 'Sin descripción',
+          products: productsForLine,
+          cantidadIncluye: dynamicLine.cantidadIncluye, 
+        };
+      });
+      setDynamicLinesInfo(linesInfo);
       setTotal(product.pvp1);
     } else {
       setCurrentProduct(null);
     }
   }, []);
 
-  const handleIncrease = (id: number, pvp1: number, cantidadIncluye: number, idLinea: number) => {
-    setQuantities((prev) => {
-      const newQuantity = (prev[id] || 0) + 1;
-      setLineQuantities((prevLineQuantities) => {
-        const newLineQuantity = prevLineQuantities[idLinea] ? prevLineQuantities[idLinea] + 1 : 1;
-        if (newLineQuantity > cantidadIncluye) {
-          setTotal((prevTotal) => prevTotal + pvp1);
-        }
-        return { ...prevLineQuantities, [idLinea]: newLineQuantity };
-      });
-      return { ...prev, [id]: newQuantity };
+  useEffect(() => {
+    let newTotal = currentProduct ? currentProduct.pvp1 : 0;
+    Object.keys(extraQuantities).forEach((productId) => {
+      const product = products.find((p) => p.id === Number(productId));
+      if (product) {
+        newTotal += product.pvp1 * extraQuantities[Number(productId)];
+      }
     });
-  };
+    setTotal(newTotal);
+  }, [extraQuantities, products, currentProduct]);
 
-  const handleDecrease = (id: number, pvp1: number, cantidadIncluye: number, idLinea: number) => {
-    setQuantities((prev) => {
-      const newQuantity = Math.max((prev[id] || 0) - 1, 0);
-      setLineQuantities((prevLineQuantities) => {
-        const newLineQuantity = prevLineQuantities[idLinea] > 0 ? prevLineQuantities[idLinea] - 1 : 0;
-        if (newLineQuantity >= cantidadIncluye) {
-          setTotal((prevTotal) => prevTotal - pvp1);
+  const handleQuantityChange = (productId: number, delta: number, type: 'included' | 'extra') => {
+    if (type === 'included') {
+      setIncludedQuantities((prevQuantities: Quantities) => {
+        const currentQuantity = prevQuantities[productId] || 0;
+        const newQuantity = currentQuantity + delta;
+
+        const line = dynamicLinesInfo.find((lineInfo) => lineInfo.products.some((p: unknown) => {
+          if (typeof p === 'object' && p !== null && 'id' in p) {
+            return (p as { id: number }).id === productId;
+          }
+          return false;
+        }));
+        const totalQuantityInLine = Object.keys(prevQuantities)
+          .filter((id) => line && line.products.some((p: unknown) => {
+            if (typeof p === 'object' && p !== null && 'id' in p) {
+              return (p as { id: number }).id === Number(id);
+            }
+            return false;
+          }))
+          .reduce((acc, id) => acc + prevQuantities[Number(id)], 0);
+
+        const newTotalQuantityInLine = totalQuantityInLine + (delta > 0 ? 1 : -1);
+
+        if (line && newTotalQuantityInLine <= line.cantidadIncluye) {
+          return {
+            ...prevQuantities,
+            [productId]: newQuantity >= 0 ? newQuantity : 0,
+          };
         }
-        return { ...prevLineQuantities, [idLinea]: newLineQuantity };
+        return prevQuantities; 
       });
-      return { ...prev, [id]: newQuantity };
-    });
+    } else {
+      setExtraQuantities((prevQuantities: Quantities) => {
+        const currentQuantity = prevQuantities[productId] || 0;
+        const newQuantity = currentQuantity + delta;
+
+        return {
+          ...prevQuantities,
+          [productId]: newQuantity >= 0 ? newQuantity : 0,
+        };
+      });
+    }
   };
 
-  const renderProduct = ({ item }: { item: Product }) => {
-    if (!item.habilitado) return null;
-
-    const cantidadIncluye = item.idLinea
-      ? currentProduct?.dinamicoLineas.find((linea: any) => linea.id === item.idLinea)?.cantidadIncluye || 0
-      : 0;
-
-    return (
-      <View style={styles.itemRow}>
-        <Text style={styles.itemName}> {item.descripcion} ({item.pvp1} $)</Text>
-        <View style={styles.counter}>
-          <TouchableOpacity onPress={() => handleDecrease(item.id, item.pvp1, cantidadIncluye, item.idLinea)}>
-            <Ionicons name="remove-circle-outline" size={24} color="#007AFF" />
-          </TouchableOpacity>
-          <Text style={styles.itemCount}>{quantities[item.id] || 0}</Text>
-          <TouchableOpacity onPress={() => handleIncrease(item.id, item.pvp1, cantidadIncluye, item.idLinea)}>
-            <Ionicons name="add-circle-outline" size={24} color="#007AFF" />
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
+  const generateMainProductDescription = () => {
+    if (!currentProduct) return '';
+    const includedDescriptions = currentProduct.dinamicoLineas
+      .flatMap((line: any) => { 
+        const selectedProductsForLine = products.filter(
+          (p) => p.idLinea === line.id && p.habilitado && includedQuantities[p.id] > 0
+        );
+        return selectedProductsForLine.map((product) => {
+          const quantity = includedQuantities[product.id] || 0;
+          return `${product.descripcion} x${quantity}`;
+        });
+      })
+      .join(', '); 
+    if (includedDescriptions) {
+      return `${currentProduct.descripcion} (${includedDescriptions})`;
+    }
+    return currentProduct.descripcion; 
   };
+  
 
   const handleAddToCart = () => {
     if (currentProduct) {
-      const productToAdd = {
+      const mainProduct = {
         id: currentProduct.id,
-        descripcion: currentProduct.descripcion,
-        pvp1: total,
+        descripcion: generateMainProductDescription(),
+        pvp1: currentProduct.pvp1,
+        cantidad: 1, 
       };
-      addToCart(productToAdd);
+
+      const itemsToAdd = Object.keys(extraQuantities)
+        .map((productId) => {
+          const product = products.find((p) => p.id === Number(productId));
+          if (product) {
+            return {
+              id: product.id,
+              descripcion: product.descripcion,
+              pvp1: product.pvp1,
+              cantidad: extraQuantities[Number(productId)], 
+            };
+          }
+          return null;
+        })
+        .filter(item => item !== null);
+
+      addToCart(mainProduct);
+      itemsToAdd.forEach(item => addToCart(item));
       router.push('/menu');
     }
   };
@@ -116,38 +162,39 @@ const DynamicProducts = () => {
           <Text style={styles.headerText}>{currentProduct.descripcion}</Text>
         </TouchableOpacity>
       </View>
+
       <View style={styles.imageContainer}>
-      <ProductImage descripcion={currentProduct.descripcion} style={styles.productImage} />
+        <ProductImage descripcion={currentProduct.descripcion} style={styles.productImage} />
       </View>
-      <View style={styles.content}>
-        {currentProduct.dinamicoLineas.map((linea: any) => {
-          const relatedLine = lines.find((l) => l.id === linea.id);
-          const productsForLine = products
-            .filter((p) => p.idLinea === linea.id && p.habilitado)
-            .map((p) => ({
-              ...p,
-              descripcion: p.descripcion,
-              pvp1: p.pvp1,
-            }));
-          return (
-            <View key={linea.id}>
-              <Text style={styles.sectionTitle}> Incluye {linea.cantidadIncluye} {relatedLine?.descripcion}(Obligatorio)</Text>
-              <FlatList
-                data={productsForLine}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={renderProduct}
-              />
-              <Text style={styles.sectionTitle}> Extras {relatedLine?.descripcion}(Adicionales)</Text>
-              <FlatList
-                data={productsForLine}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={renderProduct}
-              />
-            </View>
-          );
-        })}
-        <Text>Total: {total} $</Text>
-      </View>
+
+      <ScrollView style={styles.content}>
+      {dynamicLinesInfo.map((lineInfo, index) => (
+          <View key={index} style={styles.dynamicLineContainer}>
+            <Text style={styles.sectionTitle}>Incluye {lineInfo.lineDescription} - {lineInfo.cantidadIncluye} (obligatorio)</Text>
+            <ProductListDynamic
+              lineInfo={lineInfo}
+              type="included"
+              includedQuantities={includedQuantities}
+              extraQuantities={extraQuantities}
+              handleQuantityChange={handleQuantityChange}
+            />
+          </View>
+        ))}
+        
+        {dynamicLinesInfo.map((lineInfo, index) => (
+          <View key={index} style={styles.dynamicLineContainer}>
+            <Text style={styles.sectionTitle}>Extras {lineInfo.lineDescription}</Text>
+            <ProductListDynamic
+              lineInfo={lineInfo}
+              type="extra"
+              includedQuantities={includedQuantities}
+              extraQuantities={extraQuantities}
+              handleQuantityChange={handleQuantityChange}
+            />
+          </View>
+        ))}
+      </ScrollView>
+
       <View style={styles.footer}>
         <Button title="Continuar" onPress={handleAddToCart} color="#34C759" />
       </View>
@@ -185,18 +232,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 16,
   },
-  image: {
-    width: 150,
-    height: 150,
-    marginBottom: 5,
-  },
   content: {
     flex: 1,
+    paddingHorizontal: 15,
   },
-  productName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 16,
+  dynamicLineContainer: {
+    marginBottom: 20,
   },
   sectionTitle: {
     fontSize: 16,
@@ -204,34 +245,22 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 8,
   },
-  itemRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  itemName: {
-    fontSize: 14,
-  },
-  counter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  itemCount: {
-    fontSize: 16,
-    marginHorizontal: 8,
-  },
   footer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     marginTop: 16,
+    alignItems: 'center',
+  },
+  totalText: {
+    fontSize: 18,
+    fontWeight: '600',
   },
   productImage: {
     width: 110, 
     height: 110,
     marginVertical: 16,
     borderRadius: 12,
-    resizeMode: 'cover', 
+    resizeMode: 'cover',
   },
 });
 
