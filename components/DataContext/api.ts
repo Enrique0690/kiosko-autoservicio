@@ -18,6 +18,15 @@ const fetchProducts = async () => {
   }
 };
 
+const fetchUsers = async () => {
+  try {
+    const response = await axios.get('https://ec-s1.runfoodapp.com/apps/demo-digital-mind/api/v1/LOCAL_NETWORK/USUARIO/FETCH');
+    return response.data;
+  } catch (error) {
+    throw new Error('Error al cargar usuarios');
+  }
+}
+
 const sendOrder = async (orderData: any) => {
   try {
     const response = await axios.post('https://ec-s1.runfoodapp.com/apps/demo-digital-mind/api/v1/LOCAL_NETWORK/PEDIDO/Insert', orderData, {
@@ -31,4 +40,4 @@ const sendOrder = async (orderData: any) => {
   }
 };
 
-export { fetchLines, fetchProducts, sendOrder };
+export { fetchLines, fetchProducts, fetchUsers, sendOrder };

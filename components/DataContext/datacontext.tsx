@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'expo-router';
-import { fetchLines, fetchProducts, sendOrder } from './api';
+import { fetchLines, fetchProducts, fetchUsers, sendOrder } from './api';
 import { LoadingComponent, ErrorComponent } from './chargingstatus';
 
 interface Product {
@@ -24,11 +24,13 @@ interface ClientData {
   razonSocial: string;
   telefono?: string;
   email?: string;
+  address?: string;
 }
 
 interface DataContextType {
   lines: any[];
   products: Product[];
+  users: any[];
   cart: CartItem[];
   addToCart: (product: Product) => void;
   removeFromCart: (id: number) => void;
@@ -57,6 +59,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [lines, setLines] = useState<any[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [idleTimeLeft, setIdleTimeLeft] = useState<number>(60);
@@ -67,6 +70,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     razonSocial: '',
     telefono: '',
     email: '',
+    address: '',
   });
   const [orderDetails, setOrderDetails] = useState<any>({});
   const router = useRouter();
@@ -77,8 +81,10 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     try {
       const fetchedLines = await fetchLines();
       const fetchedProducts = await fetchProducts();
+      const fetchedUsers = await fetchUsers();
       setLines(fetchedLines);
       setProducts(fetchedProducts);
+      setUsers(fetchedUsers);
     } catch (err) {
       setError('Hubo un error al cargar los datos. Intenta nuevamente.');
     } finally {
@@ -169,6 +175,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const contextValue = {
     lines,
     products,
+    users,
     cart,
     addToCart,
     removeFromCart,

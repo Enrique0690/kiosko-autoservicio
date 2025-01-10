@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, ActivityIndicator, Modal, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, ActivityIndicator, Modal, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useDataContext } from '@/components/DataContext/datacontext';
 import Header from '@/components/header';
@@ -14,6 +14,7 @@ const frmFactura = () => {
   const [razonSocial, setRazonSocial] = useState('');
   const [telefono, setTelefono] = useState('');
   const [email, setEmail] = useState('');
+  const [address, setAddress] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [debouncedValue, setDebouncedValue] = useState('');
@@ -76,6 +77,7 @@ const frmFactura = () => {
         setRazonSocial(data.razonSocial || '');
         setTelefono(data.telefono || '');
         setEmail(data.email || '');
+        setAddress(data.direccion || '');
       } else {
         throw new Error('No encontrado');
       }
@@ -96,7 +98,7 @@ const frmFactura = () => {
   };
 
   const handleContinuePress = () => {
-    if (!idValue || !razonSocial || !telefono || !email) {
+    if (!idValue || !razonSocial || !telefono || !email || !address) {
       setIsModalVisible(true);
       return;
     }
@@ -106,6 +108,7 @@ const frmFactura = () => {
       razonSocial,
       telefono,
       email,
+      address,
     });
     setIsInvoiceRequested(true);
     router.push('/pago');
@@ -119,7 +122,7 @@ const frmFactura = () => {
         </View>
       )}
       <Header rightComponent={<Text style={styles.totalText}>Total: ${total.toFixed(2)}</Text>} />
-
+      <ScrollView>
       <View style={styles.formContainer}>
         <Text style={styles.formTitle}>Datos de facturación</Text>
 
@@ -183,12 +186,21 @@ const frmFactura = () => {
             onChangeText={setEmail}
           />
           <Text style={styles.helpText}>Introduce el correo electrónico de contacto.</Text>
+
+          <TextInput
+            style={styles.input}
+            placeholder="Direccion"
+            value={address}
+            onChangeText={setAddress}
+          />
+          <Text style={styles.helpText}>Introduce tu direccion.</Text>
         </View>
 
         <TouchableOpacity style={styles.continueButton} onPress={handleContinuePress}>
           <Text style={styles.continueButtonText}>Continuar</Text>
         </TouchableOpacity>
       </View>
+      </ScrollView>
       {isModalVisible && (
         <Modal transparent={true} animationType="fade" visible={isModalVisible} onRequestClose={() => setIsModalVisible(false)}>
           <TouchableWithoutFeedback onPress={() => setIsModalVisible(false)}> 
