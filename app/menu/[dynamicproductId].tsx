@@ -257,8 +257,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   productImage: {
-    width: 120,
-    height: 120,
+    width: 150,
+    height: 150,
     marginVertical: 16,
     borderRadius: 12,
     resizeMode: 'cover',
