@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, ActivityIndicator, Modal, TouchableWithoutFeedback } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useDataContext } from '@/components/DataContext/datacontext';
 import Header from '@/components/header';
@@ -16,6 +16,8 @@ const frmFactura = () => {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [debouncedValue, setDebouncedValue] = useState('');
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const documentTexts = {
     Cedula: {
@@ -32,7 +34,37 @@ const frmFactura = () => {
     }
   };
 
-  const handleSearchPress = async () => {
+  useEffect(() => {
+    const isLengthValid =
+      (id === 'Cedula' && idValue.length === 10) ||
+      (id === 'Ruc' && idValue.length === 13) ||
+      (id === 'Pasaporte' && idValue.length === 8);
+
+    if (isLengthValid) {
+      const handler = setTimeout(() => {
+        setDebouncedValue(idValue);
+      }, 2000);
+
+      return () => clearTimeout(handler);
+    } else {
+      const timeout = setTimeout(() => {
+        if (idValue.length === 10 && id !== 'Cedula') {
+          setId('Cedula');
+          handleSearchPress(idValue); 
+        } else if (idValue.length === 13 && id !== 'Ruc') {
+          setId('Ruc');
+          handleSearchPress(idValue); 
+        } else if (idValue.length === 8 && id !== 'Pasaporte') {
+          setId('Pasaporte');
+          handleSearchPress(idValue); 
+        }
+      }, 2000);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [idValue, id]);
+
+  const handleSearchPress = async (value?: string) => {
     setIsLoading(true);
     setErrorMessage('');
     try {
@@ -51,23 +83,21 @@ const frmFactura = () => {
       setErrorMessage(
         `No se pudo encontrar el numero de ${id.toLowerCase()} proporcionado.`
       );
+      setRazonSocial('');
+      setTelefono('');
+      setEmail('');
     } finally {
       setIsLoading(false);
     }
   };
-
   const handleDocumentTypeChange = (type: 'Cedula' | 'Ruc' | 'Pasaporte') => {
     setId(type);
-    setIdValue('');
-    setRazonSocial('');
-    setTelefono('');
-    setEmail('');
     setErrorMessage('');
   };
 
   const handleContinuePress = () => {
-    if (!idValue || !razonSocial) {
-      console.error('Todos los campos son obligatorios');
+    if (!idValue || !razonSocial || !telefono || !email) {
+      setIsModalVisible(true);
       return;
     }
 
@@ -114,10 +144,11 @@ const frmFactura = () => {
               placeholder={documentTexts[id].placeholder}
               value={idValue}
               onChangeText={setIdValue}
+              keyboardType="numeric"
             />
             <TouchableOpacity
               style={styles.icon}
-              onPress={handleSearchPress}
+              onPress={() => handleSearchPress(idValue)}
             >
               <Ionicons name="search" size={24} color="#000" />
             </TouchableOpacity>
@@ -158,6 +189,20 @@ const frmFactura = () => {
           <Text style={styles.continueButtonText}>Continuar</Text>
         </TouchableOpacity>
       </View>
+      {isModalVisible && (
+        <Modal transparent={true} animationType="fade" visible={isModalVisible} onRequestClose={() => setIsModalVisible(false)}>
+          <TouchableWithoutFeedback onPress={() => setIsModalVisible(false)}> 
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalMessage}>Todos los campos son obligatorios</Text>
+                <TouchableOpacity style={styles.modalButton} onPress={() => setIsModalVisible(false)}>
+                  <Text style={styles.modalButtonText}>Cerrar</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
+      )}
     </View>
   );
 };
@@ -280,6 +325,45 @@ const styles = StyleSheet.create({
     color: 'red',
     fontSize: 14,
     marginBottom: 10,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 16,
+    width: '50%',
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  modalMessage: {
+    fontSize: 16,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  modalButton: {
+    backgroundColor: '#388E3C',
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 35,
+  },
+  modalButtonText: {
+    color: '#fff',
+    fontSize: 16,
   },
 });
 

@@ -55,6 +55,7 @@ const CashPaymentMethod = () => {
       };
       console.log('Enviando datos del pedido:', orderData);
       await sendOrderData(orderData);
+      clearCart();
     } catch (error) {
       console.error('Error al enviar los datos del pedido:', error);
     }
