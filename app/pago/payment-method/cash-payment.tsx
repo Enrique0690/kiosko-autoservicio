@@ -66,6 +66,34 @@ const CashPaymentMethod = () => {
     return newDate.toLocaleString();
   };
 
+  const handlePrint = async () => {
+    try {
+      // Aquí generamos el HTML que será impreso
+      const htmlContent = `
+        <html>
+          <body>
+            <h1>Detalles del Pedido</h1>
+            <p><strong>Fecha:</strong> ${orderDetails.date ? formatDate(orderDetails.date) : 'No disponible'}</p>
+            <p><strong>Número de Pedido:</strong> ${orderDetails.orderNumber}</p>
+            <p><strong>Identificador:</strong> ${orderDetails.uniqueCode}</p>
+            <p>---------------------------------------</p>
+            <h3>Metodo de Pago</h3>
+            <p>PENDIENTE DE PAGO (EFECTIVO)</p>
+            <p>---------------------------------------</p>
+          </body>
+        </html>
+      `;
+
+      // Enviar el contenido HTML a la impresora
+      await RNPrint.print({
+        html: htmlContent,
+      });
+
+    } catch (error) {
+      console.error('Error al intentar imprimir:', error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Header rightComponent={<Text style={styles.totalText}>Total: ${total.toFixed(2)}</Text>} />
@@ -91,7 +119,7 @@ const CashPaymentMethod = () => {
         <TouchableOpacity style={styles.showDataButton} onPress={handleSendOrder}>
           <Text style={styles.showDataText}>Pagar</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.showDataButton} >
+        <TouchableOpacity style={styles.showDataButton} onPress={handlePrint} >
           <Text style={styles.showDataText}>Imprimir Detalles del Pedido</Text>
         </TouchableOpacity>
       </View>
