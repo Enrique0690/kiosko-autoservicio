@@ -97,10 +97,8 @@ const DynamicProducts = () => {
   };  
   const handleAddToCart = () => {
     if (currentProduct) {
-      // Construimos un nuevo objeto con las líneas dinámicas reemplazadas
       const updatedDynamicLines = dynamicLinesInfo.map((lineInfo) => ({
-        id: lineInfo.products[0]?.idLinea, // Asegúrate de usar el ID correcto de la línea
-        productos: Object.keys(includedQuantities)
+        ...Object.keys(includedQuantities)
           .filter((productId) =>
             lineInfo.products.some((p: { id: number }) => p.id === Number(productId))
           )
@@ -123,7 +121,7 @@ const DynamicProducts = () => {
   
       const mainProduct = {
         ...currentProduct,
-        dinamicoLineas: updatedDynamicLines, 
+        articulosDinamicos: updatedDynamicLines, 
       };
   
       const itemsToAdd = Object.keys(extraQuantities)

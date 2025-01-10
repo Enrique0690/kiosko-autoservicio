@@ -12,6 +12,7 @@ interface Product {
   existencia?: number;
   pvp1: number;
   dinamicoLineas?: any[];
+  articulosDinamicos?: any[];
 }
 
 interface CartItem extends Product {

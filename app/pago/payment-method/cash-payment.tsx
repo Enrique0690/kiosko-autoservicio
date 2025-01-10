@@ -43,7 +43,7 @@ const CashPaymentMethod = () => {
             precio: item.pvp1,
             pagaIva: false,
             idDetalle: item.rowNumber,
-            articulosDinamicos: item.dinamicoLineas,
+            articulosDinamicos: item.articulosDinamicos,
           })),
         },
         token: new Date().valueOf(),
@@ -53,8 +53,9 @@ const CashPaymentMethod = () => {
           usuarioName: 'Kiosko autoservicio'
         }
       };
+      const orderDataString = JSON.stringify(orderData);
       console.log('Enviando datos del pedido:', orderData);
-      await sendOrderData(orderData);
+      await sendOrderData(orderDataString);
       clearCart();
     } catch (error) {
       console.error('Error al enviar los datos del pedido:', error);
