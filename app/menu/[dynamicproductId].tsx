@@ -140,8 +140,6 @@ const DynamicProducts = () => {
           return null;
         })
         .filter(item => item !== null);
-  
-      // Agregamos el producto principal con dinamicoLineas actualizado
       addToCart(mainProduct);
       itemsToAdd.forEach(item => addToCart(item));
       router.push('/menu');
@@ -151,7 +149,7 @@ const DynamicProducts = () => {
   if (!currentProduct) {
     return (
       <View style={styles.container}>
-        <Text>Cargando producto...</Text>
+        <Text style={styles.loadingText}>Cargando producto...</Text>
       </View>
     );
   }
@@ -160,7 +158,7 @@ const DynamicProducts = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity style={styles.headerItem} onPress={() => router.back()}>
-          <Ionicons name='arrow-back' size={24} color='#fff' />
+          <Ionicons name="arrow-back" size={24} color="#fff" />
           <Text style={styles.headerText}>{currentProduct.descripcion}</Text>
         </TouchableOpacity>
       </View>
@@ -170,7 +168,7 @@ const DynamicProducts = () => {
       </View>
 
       <ScrollView style={styles.content}>
-      {dynamicLinesInfo.map((lineInfo, index) => (
+        {dynamicLinesInfo.map((lineInfo, index) => (
           <View key={index} style={styles.dynamicLineContainer}>
             <Text style={styles.sectionTitle}>Incluye {lineInfo.lineDescription} - {lineInfo.cantidadIncluye} (obligatorio)</Text>
             <ProductListDynamic
@@ -225,14 +223,14 @@ const styles = StyleSheet.create({
   },
   headerText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '700',
     marginLeft: 10,
     letterSpacing: 1,
   },
   imageContainer: {
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 20,
   },
   content: {
     flex: 1,
@@ -242,8 +240,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '600',
+    color: '#388E3C',
     marginTop: 16,
     marginBottom: 8,
   },
@@ -258,11 +257,19 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   productImage: {
-    width: 110, 
-    height: 110,
+    width: 120,
+    height: 120,
     marginVertical: 16,
     borderRadius: 12,
     resizeMode: 'cover',
+    borderWidth: 2,
+    borderColor: '#388E3C',
+  },
+  loadingText: {
+    fontSize: 18,
+    color: '#888',
+    textAlign: 'center',
+    marginTop: 20,
   },
 });
 

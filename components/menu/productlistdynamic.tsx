@@ -1,6 +1,6 @@
 import React from 'react';
 import { FlatList, Text, View, TouchableOpacity, StyleSheet } from 'react-native';
-import ProductImage from './productimage'; // Asegúrate de importar correctamente el componente ProductImage
+import ProductImage from './productimage';
 
 const ProductListDynamic = ({
   lineInfo,
@@ -13,7 +13,7 @@ const ProductListDynamic = ({
     <FlatList
       data={lineInfo.products}
       keyExtractor={(item) => item.id.toString()}
-      horizontal
+      numColumns={4}
       renderItem={({ item }) => (
         <View style={styles.productContainer}>
           <TouchableOpacity 
@@ -52,53 +52,68 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     margin: 10,
-    borderRadius: 12, 
-    paddingVertical: 15,
-    elevation: 4,
-    position: 'relative', 
+    borderRadius: 16, 
+    paddingVertical: 20,
+    elevation: 8, 
+    backgroundColor: '#fff', 
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 4 }, 
+    shadowOpacity: 0.1, 
+    shadowRadius: 8, 
+    position: 'relative',
+    maxWidth: '23%', 
+    overflow: 'hidden',
   },
   productButton: {
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 12, 
+    overflow: 'hidden', 
   },
   productImage: {
-    width: 110, 
-    height: 110,
-    marginBottom: 10,
-    borderRadius: 12,
+    width: 120, 
+    height: 120,
+    marginBottom: 12,
+    borderRadius: 12, 
     resizeMode: 'cover', 
   },
   productName: {
-    fontSize: 16, 
-    fontWeight: '500', 
+    fontSize: 18, 
+    fontWeight: '600', 
     color: '#333', 
-    marginBottom: 5,
+    marginBottom: 8,
     textAlign: 'center',
+    lineHeight: 22, 
   },
   productPrice: {
-    fontSize: 14, 
+    fontSize: 16, 
     fontWeight: '500', 
     color: '#4CAF50', 
+    marginTop: 5,
+    textAlign: 'center',
   },
   quantityContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 12,
   },
   quantityButton: {
-    padding: 8,
-    backgroundColor: '#388E3C',
-    marginHorizontal: 10,
-    borderRadius: 5,
+    padding: 10,
+    backgroundColor: '#388E3C', 
+    marginHorizontal: 12,
+    borderRadius: 8, 
+    elevation: 2, 
   },
   quantityButtonText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 22, 
+    fontWeight: '700', 
   },
   quantityText: {
-    fontSize: 18,
+    fontSize: 20, 
     fontWeight: '600',
+    color: '#333', 
   },
 });
 
