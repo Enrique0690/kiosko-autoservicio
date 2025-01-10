@@ -6,6 +6,7 @@ import { LoadingComponent, ErrorComponent } from './chargingstatus';
 interface Product {
   id: number;
   idLinea?: number;
+  codigo?: string;
   descripcion: string;
   habilitado?: boolean;
   existencia?: number;
@@ -15,6 +16,7 @@ interface Product {
 
 interface CartItem extends Product {
   cantidad: number;
+  rowNumber: number;
 }
 
 interface ClientData {
@@ -85,30 +87,34 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const sendOrderData = async (orderData: any) => {
-    setLoading(true);
-    setError(null);
     try {
       await sendOrder(orderData);  
       router.push('/pago/completed');  
     } catch (err) {
-      setError('Hubo un error al enviar el pedido. Intenta nuevamente.');
+      console.error('Error al enviar los datos del pedido:', err);
     } finally {
-      setLoading(false);
     }
   };
 
   const addToCart = (product: Product) => {
     setCart((prevCart) => {
       const existingProductIndex = prevCart.findIndex((item) => item.id === product.id);
+  
       if (existingProductIndex > -1) {
-        const updatedCart = [...prevCart];
-        updatedCart[existingProductIndex].cantidad += 1;
-        return updatedCart;
+        return prevCart.map((item, index) =>
+          index === existingProductIndex
+            ? { ...item, cantidad: item.cantidad + 1 }
+            : item
+        );
       }
-      return [...prevCart, { ...product, cantidad: 1 }];
+      const newRowNumber = prevCart.length + 1; 
+      return [
+        ...prevCart,
+        { ...product, cantidad: 1, rowNumber: newRowNumber }, 
+      ];
     });
-    resetTimer();
-  };
+    resetTimer(); 
+  };  
 
   const removeFromCart = (id: number) => {
     setCart((prevCart) => prevCart.filter((item) => item.id !== id));

@@ -32,14 +32,26 @@ const PaymentMethod = () => {
     switch (method) {
       case 'cash':
         router.push('/pago/payment-method/cash-payment');
+        setOrderDetails((prevDetails: any) => ({
+          ...prevDetails,
+          formapago: 'cash',
+        }));
         break;
       case 'deuna':
         router.push('/pago/payment-method/deuna');
+        setOrderDetails((prevDetails: any) => ({
+          ...prevDetails,
+          formapago: 'deuna',
+        }));
         break;
       case 'card':
         router.push('/pago/payment-method/card');
+        setOrderDetails((prevDetails: any) => ({
+          ...prevDetails,
+          formapago: 'card',
+        }));
         break;
-    }
+    }    
   };
   return (
     <View style={styles.container}>

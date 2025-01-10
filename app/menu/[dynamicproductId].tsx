@@ -94,37 +94,38 @@ const DynamicProducts = () => {
         };
       });
     }
-  };
-
-  const generateMainProductDescription = () => {
-    if (!currentProduct) return '';
-    const includedDescriptions = currentProduct.dinamicoLineas
-      .flatMap((line: any) => { 
-        const selectedProductsForLine = products.filter(
-          (p) => p.idLinea === line.id && p.habilitado && includedQuantities[p.id] > 0
-        );
-        return selectedProductsForLine.map((product) => {
-          const quantity = includedQuantities[product.id] || 0;
-          return `${product.descripcion} x${quantity}`;
-        });
-      })
-      .join(', '); 
-    if (includedDescriptions) {
-      return `${currentProduct.descripcion} (${includedDescriptions})`;
-    }
-    return currentProduct.descripcion; 
-  };
-  
-
+  };  
   const handleAddToCart = () => {
     if (currentProduct) {
+      // Construimos un nuevo objeto con las líneas dinámicas reemplazadas
+      const updatedDynamicLines = dynamicLinesInfo.map((lineInfo) => ({
+        id: lineInfo.products[0]?.idLinea, // Asegúrate de usar el ID correcto de la línea
+        productos: Object.keys(includedQuantities)
+          .filter((productId) =>
+            lineInfo.products.some((p: { id: number }) => p.id === Number(productId))
+          )
+          .map((productId) => {
+            const product = products.find(p => p.id === Number(productId));
+            if (product) {
+              return {
+                id: product.id,
+                idLinea: product.idLinea,
+                codigo: product.codigo,
+                descripcion: product.descripcion,
+                pvp1: product.pvp1,
+                cantidad: includedQuantities[Number(productId)],  
+              };
+            }
+            return null;
+          })
+          .filter(item => item !== null),
+      }));
+  
       const mainProduct = {
-        id: currentProduct.id,
-        descripcion: generateMainProductDescription(),
-        pvp1: currentProduct.pvp1,
-        cantidad: 1, 
+        ...currentProduct,
+        dinamicoLineas: updatedDynamicLines, 
       };
-
+  
       const itemsToAdd = Object.keys(extraQuantities)
         .map((productId) => {
           const product = products.find((p) => p.id === Number(productId));
@@ -133,19 +134,20 @@ const DynamicProducts = () => {
               id: product.id,
               descripcion: product.descripcion,
               pvp1: product.pvp1,
-              cantidad: extraQuantities[Number(productId)], 
+              cantidad: extraQuantities[Number(productId)],
             };
           }
           return null;
         })
         .filter(item => item !== null);
-
+  
+      // Agregamos el producto principal con dinamicoLineas actualizado
       addToCart(mainProduct);
       itemsToAdd.forEach(item => addToCart(item));
       router.push('/menu');
     }
   };
-
+  
   if (!currentProduct) {
     return (
       <View style={styles.container}>

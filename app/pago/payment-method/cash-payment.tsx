@@ -22,64 +22,47 @@ const CashPaymentMethod = () => {
     console.log('Datos del cliente:', clientData);
   };
 
-  const handlePrintOrderDetails = async () => {
-    const generateQRCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(orderDetails.uniqueCode || 'No disponible')}`;
-
-    const htmlContent = `
-      <html>
-        <head>
-          <style>
-            body { font-family: Arial, sans-serif; }
-            .container { padding: 20px; }
-            .order-info { margin-bottom: 10px; font-size: 14px; }
-            .qr-code { margin-top: 20px; }
-            .pending { font-weight: bold; color: red; }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <h3>Detalles del Pedido</h3>
-            <div class="order-info">Fecha: ${orderDetails.date || 'No disponible'}</div>
-            <div class="order-info">Número de Pedido: ${orderDetails.orderNumber}</div>
-            <div class="qr-code">
-              <img src="${generateQRCodeUrl}" alt="QR Code" />
-            </div>
-            <div class="order-info">Identificador: ${orderDetails.uniqueCode || 'No disponible'}</div>
-            <div class="order-info">Método de pago: PENDIENTE DE PAGO (EFECTIVO)</div>
-          </div>
-        </body>
-      </html>
-    `;
-    try {
-      await RNPrint.print({ html: htmlContent });
-    } catch (error) {
-      console.error('Error al imprimir los detalles del pedido:', error);
-    }
-  };
-
   const handleSendOrder = async () => {
     try {
       const orderData = {
-        total,
-        items: cart.map(item => ({
-          ...item,
-        })),
-        orderDetails: {
-          ...orderDetails,
+        data: {
+          estado: 'P',
+          formaDespacho: orderDetails.formaDespacho,
+          mesa: orderDetails.orderNumber,
+          identificador: orderDetails.uniqueCode,
+          ordenante: orderDetails.Observaciones,
+          base0: total,
+          baseIva: 0,
+          iva: 0, 
+          total: total, 
+          descuentoTotal: 0,
+          detalle: cart.map((item )=> ({
+            id: item.id,
+            descripcion: item.descripcion,
+            cantidad: item.cantidad,
+            precio: item.pvp1,
+            pagaIva: false,
+            idDetalle: item.rowNumber,
+            articulosDinamicos: item.dinamicoLineas,
+          })),
         },
-        clientData: {
-          ...clientData
-        },
+        token: new Date().valueOf(),
+        timestamp: new Date().valueOf()+':1736439145906:25',
+        tablet: {
+          usuario: 2,
+          usuarioName: 'Kiosko autoservicio'
+        }
       };
+      console.log('Enviando datos del pedido:', orderData);
       await sendOrderData(orderData);
     } catch (error) {
       console.error('Error al enviar los datos del pedido:', error);
     }
   };
-  
+
   const formatDate = (date: string) => {
     const newDate = new Date(date);
-    return newDate.toLocaleString(); 
+    return newDate.toLocaleString();
   };
 
   return (
@@ -107,7 +90,7 @@ const CashPaymentMethod = () => {
         <TouchableOpacity style={styles.showDataButton} onPress={handleSendOrder}>
           <Text style={styles.showDataText}>Pagar</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.showDataButton} onPress={handlePrintOrderDetails}>
+        <TouchableOpacity style={styles.showDataButton} >
           <Text style={styles.showDataText}>Imprimir Detalles del Pedido</Text>
         </TouchableOpacity>
       </View>

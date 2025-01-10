@@ -66,7 +66,7 @@ const frmFactura = () => {
   };
 
   const handleContinuePress = () => {
-    if (!idValue || !razonSocial || !telefono || !email) {
+    if (!idValue || !razonSocial) {
       console.error('Todos los campos son obligatorios');
       return;
     }
