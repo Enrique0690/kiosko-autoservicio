@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="Select">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Seleccion de empresas</title>
+    <!-- Bootstrap CSS -->
+    <link rel="icon" type="image/x-icon" href="./app/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="./app/assets/css/vendor.css">
+    <link rel="stylesheet" type="text/css" href="./app/assets/css/flat-admin.css">
+    <style>
+        html {
+            background: white;
+            margin: 0px !important;
+            padding: 0px !important;
+        }
+
+        body {
+            background: transparent !important;
+            min-height: auto !important;
+            margin: 0px !important;
+            padding: 0px !important;
+        }
+    </style>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.3/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+</head>
+
+<body>
+    <div class="container" ng-controller="Main" >
+        <h1 class="text-center">RunFood MultiEmpresas</h1>
+        <h3 class="text-center" ng-class="{'text-success' : message }">{{ message ? message : 'Selecciona una empresa para continuar'}}</h3>
+        <hr>
+        <ul class="list-group">
+            <button ng-repeat="empresa in empresas" id="button_{{empresas.indexOf(empresa)}}" ng-click="entrar(empresa)" type="button" class="list-group-item">{{empresa.name}}</button>
+        </ul>
+        <!-- jQuery -->
+    </div>
+
+    <script>
+        const { remote, ipcRenderer } = require('electron');
+        if (typeof module === 'object') {
+            window.module = module;
+            module = undefined;
+        }
+    </script>
+    <script type="text/javascript" src="./app/assets/js/vendor.js"></script>
+    <script type="text/javascript" src="./app/assets/js/app.js"></script>
+    <script type="text/javascript" src="./app/assets/js/angular.min.js"></script>
+    <script type="text/javascript" src="./app/assets/js/angular-route.min.js"></script>
+    <script>
+        const app = angular.module("Select", []);
+        var LoadEmpresa = null;
+        app.controller("Main", ['$scope', '$location', function ($scope, $location) {
+            var me = $scope;
+            me.empresas = ($location.search().info || []);
+            ipcRenderer.on("load-data", function (ev, data) {
+                me.empresas = data;
+                if (!$scope.$$phase) {
+                    $scope.$apply();
+                }
+                var x = document.getElementById("button_0");
+                if (x) {
+                    x.focus();
+                }
+            });
+            me.entrar = function (empresa) {
+                ipcRenderer.send("select-empresa:selected", empresa);
+                me.message = "Entrando...";
+            }
+        }]);
+    </script>
+</body>
+
+</html>
