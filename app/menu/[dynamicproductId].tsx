@@ -95,6 +95,26 @@ const DynamicProducts = () => {
       });
     }
   };  
+  
+  const getProductsdynamic = (quantities: Record<number, number>) => {
+    return Object.keys(quantities)
+      .map((productId) => {
+        const product = products.find((p) => p.id === Number(productId));
+        if (product) {
+          return {
+            id: product.id,
+            idLinea: product.idLinea,
+            codigo: product.codigo,
+            descripcion: product.descripcion,
+            pvp1: product.pvp1,
+            cantidad: quantities[Number(productId)],
+          };
+        }
+        return null;
+      })
+      .filter((item) => item !== null); 
+  };
+
   const handleAddToCart = () => {
     if (currentProduct) {
       const updatedDynamicLines = dynamicLinesInfo.map((lineInfo) => ({
@@ -121,7 +141,7 @@ const DynamicProducts = () => {
   
       const mainProduct = {
         ...currentProduct,
-        articulosDinamicos: updatedDynamicLines, 
+        articulosDinamicos: getProductsdynamic(includedQuantities), 
       };
   
       const itemsToAdd = Object.keys(extraQuantities)

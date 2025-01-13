@@ -4,7 +4,6 @@ import { useRouter } from 'expo-router';
 import { useDataContext } from '@/components/DataContext/datacontext';
 import Header from '@/components/header';
 import { updateOrderDetails } from '@/utils/updateOrderDetails';
-import RNPrint from 'react-native-print';
 
 const CashPaymentMethod = () => {
   const router = useRouter();
