@@ -7,7 +7,6 @@ module.exports = function (api) {
           'module-resolver',
           {
             alias: {
-              fs: './empty.js',
               electron: './empty.js',
             },
           },

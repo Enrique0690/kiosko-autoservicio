@@ -16,7 +16,7 @@ const ProductImage: React.FC<ProductImageProps> = ({ descripcion, style }) => {
     const possibleExtensions = ['jpg', 'png', 'jpeg', 'webp'];
     for (const ext of possibleExtensions) {
       try {
-        const url = `https://ec-s1.runfoodapp.com/apps/demo-digital-mind/api/v1/Imagenes_Articulos/${descripcion}.${ext}`;
+        const url = `https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/${descripcion}.${ext}`;
         await axios.head(url); 
         setImageUrl(url);
         setIsLoading(false);
