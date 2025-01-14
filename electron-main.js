@@ -1,10 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const { exec } = require('child_process');
 const path = require('path');
-const PDFDocument = require('pdfkit');
-const QRCode = require('qrcode');
-const fs = require('fs');
-
 const net = require('net');
 
 let mainWindow;
@@ -12,7 +8,7 @@ let serverProcess;
 
 const waitForServer = (port, timeout = 10000) => {
   return new Promise((resolve, reject) => {
-    const interval = 500; // Verificar cada 500ms
+    const interval = 500;
     let elapsedTime = 0;
 
     const timer = setInterval(() => {
@@ -35,7 +31,7 @@ const waitForServer = (port, timeout = 10000) => {
 
 app.on('ready', async () => {
   const distPath = path.join(__dirname, 'dist');
-  const port = 7003;
+  const port = 7057;
 
   serverProcess = exec(`npx serve ${distPath} -l ${port}`, (error, stdout, stderr) => {
     if (error) {
@@ -63,6 +59,11 @@ app.on('ready', async () => {
     });
 
     mainWindow.loadURL(`http://localhost:${port}`);
+    mainWindow.on('closed', () => {
+      if (serverProcess) {
+        serverProcess.kill('SIGTERM');
+      }
+    });
   } catch (error) {
     console.error('Error conectando al servidor:', error.message);
     app.quit();
@@ -71,83 +72,108 @@ app.on('ready', async () => {
 
 ipcMain.handle('print-order-details', async (_event, orderDetails) => {
   try {
-    const pdfPath = path.join(app.getPath('desktop'), `Order_${orderDetails.orderNumber}.pdf`);
-    const doc = new PDFDocument();
-
-    // Crear un stream de escritura para el archivo PDF
-    const stream = fs.createWriteStream(pdfPath);
-    doc.pipe(stream);
-
-    // Encabezado con la fecha centrada
-    doc
-      .fontSize(12)
-      .text(`Fecha: ${orderDetails.date}`, { align: 'center' })
-      .moveDown(0.5);
-
-    // Línea separadora
-    doc
-      .moveTo(50, doc.y)
-      .lineTo(doc.page.width - 50, doc.y)
-      .stroke();
-
-    // Número de pedido centrado
-    doc
-      .fontSize(16)
-      .moveDown(1)
-      .text(`Número de pedido: ${orderDetails.orderNumber}`, { align: 'center' })
-      .moveDown(1.5); // Espacio adicional antes del QR
-
-    // Generar código QR y agregarlo al PDF centrado
-    const qrImage = await QRCode.toDataURL(orderDetails.uniqueCode);
-    const qrBuffer = Buffer.from(qrImage.split(',')[1], 'base64');
-
-    doc
-      .image(qrBuffer, (doc.page.width - 150) / 2, doc.y, { width: 150 })
-      .moveDown(1.5); // Espacio adicional después del QR
-
-    // Identificador centrado
-    doc
-      .fontSize(14)
-      .text(`Identificador: ${orderDetails.uniqueCode}`, { align: 'center' })
-      .moveDown(1.5);
-
-    // Línea separadora
-    doc
-      .moveTo(50, doc.y)
-      .lineTo(doc.page.width - 50, doc.y)
-      .stroke();
-
-    // Método de pago centrado
-    doc
-      .fontSize(14)
-      .moveDown(1)
-      .text('Método de pago', { align: 'center' })
-      .moveDown(0.5);
-
-    doc
-      .fontSize(16)
-      .text(orderDetails.formaPago || 'No especificado', { align: 'center' })
-      .moveDown(1.5);
-
-    // Línea separadora final
-    doc
-      .moveTo(50, doc.y)
-      .lineTo(doc.page.width - 50, doc.y)
-      .stroke();
-
-    // Finalizar y cerrar el documento PDF
-    doc.end();
-
-    // Esperar a que se termine de escribir el archivo
-    await new Promise((resolve, reject) => {
-      stream.on('finish', resolve);
-      stream.on('error', reject);
+    const htmlContent = `
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        html, body {
+          margin: 0;
+          padding: 0;
+          width: 100%;
+          height: 100%;
+          page-break-before: always;
+        }
+        @page {
+          size: 80mm auto;  
+          margin: 0;
+        }
+        body {
+          border: none;
+          font-family: Arial, sans-serif;
+          text-align: left;
+          position: relative;
+          padding: 5mm;
+          height: 100%;
+        }
+        .content {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 80mm; 
+          height: auto;
+          padding: 5px;
+          box-sizing: border-box;
+          display: flex;
+          flex-direction: column;
+          align-items: center;  
+          justify-content: center;
+        }
+        .qr-container img {
+          width: 100px; 
+          height: auto;
+          object-fit: contain;
+        }
+        .separator {
+          margin: 5px 0;
+          border-top: 1px solid #000;
+        }
+        h1 {
+          font-size: 14px; 
+          margin: 0;
+        }
+        .payment-method {
+          font-size: 12px; 
+          margin-top: 10px;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="content">
+        <h1>Fecha: ${orderDetails.date}</h1>
+        <div class="separator"></div>
+        <h1>Número de pedido: ${orderDetails.orderNumber}</h1>
+        <div class="qr-container">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${orderDetails.qrCode}" alt="QR Code" />
+        </div>
+        <h1>Identificador: ${orderDetails.uniqueCode}</h1>
+        <div class="separator"></div>
+        <div class="payment-method">
+          <p>Método de pago</p>
+          <h1>${orderDetails.formaPago || 'No especificado'}</h1>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+    const printWindow = new BrowserWindow({
+      width: 800,
+      height: 600,
+      show: false,
+      webPreferences: {
+        contextIsolation: false,
+        nodeIntegration: true,
+      },
     });
+    printWindow.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent(htmlContent));
 
-    console.log(`PDF generado: ${pdfPath}`);
-    return pdfPath; // Devolver la ruta del PDF generado
+    printWindow.webContents.on('did-finish-load', () => {
+      printWindow.webContents.print({
+        silent: false,
+        margin: 0,
+      }, (success, failureReason) => {
+        if (!success) {
+          console.log('Error al imprimir:', failureReason);
+        } else {
+          console.log('Impresión exitosa');
+        }
+        printWindow.close();
+      });
+    });
   } catch (error) {
-    console.error('Error al generar el PDF:', error);
+    console.error('Error al imprmir: ', error);
     throw error;
   }
 });

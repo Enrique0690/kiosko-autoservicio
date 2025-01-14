@@ -75,7 +75,7 @@ const CashPaymentMethod = () => {
     }
     try {
       const pdfPath = await ipcRenderer.invoke('print-order-details', {
-        date: orderDetails.date,
+        date: formatDate(orderDetails.date),
         orderNumber: orderDetails.orderNumber,
         uniqueCode: orderDetails.uniqueCode,
         formapago: orderDetails.formapago,
