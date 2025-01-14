@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import { useDataContext } from '@/components/DataContext/datacontext';
 import Header from '@/components/header';
 import { updateOrderDetails } from '@/utils/updateOrderDetails';
-import RNPrint from 'react-native-print';
+const { ipcRenderer } = window.require('electron'); 
 
 const CashPaymentMethod = () => {
   const router = useRouter();
@@ -66,6 +66,27 @@ const CashPaymentMethod = () => {
     return newDate.toLocaleString();
   };
 
+  const handlePrintOrderDetails = async () => {
+    console.log('Imprimiendo detalles del pedido...');
+    if (process.versions && process.versions.electron) {
+      console.log('Estamos en el entorno de Electron!');
+    } else {
+      console.log('No estamos en un entorno de Electron');
+    }
+    try {
+      const pdfPath = await ipcRenderer.invoke('print-order-details', {
+        date: orderDetails.date,
+        orderNumber: orderDetails.orderNumber,
+        uniqueCode: orderDetails.uniqueCode,
+        formapago: orderDetails.formapago,
+        formaDespacho: orderDetails.formaDespacho,
+      })
+      console.log('PDF generado y enviado:', pdfPath);
+    } catch (error) {
+      console.error('Error al generar y enviar el PDF:', error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Header rightComponent={<Text style={styles.totalText}>Total: ${total.toFixed(2)}</Text>} />
@@ -91,7 +112,7 @@ const CashPaymentMethod = () => {
         <TouchableOpacity style={styles.showDataButton} onPress={handleSendOrder}>
           <Text style={styles.showDataText}>Pagar</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.showDataButton} >
+        <TouchableOpacity style={styles.showDataButton} onPress={handlePrintOrderDetails}>
           <Text style={styles.showDataText}>Imprimir Detalles del Pedido</Text>
         </TouchableOpacity>
       </View>
