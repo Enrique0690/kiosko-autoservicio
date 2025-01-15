@@ -5,6 +5,7 @@ import { useDataContext } from '@/components/DataContext/datacontext';
 import Header from '@/components/header';
 import { updateOrderDetails } from '@/utils/updateOrderDetails';
 import BuyButton from '@/components/menu/BuyButton';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const cardMethod = () => {
   const router = useRouter();
@@ -45,7 +46,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F7F7F7',
   },
   totalText: {
-    color: '#fff',
+    color: Colors.text,
     fontSize: 16,
     fontWeight: '600',
   },
