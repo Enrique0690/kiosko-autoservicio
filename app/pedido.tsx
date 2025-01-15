@@ -15,7 +15,7 @@ const Pedido = () => {
       ...prevDetails,
       formaDespacho: 'llevar',
     }));
-    router.push("/menu");
+    router.replace("/menu");
   };
 
   const handleParaLlevar = () => {
@@ -25,7 +25,7 @@ const Pedido = () => {
       ...prevDetails,
       formaDespacho: 'mesa',
     }));
-    router.push("/menu");
+    router.replace("/menu");
   };
 
   return (

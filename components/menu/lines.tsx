@@ -74,15 +74,15 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   categoryImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 30, // Imagen circular
+    width: 110,
+    height: 110,
+    borderRadius: 55, 
     marginBottom: 8,
     borderWidth: 1,
-    borderColor: '#E0E0E0', // Borde sutil para imágenes no seleccionadas
+    borderColor: '#E0E0E0', 
   },
   selectedCategoryImage: {
-    borderColor: '#BDECB6', // Color que combina con el fondo del header
+    borderColor: '#BDECB6', 
     borderWidth: 2,
   },
   categoryText: {

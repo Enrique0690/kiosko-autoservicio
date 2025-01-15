@@ -32,21 +32,21 @@ const PaymentMethod = () => {
 
     switch (method) {
       case 'cash':
-        router.push('/pago/payment-method/cash-payment');
+        router.replace('/pago/payment-method/cash-payment');
         setOrderDetails((prevDetails: any) => ({
           ...prevDetails,
           formapago: 'efectivo',
         }));
         break;
       case 'deuna':
-        router.push('/pago/payment-method/deuna');
+        router.replace('/pago/payment-method/deuna');
         setOrderDetails((prevDetails: any) => ({
           ...prevDetails,
           formapago: 'deuna',
         }));
         break;
       case 'card':
-        router.push('/pago/payment-method/card');
+        router.replace('/pago/payment-method/card');
         setOrderDetails((prevDetails: any) => ({
           ...prevDetails,
           formapago: 'card',
@@ -60,7 +60,7 @@ const PaymentMethod = () => {
 
       <View style={styles.body}>
         <Text style={styles.paymentTitle}>¿Te gustaría agregar datos de facturación?</Text>
-        <TouchableOpacity style={styles.addInvoiceDataButton} onPress={() => router.push('/pago/frm_factura')}>
+        <TouchableOpacity style={styles.addInvoiceDataButton} onPress={() => router.replace('/pago/frm_factura')}>
           <Ionicons name="file-tray" size={22} color={Colors.primary} />
           <Text style={styles.addInvoiceDataText}>Agregar los datos de facturación</Text>
         </TouchableOpacity>

@@ -16,13 +16,15 @@ const Menu = () => {
   const handleCategoryPress = useCallback((idLinea: number) => {
     setSelectedCategoryId(idLinea);
   }, []);
-  
+
   return (
     <View style={styles.container}>
       <Header
+        leftButtonText="Volver"
+        leftButtonRoute={'/review'}
         rightComponent={
-          <TouchableOpacity style={styles.headerItem} onPress={() => router.push('/menu/shopping-cart')}>
-            <Ionicons name="cart" size={24} color= {Colors.text} />
+          <TouchableOpacity style={styles.headerItem} onPress={() => router.replace('/menu/shopping-cart')}>
+            <Ionicons name="cart" size={24} color={Colors.text} />
             <Text style={styles.totalText}> Ver carrito ({totalItems}) </Text>
           </TouchableOpacity>
         }
@@ -43,7 +45,7 @@ const Menu = () => {
       {totalItems > 0 && (
         <TouchableOpacity
           style={styles.floatingButton}
-          onPress={() => router.push('/menu/shopping-cart')}
+          onPress={() => router.replace('/menu/shopping-cart')}
         >
           <View style={styles.innerCircle}>
             <Ionicons name="cart-outline" size={22} color="#4CAF50" />

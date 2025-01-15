@@ -28,7 +28,7 @@ function RenderProductItem({ item }: { item: Product }) {
 
   const handlePress = () => {
     if (item.dinamicoLineas && Array.isArray(item.dinamicoLineas) && item.dinamicoLineas.length > 0) {
-      router.push(`/menu/${item.id}`);
+      router.replace(`/menu/${item.id}`);
     } else {
       addToCart(item);
     }
@@ -72,8 +72,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   productImage: {
-    width: 110, 
-    height: 110,
+    width: 190, 
+    height: 190,
     marginBottom: 10,
     borderRadius: 12,
     resizeMode: 'cover', 

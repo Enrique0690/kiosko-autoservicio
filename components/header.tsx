@@ -4,22 +4,24 @@ import { useRouter } from 'expo-router';
 import { Colors } from '@/constants/Colors';
 
 interface HeaderProps {
-  centerComponent?: React.ReactNode; // Permite un componente personalizado en el centro
-  rightComponent?: React.ReactNode; // Permite un componente personalizado a la derecha
+  centerComponent?: React.ReactNode; 
+  rightComponent?: React.ReactNode; 
+  leftButtonText?: string; 
+  leftButtonRoute?: any;
 }
 
-const Header = ({ centerComponent, rightComponent }: HeaderProps) => {
+const Header = ({ centerComponent, rightComponent, leftButtonText, leftButtonRoute }: HeaderProps) => {
   const router = useRouter();
 
   const handleBackPress = () => {
-    router.back();
+    router.replace(leftButtonRoute);
   };
 
   return (
     <View style={styles.header}>
       <TouchableOpacity style={styles.headerItem} onPress={handleBackPress}>
-        <Ionicons name='arrow-back' size={35} color= {Colors.primary} />
-        <Text style={styles.headerText}>Volver</Text>
+        <Ionicons name='arrow-back' size={35} color={Colors.primary} />
+        <Text style={styles.headerText}>{leftButtonText}</Text> 
       </TouchableOpacity>
       <View style={styles.centerContainer}>
         {centerComponent || (
@@ -51,7 +53,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerText: {
-    color: Colors.textsecondary,
+    color: Colors.primary,
     fontSize: 25,
     fontWeight: '700',
     marginLeft: 5,

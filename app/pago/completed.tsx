@@ -10,7 +10,7 @@ const Completed = () => {
   const handleNewOrder = () => {
     clearCart();
     stopTimer();
-    router.push("/");
+    router.replace("/");
   };
 
   return (

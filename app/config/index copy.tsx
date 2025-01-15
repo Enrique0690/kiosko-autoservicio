@@ -13,7 +13,7 @@ const Config = () => {
 
   const handleLogout = () => {
     // Aquí puedes agregar la lógica para cerrar sesión, como limpiar el contexto, token, etc.
-    router.push('/'); // Redirige a la pantalla principal
+    router.replace('/'); // Redirige a la pantalla principal
   };
 
   return (

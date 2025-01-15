@@ -11,7 +11,7 @@ const Review = () => {
 
   const handleStartPress = () => {
     setVideoPlaying(false);
-    router.push('/pedido');
+    router.replace('/pedido');
   };
 
   return (
@@ -42,7 +42,7 @@ const Review = () => {
           <View style={styles.emptyVideo}></View> 
         )}
       </View>
-      <NextButton text='COMENZAR' onPress={handleStartPress} />
+      <NextButton text='Omitir intro' onPress={handleStartPress} bottomPercentage={5} />
     </View>
   );
 };
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
   },
   videoContainer: {
     width: '100%',
-    height: '70%',
+    height: '50%',
     maxWidth: 800,
     borderRadius: 12,
     overflow: 'hidden',

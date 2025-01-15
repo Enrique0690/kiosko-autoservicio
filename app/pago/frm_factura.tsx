@@ -111,7 +111,7 @@ const frmFactura = () => {
       address,
     });
     setIsInvoiceRequested(true);
-    router.push('/pago');
+    router.replace('/pago');
   };
 
   return (

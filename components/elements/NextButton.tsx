@@ -1,81 +1,54 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, Animated } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, Pressable, View } from 'react-native';
 import { Colors } from '@/constants/Colors';
 
 interface CustomButtonProps {
     text: string;
     onPress: () => void;
+    bottomPercentage?: number;
 }
 
-const NextButton = ({ text, onPress }: CustomButtonProps) => {
-    const [pressed, setPressed] = useState(false);
-    const scale = new Animated.Value(1);
-
-    const handlePressIn = () => {
-        setPressed(true);
-        Animated.spring(scale, {
-            toValue: 0.98,
-            useNativeDriver: true,
-        }).start();
-    };
-
-    const handlePressOut = () => {
-        setPressed(false);
-        Animated.spring(scale, {
-            toValue: 1,
-            useNativeDriver: true,
-        }).start();
-    };
-
+const NextButton = ({ text, onPress, bottomPercentage = 20 }: CustomButtonProps) => {
     return (
-        <Animated.View
-            style={[
-                styles.buttonContainer,
-                {
-                    transform: [{ scale }],
-                },
-            ]}
-        >
-            <TouchableOpacity
-                style={[styles.button, pressed && styles.buttonPressed]}
+        <View style={[styles.buttonContainer, { bottom: `${bottomPercentage}%` }]}>
+            <Pressable
+                style={({ pressed }) => [
+                    styles.button,
+                    pressed && styles.buttonPressed,    
+                ]}
                 onPress={onPress}
-                onPressIn={handlePressIn}
-                onPressOut={handlePressOut}
             >
                 <Text style={styles.buttonText}>{text}</Text>
-            </TouchableOpacity>
-        </Animated.View>
+            </Pressable>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
     buttonContainer: {
-        width: '80%',
-        backgroundColor: 'transparent',
+        position: 'absolute',
+        left: '5%',
+        width: '90%',
         justifyContent: 'center',
         alignItems: 'center',
-        borderTopLeftRadius: 18,
-        borderTopRightRadius: 18,
     },
     button: {
         width: '100%',
-        paddingVertical: 15,
-        borderRadius: 25,
-        backgroundColor: Colors.secondary,
+        paddingVertical: 40,
+        borderRadius: 8, 
+        backgroundColor: Colors.secondary, 
         justifyContent: 'center',
         alignItems: 'center',
-        elevation: 3,
     },
     buttonPressed: {
-        backgroundColor: '#218838',
+        backgroundColor: Colors.darkSecondary, 
     },
     buttonText: {
         color: Colors.primary,
-        fontSize: 18,
-        fontWeight: '500',
+        fontSize: 24,
+        fontWeight: '600',
         textTransform: 'uppercase',
-        letterSpacing: 2,
-    }
+    },
 });
 
 export default NextButton;

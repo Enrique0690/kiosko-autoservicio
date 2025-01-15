@@ -18,7 +18,7 @@ export const useIdleTimer = (clearCart: () => void, router: any): TimerContextTy
         console.log('Idle time left:', prev);
         if (prev <= 1) {
           clearCart();
-          router.push('/'); 
+          router.replace('/'); 
           clearInterval(interval);
         }
         return prev - 1; 

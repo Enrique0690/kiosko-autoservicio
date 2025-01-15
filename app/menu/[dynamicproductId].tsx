@@ -160,7 +160,7 @@ const DynamicProducts = () => {
         .filter(item => item !== null);
       addToCart(mainProduct);
       itemsToAdd.forEach(item => addToCart(item));
-      router.push('/menu');
+      router.replace('/menu');
     }
   };
   

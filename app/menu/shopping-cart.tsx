@@ -41,7 +41,7 @@ const ShoppingCart = () => {
       ...prevDetails,
       Observaciones: observations,
     }));
-    router.push('/pago');
+    router.replace('/pago');
   };
 
   const handleFocusInput = () => {

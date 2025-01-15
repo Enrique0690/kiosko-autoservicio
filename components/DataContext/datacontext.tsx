@@ -98,7 +98,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const sendOrderData = async (orderData: any) => {
     try {
       await sendOrder(orderData);  
-      router.push('/pago/completed');  
+      router.replace('/pago/completed');  
     } catch (err) {
       console.error('Error al enviar los datos del pedido:', err);
     } finally {
@@ -147,9 +147,10 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     setIdleTimeLeft(0);
     const interval = setInterval(() => {
       setIdleTimeLeft((prev) => {
+        console.log('Idle time left:', prev);
         if (prev >= 600) { 
           clearCart();
-          router.push('/'); 
+          router.replace('/'); 
           stopTimer();
           return 600; 
         }
