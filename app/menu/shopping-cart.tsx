@@ -14,6 +14,7 @@ interface Product {
 
 interface CartItem extends Product {
   cantidad: number;
+  articulosDinamicos?: any[];
 }
 
 const ShoppingCart = () => {

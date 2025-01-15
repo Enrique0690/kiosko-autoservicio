@@ -4,7 +4,6 @@ import { useRouter } from 'expo-router';
 import { useDataContext } from '@/components/DataContext/datacontext';
 import Header from '@/components/header';
 import { updateOrderDetails } from '@/utils/updateOrderDetails';
-import RNPrint from 'react-native-print';
 
 const CashPaymentMethod = () => {
   const router = useRouter();
@@ -43,7 +42,7 @@ const CashPaymentMethod = () => {
             precio: item.pvp1,
             pagaIva: false,
             idDetalle: item.rowNumber,
-            articulosDinamicos: item.dinamicoLineas,
+            articulosDinamicos: item.articulosDinamicos,
           })),
         },
         token: new Date().valueOf(),
@@ -53,8 +52,9 @@ const CashPaymentMethod = () => {
           usuarioName: 'Kiosko autoservicio'
         }
       };
+      const orderDataString = JSON.stringify(orderData);
       console.log('Enviando datos del pedido:', orderData);
-      await sendOrderData(orderData);
+      await sendOrderData(orderDataString);
       clearCart();
     } catch (error) {
       console.error('Error al enviar los datos del pedido:', error);

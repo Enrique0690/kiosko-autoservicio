@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { useRouter } from 'expo-router';
 import { fetchLines, fetchProducts, fetchUsers, sendOrder } from './api';
 import { LoadingComponent, ErrorComponent } from './chargingstatus';
+import ArticuloWithCalcs from './ArticuloWithCals';
 
 interface Product {
   id: number;
@@ -12,6 +13,7 @@ interface Product {
   existencia?: number;
   pvp1: number;
   dinamicoLineas?: any[];
+  articulosDinamicos?: any[];
 }
 
 interface CartItem extends Product {
@@ -62,8 +64,9 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [idleTimeLeft, setIdleTimeLeft] = useState<number>(60);
+  const [idleTimeLeft, setIdleTimeLeft] = useState<number>(0);
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
+  const [redirected, setRedirected] = useState(false);
   const [isInvoiceRequested, setIsInvoiceRequested] = useState<boolean>(false);
   const [clientData, setClientData] = useState<ClientData>({
     identification: '',
@@ -140,36 +143,38 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const startTimer = () => {
-    setIdleTimeLeft(500); 
+    stopTimer(); 
+    setIdleTimeLeft(0);
     const interval = setInterval(() => {
       setIdleTimeLeft((prev) => {
-        if (prev <= 1) {
+        if (prev >= 300) { 
           clearCart();
           router.push('/'); 
           stopTimer();
-          return 0;
+          return 300; 
         }
-        return prev - 1; 
+        return prev + 1; 
       });
-    }, 1000); 
-    setTimer(interval); 
+    }, 1000);
+    setTimer(interval);
   };
   
   const stopTimer = () => {
     if (timer) {
-      clearInterval(timer); 
-      setTimer(null); 
-    }
+      clearInterval(timer);
+      setTimer(null);
+    } 
   };
   
   const resetTimer = () => {
-    stopTimer();  
-    setIdleTimeLeft(300); 
-    startTimer(); 
-  };
+    stopTimer(); 
+    setIdleTimeLeft(0); 
+    startTimer();
+  };  
   
   useEffect(() => {
     fetchData();
+    stopTimer();
   }, []);
 
   const contextValue = {

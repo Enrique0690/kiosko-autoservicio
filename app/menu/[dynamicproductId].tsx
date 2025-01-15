@@ -95,12 +95,30 @@ const DynamicProducts = () => {
       });
     }
   };  
+  
+  const getProductsdynamic = (quantities: Record<number, number>) => {
+    return Object.keys(quantities)
+      .map((productId) => {
+        const product = products.find((p) => p.id === Number(productId));
+        if (product) {
+          return {
+            id: product.id,
+            idLinea: product.idLinea,
+            codigo: product.codigo,
+            descripcion: product.descripcion,
+            pvp1: product.pvp1,
+            cantidad: quantities[Number(productId)],
+          };
+        }
+        return null;
+      })
+      .filter((item) => item !== null); 
+  };
+
   const handleAddToCart = () => {
     if (currentProduct) {
-      // Construimos un nuevo objeto con las líneas dinámicas reemplazadas
       const updatedDynamicLines = dynamicLinesInfo.map((lineInfo) => ({
-        id: lineInfo.products[0]?.idLinea, // Asegúrate de usar el ID correcto de la línea
-        productos: Object.keys(includedQuantities)
+        ...Object.keys(includedQuantities)
           .filter((productId) =>
             lineInfo.products.some((p: { id: number }) => p.id === Number(productId))
           )
@@ -123,7 +141,7 @@ const DynamicProducts = () => {
   
       const mainProduct = {
         ...currentProduct,
-        dinamicoLineas: updatedDynamicLines, 
+        articulosDinamicos: getProductsdynamic(includedQuantities), 
       };
   
       const itemsToAdd = Object.keys(extraQuantities)
