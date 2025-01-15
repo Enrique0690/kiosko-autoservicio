@@ -34,7 +34,7 @@ const PaymentMethod = () => {
         router.push('/pago/payment-method/cash-payment');
         setOrderDetails((prevDetails: any) => ({
           ...prevDetails,
-          formapago: 'cash',
+          formapago: 'efectivo',
         }));
         break;
       case 'deuna':

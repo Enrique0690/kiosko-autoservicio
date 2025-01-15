@@ -23,7 +23,7 @@ const Header = ({ centerComponent, rightComponent }: HeaderProps) => {
       <View style={styles.centerContainer}>
         {centerComponent || (
           <Image
-            source={{ uri: 'https://i.postimg.cc/yYqJJvYZ/tuitui.png' }}
+            source={{ uri: 'https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/logo.png' }}
             style={styles.logo}
           />
         )}
