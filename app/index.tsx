@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 import { StyleSheet, ImageBackground, Text, TouchableOpacity, Animated, Modal, TextInput, View } from 'react-native';
 import { useDataContext } from '@/components/DataContext/datacontext';
 import { Ionicons } from '@expo/vector-icons';
+import NextButton from '@/components/elements/NextButton';
 
 const Index = () => {
   const router = useRouter();
@@ -17,22 +18,6 @@ const Index = () => {
 
   const handleStart = () => {
     router.push('/review');
-  };
-
-  const handlePressIn = () => {
-    setPressed(true);
-    Animated.spring(scale, {
-      toValue: 0.98,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const handlePressOut = () => {
-    setPressed(false);
-    Animated.spring(scale, {
-      toValue: 1,
-      useNativeDriver: true,
-    }).start();
   };
 
   const openModal = () => {
@@ -68,23 +53,7 @@ const Index = () => {
         <Ionicons name="settings" size={30} color="#ffffff" />
       </TouchableOpacity>
 
-      <Animated.View
-        style={[
-          styles.buttonContainer,
-          {
-            transform: [{ scale }],
-          },
-        ]}
-      >
-        <TouchableOpacity
-          style={[styles.button, pressed && styles.buttonPressed]}
-          onPress={handleStart}
-          onPressIn={handlePressIn}
-          onPressOut={handlePressOut}
-        >
-          <Text style={styles.buttonText}>COMENZAR</Text>
-        </TouchableOpacity>
-      </Animated.View>
+      <NextButton text='COMENZAR' onPress={handleStart} />
 
       <Modal
         transparent={true}
@@ -136,33 +105,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 50,
   },
-  buttonContainer: {
-    width: '100%',
-    backgroundColor: 'transparent',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderTopLeftRadius: 18,
-    borderTopRightRadius: 18,
-  },
-  button: {
-    width: '100%',
-    paddingVertical: 15,
-    borderRadius: 25,
-    backgroundColor: '#28a745',
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 3,
-  },
-  buttonPressed: {
-    backgroundColor: '#218838',
-  },
-  buttonText: {
-    color: '#ffffff',
-    fontSize: 18,
-    fontWeight: '500',
-    textTransform: 'uppercase',
-    letterSpacing: 2,
-  },
+  
   modalBackground: {
     flex: 1,
     justifyContent: 'center',

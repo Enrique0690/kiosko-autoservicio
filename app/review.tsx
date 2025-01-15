@@ -2,25 +2,12 @@ import React, { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { StyleSheet, View, Text, Platform, Animated, TouchableOpacity } from 'react-native';
 import { WebView } from 'react-native-webview'; 
+import NextButton from '@/components/elements/NextButton';
 
 const Review = () => {
   const router = useRouter();
   const [videoPlaying, setVideoPlaying] = useState(true); 
   const scale = new Animated.Value(1);
-
-  const handlePressIn = () => {
-    Animated.spring(scale, {
-      toValue: 0.98,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const handlePressOut = () => {
-    Animated.spring(scale, {
-      toValue: 1,
-      useNativeDriver: true,
-    }).start();
-  };
 
   const handleStartPress = () => {
     setVideoPlaying(false);
@@ -55,23 +42,7 @@ const Review = () => {
           <View style={styles.emptyVideo}></View> 
         )}
       </View>
-      <Animated.View
-        style={[
-          styles.buttonContainer,
-          {
-            transform: [{ scale }],
-          },
-        ]}
-      >
-        <TouchableOpacity
-          style={styles.button}
-          onPress={handleStartPress}
-          onPressIn={handlePressIn}
-          onPressOut={handlePressOut}
-        >
-          <Text style={styles.buttonText}>COMENZAR</Text>
-        </TouchableOpacity>
-      </Animated.View>
+      <NextButton text='COMENZAR' onPress={handleStartPress} />
     </View>
   );
 };

@@ -1,11 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { useDataContext } from '@/components/DataContext/datacontext';
+import ProductImage from './productimage';
+import { Colors } from '@/constants/Colors';
 
-const Lines = ({
-  onCategoryPress,
-  selectedCategoryId,
-}: {
+const Lines = ({ onCategoryPress,   selectedCategoryId}: {
   onCategoryPress: (id: number) => void;
   selectedCategoryId: number | null;
 }) => {
@@ -26,13 +25,8 @@ const Lines = ({
               style={styles.categoryItem}
               onPress={() => onCategoryPress(item.id)}
             >
-              <Image
-                source={require('../../assets/images/placeholder/products.webp')}
-                style={[
-                  styles.categoryImage,
-                  item.id === selectedCategoryId && styles.selectedCategoryImage,
-                ]}
-              />
+              <ProductImage descripcion={item.descripcion} style={styles.categoryImage} baseUrl='https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/Lineas/' />
+
               <Text
                 style={[
                   styles.categoryText,
@@ -59,7 +53,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: '600',
-    color: '#333',
+    color: Colors.textsecondary,
     textAlign: 'center',
     marginBottom: 16,
   },

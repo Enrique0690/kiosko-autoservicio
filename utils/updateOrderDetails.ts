@@ -12,6 +12,11 @@ const generateUniqueCode = (): string => {
   return `${part1}-${part2}`;
 };
 
+const formatDate = (date: string) => {
+  const newDate = new Date(date);
+  return newDate.toLocaleString();
+};
+
 // Obtener o reiniciar el número de pedido
 const getOrderNumber = async (): Promise<number> => {
   const today = new Date().toISOString().split('T')[0]; 
@@ -33,7 +38,7 @@ const getOrderNumber = async (): Promise<number> => {
 export const updateOrderDetails = async (
   setOrderDetails: (details: any) => void
 ): Promise<void> => {
-  const currentDate = new Date().toISOString();
+  const currentDate = formatDate(new Date().toISOString());
   const uniqueCode = generateUniqueCode();
   const orderNumber = await getOrderNumber();
 

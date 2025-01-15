@@ -1,121 +1,38 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { useRouter } from 'expo-router';
+import { StyleSheet, View, Text, ScrollView } from 'react-native';
 import { useDataContext } from '@/components/DataContext/datacontext';
 import Header from '@/components/header';
 import { updateOrderDetails } from '@/utils/updateOrderDetails';
+import BuyButton from '@/components/menu/BuyButton';
+import { Colors } from '@/constants/Colors';
 
 const CashPaymentMethod = () => {
-  const router = useRouter();
-  const { total, clearCart, orderDetails, cart, clientData, setOrderDetails, sendOrderData } = useDataContext();
+  const { total, orderDetails, setOrderDetails } = useDataContext();
 
   useEffect(() => {
     updateOrderDetails(setOrderDetails);
   }, []);
 
-  const handleShowData = () => {
-    console.log('Datos almacenados en el contexto:');
-    console.log('Total:', total);
-    console.log('Carrito:', cart);
-    console.log('Detalles del pedido:', orderDetails);
-    console.log('Datos del cliente:', clientData);
-  };
-
-  const handleSendOrder = async () => {
-    try {
-      const orderData = {
-        data: {
-          estado: 'P',
-          formaDespacho: orderDetails.formaDespacho,
-          mesa: orderDetails.orderNumber,
-          identificador: orderDetails.uniqueCode,
-          ordenante: orderDetails.Observaciones,
-          base0: total,
-          baseIva: 0,
-          iva: 0, 
-          total: total, 
-          descuentoTotal: 0,
-          detalle: cart.map((item )=> ({
-            id: item.id,
-            descripcion: item.descripcion,
-            cantidad: item.cantidad,
-            precio: item.pvp1,
-            pagaIva: false,
-            idDetalle: item.rowNumber,
-            articulosDinamicos: item.articulosDinamicos,
-          })),
-        },
-        token: new Date().valueOf(),
-        timestamp: new Date().valueOf()+':1736439145906:25',
-        tablet: {
-          usuario: 2,
-          usuarioName: 'Kiosko autoservicio'
-        }
-      };
-      const orderDataString = JSON.stringify(orderData);
-      console.log('Enviando datos del pedido:', orderData);
-      await sendOrderData(orderDataString);
-      clearCart();
-    } catch (error) {
-      console.error('Error al enviar los datos del pedido:', error);
-    }
-  };
-
-  const formatDate = (date: string) => {
-    const newDate = new Date(date);
-    return newDate.toLocaleString();
-  };
-
-  const handlePrintOrderDetails = async () => {
-    console.log('Imprimiendo detalles del pedido...');
-    if (process.versions && process.versions.electron) {
-      console.log('Estamos en el entorno de Electron!');
-      const { ipcRenderer } = window.require('electron'); 
-      try {
-        const pdfPath = await ipcRenderer.invoke('print-order-details', {
-          date: formatDate(orderDetails.date),
-          orderNumber: orderDetails.orderNumber,
-          uniqueCode: orderDetails.uniqueCode,
-          formapago: orderDetails.formapago,
-          formaDespacho: orderDetails.formaDespacho,
-        })
-        console.log('PDF generado y enviado:', pdfPath);
-      } catch (error) {
-        console.error('Error al generar y enviar el PDF:', error);
-      }
-    } else {
-      console.log('No estamos en un entorno de Electron');
-    }
-  };
-
   return (
     <View style={styles.container}>
       <Header rightComponent={<Text style={styles.totalText}>Total: ${total.toFixed(2)}</Text>} />
-
       <View style={styles.body}>
-        <TouchableOpacity style={styles.showDataButton} onPress={handleShowData}>
-          <Text style={styles.showDataText}>Mostrar Datos</Text>
-        </TouchableOpacity>
-
-        <View style={styles.orderDetailsContainer}>
-          <Text style={styles.orderInfoText}>---------------------------------------</Text>
-          <Text style={styles.orderInfoText}>Fecha: {orderDetails.date ? formatDate(orderDetails.date) : 'No disponible'}</Text>
-          <Text style={styles.orderInfoText}>Número de pedido: {orderDetails.orderNumber}</Text>
-          <View style={styles.qrContainer}>
-            <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(orderDetails.uniqueCode || 'No disponible')}`} alt="QR Code" />
+        <ScrollView>
+          <View style={styles.orderDetailsContainer}>
+            <Text style={styles.orderInfoText}>---------------------------------------</Text>
+            <Text style={styles.orderInfoText}>Fecha: {orderDetails.date ? orderDetails.date : 'No disponible'}</Text>
+            <Text style={styles.orderInfoText}>Número de pedido: {orderDetails.orderNumber}</Text>
+            <View style={styles.qrContainer}>
+              <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(orderDetails.uniqueCode || 'No disponible')}`} alt="QR Code" />
+            </View>
+            <Text style={styles.orderInfoText}>Identificador: {orderDetails.uniqueCode}</Text>
+            <Text style={styles.orderInfoText}>---------------------------------------</Text>
+            <Text style={styles.orderInfoText}>Metodo de pago</Text>
+            <Text style={styles.pendingText}>PENDIENTE DE PAGO (EFECTIVO)</Text>
+            <Text style={styles.orderInfoText}>---------------------------------------</Text>
           </View>
-          <Text style={styles.orderInfoText}>Identificador: {orderDetails.uniqueCode}</Text>
-          <Text style={styles.orderInfoText}>---------------------------------------</Text>
-          <Text style={styles.orderInfoText}>Metodo de pago</Text>
-          <Text style={styles.pendingText}>PENDIENTE DE PAGO (EFECTIVO)</Text>
-          <Text style={styles.orderInfoText}>---------------------------------------</Text>
-        </View>
-        <TouchableOpacity style={styles.showDataButton} onPress={handleSendOrder}>
-          <Text style={styles.showDataText}>Pagar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.showDataButton} onPress={handlePrintOrderDetails}>
-          <Text style={styles.showDataText}>Imprimir Detalles del Pedido</Text>
-        </TouchableOpacity>
+          <BuyButton />
+        </ScrollView>
       </View>
     </View>
   );
@@ -124,7 +41,7 @@ const CashPaymentMethod = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F7F7',
+    backgroundColor: Colors.neutralWhite,
   },
   totalText: {
     color: '#fff',

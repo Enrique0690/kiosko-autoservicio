@@ -3,6 +3,7 @@ import { useRouter } from "expo-router";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useDataContext } from "@/components/DataContext/datacontext";
+import { Colors } from "@/constants/Colors";
 
 const Pedido = () => {
   const router = useRouter();
@@ -32,11 +33,11 @@ const Pedido = () => {
       <Text style={styles.title}>¿Cómo deseas disfrutar tu comida?</Text>
       <View style={styles.optionsContainer}>
         <TouchableOpacity style={styles.optionButton} onPress={handleComerAqui}>
-          <Ionicons name="restaurant-outline" size={70} color="#fff" />
+          <Ionicons name="restaurant-outline" size={70} color={Colors.primary} />
           <Text style={styles.buttonText}>Comer Aquí</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.optionButton} onPress={handleParaLlevar}>
-          <Ionicons name="bag-outline" size={70} color="#fff" />
+          <Ionicons name="bag-outline" size={70} color={Colors.primary} />
           <Text style={styles.buttonText}>Para Llevar</Text>
         </TouchableOpacity>
       </View>
@@ -49,13 +50,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f2f2f2",
+    backgroundColor: Colors.neutralWhite,
     paddingHorizontal: 20,
   },
   title: {
     fontSize: 28,
     fontWeight: "700", 
-    color: "#333",
+    color: Colors.textsecondary,
     marginBottom: 50,
     textAlign: "center",
     letterSpacing: 1.5, 
@@ -80,7 +81,7 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   buttonText: {
-    color: "#fff",
+    color: Colors.primary,
     fontSize: 20,
     fontWeight: "600", 
     marginTop: 12,

@@ -5,8 +5,9 @@ import { useDataContext } from "@/components/DataContext/datacontext";
 
 const Completed = () => {
   const router = useRouter();
-  const { stopTimer } = useDataContext();
+  const { stopTimer, clearCart } = useDataContext();
   const handleNewOrder = () => {
+    clearCart();
     stopTimer();
     router.push("/");
   };

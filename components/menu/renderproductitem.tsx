@@ -13,13 +13,7 @@ export interface Product {
   pvp1: number;
   dinamicoLineas?: any[];
 }
-
-interface RenderProductItemProps {
-  item: Product | { empty: boolean };
-  hidePrice?: boolean; 
-}
-
-function RenderProductItem({ item }: { item: Product | { empty: boolean }; }) {
+function RenderProductItem({ item }: { item: Product }) {
   const router = useRouter();
   const { addToCart, cart } = useDataContext();
 
@@ -48,7 +42,7 @@ function RenderProductItem({ item }: { item: Product | { empty: boolean }; }) {
         onPress={handlePress}
         style={styles.productButton}
       >
-        <ProductImage descripcion={item.descripcion} style={styles.productImage} />
+        <ProductImage descripcion={item.descripcion} style={styles.productImage} baseUrl='https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/'/>
         <Text style={styles.productName}>{item.descripcion}</Text>
         <Text style={styles.productPrice}>${item.pvp1.toFixed(2)}</Text>
         {quantity > 0 && (

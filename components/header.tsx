@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { Colors } from '@/constants/Colors';
 
 interface HeaderProps {
   centerComponent?: React.ReactNode; // Permite un componente personalizado en el centro
@@ -17,7 +18,7 @@ const Header = ({ centerComponent, rightComponent }: HeaderProps) => {
   return (
     <View style={styles.header}>
       <TouchableOpacity style={styles.headerItem} onPress={handleBackPress}>
-        <Ionicons name='arrow-back' size={24} color='#fff' />
+        <Ionicons name='arrow-back' size={24} color= {Colors.primary} />
         <Text style={styles.headerText}>Volver</Text>
       </TouchableOpacity>
       <View style={styles.centerContainer}>
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerText: {
-    color: '#fff',
+    color: Colors.primary,
     fontSize: 18,
     fontWeight: '700',
     marginLeft: 10,
@@ -61,8 +62,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: 120,
-    height: 40,
-    resizeMode: 'contain',
+    height: 70,
   },
 });
 

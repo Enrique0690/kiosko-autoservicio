@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { View, StyleSheet, ScrollView, Text, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Lines from '../../components/menu/lines';
@@ -6,29 +6,27 @@ import Products from '../../components/menu/products';
 import { useRouter } from 'expo-router';
 import { useDataContext } from '@/components/DataContext/datacontext';
 import Header from '@/components/header';
+import { Colors } from '@/constants/Colors';
 
 const Menu = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   const { totalItems } = useDataContext();
   const router = useRouter();
 
-  const handleCategoryPress = (idLinea: number) => {
+  const handleCategoryPress = useCallback((idLinea: number) => {
     setSelectedCategoryId(idLinea);
-  };
-
+  }, []);
+  
   return (
     <View style={styles.container}>
       <Header
         rightComponent={
           <TouchableOpacity style={styles.headerItem} onPress={() => router.push('/menu/shopping-cart')}>
-            <Ionicons name="cart" size={24} color="#fff" />
-            <Text style={styles.totalText}>
-              Ver carrito ({totalItems})
-            </Text>
+            <Ionicons name="cart" size={24} color= {Colors.text} />
+            <Text style={styles.totalText}> Ver carrito ({totalItems}) </Text>
           </TouchableOpacity>
         }
       />
-
 
       <View style={styles.columns}>
         <View style={styles.categoriesColumn}>
@@ -70,7 +68,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   totalText: {
-    color: '#fff',
+    color: Colors.text,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -87,8 +85,7 @@ const styles = StyleSheet.create({
   categoriesColumn: {
     flex: 1.1,
     marginRight: 15,
-    backgroundColor: '#fff',
-    borderRadius: 12,
+    backgroundColor: Colors.neutralWhite,
     padding: 10,
     elevation: 5,
   },

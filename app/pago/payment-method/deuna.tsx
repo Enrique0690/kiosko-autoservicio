@@ -1,55 +1,38 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { useRouter } from 'expo-router';
+import { StyleSheet, View, Text, ScrollView } from 'react-native';
+import { Colors } from '@/constants/Colors';
 import { useDataContext } from '@/components/DataContext/datacontext';
 import Header from '@/components/header';
 import { updateOrderDetails } from '@/utils/updateOrderDetails';
-import QRCode from 'react-native-qrcode-svg';
+import BuyButton from '@/components/menu/BuyButton';
 
 const deunaMethod = () => {
-  const router = useRouter();
-  const { total, clearCart, orderDetails, cart, clientData, setOrderDetails } = useDataContext();
+  const { total, orderDetails, setOrderDetails } = useDataContext();
 
   useEffect(() => {
     updateOrderDetails(setOrderDetails);
   }, []);
 
-  const handleShowData = () => {
-    console.log('Datos almacenados en el contexto:');
-    console.log('Total:', total);
-    console.log('Carrito:', cart);
-    console.log('Detalles del pedido:', orderDetails);
-    console.log('Datos del cliente:', clientData);
-  };
-
-  const formatDate = (date: string) => {
-    const newDate = new Date(date);
-    return newDate.toLocaleString(); 
-  };
-
   return (
     <View style={styles.container}>
       <Header rightComponent={<Text style={styles.totalText}>Total: ${total.toFixed(2)}</Text>} />
-
       <View style={styles.body}>
-        <TouchableOpacity style={styles.showDataButton} onPress={handleShowData}>
-          <Text style={styles.showDataText}>Mostrar Datos</Text>
-        </TouchableOpacity>
-
-        <View style={styles.orderDetailsContainer}>
-          <Text style={styles.orderInfoText}>---------------------------------------</Text>
-          <Text style={styles.orderInfoText}>Fecha: {orderDetails.date ? formatDate(orderDetails.date) : 'No disponible'}</Text>
-          <Text style={styles.orderInfoText}>Número de pedido: {orderDetails.orderNumber}</Text>
-          <QRCode value={orderDetails.uniqueCode || 'No disponible'} size={150} />
-          <Text style={styles.orderInfoText}>Identificador: {orderDetails.uniqueCode}</Text>
-          <Text style={styles.orderInfoText}>---------------------------------------</Text>
-          <Text style={styles.orderInfoText}>Metodo de pago</Text>
-          <Text style={styles.pendingText}>PENDIENTE DE PAGO (Deuna)</Text>
-          <Text style={styles.orderInfoText}>---------------------------------------</Text>
-        </View>
-        <TouchableOpacity style={styles.showDataButton} >
-          <Text style={styles.showDataText}>Pagar</Text>
-        </TouchableOpacity>
+        <ScrollView>
+          <View style={styles.orderDetailsContainer}>
+            <Text style={styles.orderInfoText}>---------------------------------------</Text>
+            <Text style={styles.orderInfoText}>Fecha: {orderDetails.date ? orderDetails.date : 'No disponible'}</Text>
+            <Text style={styles.orderInfoText}>Número de pedido: {orderDetails.orderNumber}</Text>
+            <View style={styles.qrContainer}>
+              <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(orderDetails.uniqueCode || 'No disponible')}`} alt="QR Code" />
+            </View>
+            <Text style={styles.orderInfoText}>Identificador: {orderDetails.uniqueCode}</Text>
+            <Text style={styles.orderInfoText}>---------------------------------------</Text>
+            <Text style={styles.orderInfoText}>Metodo de pago</Text>
+            <Text style={styles.pendingText}>PENDIENTE DE PAGO (deUna)</Text>
+            <Text style={styles.orderInfoText}>---------------------------------------</Text>
+          </View>
+          <BuyButton />
+        </ScrollView>
       </View>
     </View>
   );
@@ -58,7 +41,7 @@ const deunaMethod = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F7F7',
+    backgroundColor: Colors.neutralWhite,
   },
   totalText: {
     color: '#fff',
@@ -112,6 +95,10 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginTop: 10,
   },
+  qrContainer: {
+    marginTop: 20,
+    alignItems: 'center',
+  }
 });
 
 export default deunaMethod;

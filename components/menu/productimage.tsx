@@ -5,24 +5,24 @@ import axios from 'axios';
 
 interface ProductImageProps {
   descripcion: string;
+  baseUrl: string; 
   style: object;
 }
 
-const ProductImage: React.FC<ProductImageProps> = ({ descripcion, style }) => {
+const ProductImage = ({ descripcion, baseUrl, style }: ProductImageProps) => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true); 
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const fetchImageUrl = async () => {
-    const possibleExtensions = ['jpg', 'png', 'jpeg', 'webp'];
+    const possibleExtensions = ['jpg', 'png'];
     for (const ext of possibleExtensions) {
       try {
-        const url = `https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/${descripcion}.${ext}`;
+        const url = `${baseUrl}${descripcion}.${ext}`;
         await axios.head(url); 
         setImageUrl(url);
         setIsLoading(false);
         return;
       } catch (error) {
-        console.log(`Image not found: ${descripcion}`);
       }
     }
     setImageUrl(require('../../assets/images/placeholder/products.webp')); 
@@ -31,7 +31,7 @@ const ProductImage: React.FC<ProductImageProps> = ({ descripcion, style }) => {
 
   useEffect(() => {
     fetchImageUrl();
-  }, [descripcion]);
+  }, []);
 
   return (
     <Image

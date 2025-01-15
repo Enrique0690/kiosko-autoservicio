@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 import { useDataContext } from '@/components/DataContext/datacontext';
 import Header from '@/components/header';
 import ProductImage from '@/components/menu/productimage';
+import { Colors } from '@/constants/Colors';
 
 interface Product {
   id: number;
@@ -51,7 +52,7 @@ const ShoppingCart = () => {
 
   const renderProductItem = ({ item }: { item: CartItem }) => (
     <View style={styles.productItem}>
-      <ProductImage descripcion={item.descripcion} style={styles.productImage} />
+      <ProductImage descripcion={item.descripcion} style={styles.productImage} baseUrl='https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/'/>
       <Text style={[styles.productText, { flex: 2 }]}>{item.descripcion}</Text>
       <View style={styles.quantityContainer}>
         <TouchableOpacity onPress={() => handleDecrement(item)} style={styles.quantityButton}>
@@ -117,7 +118,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F7F7F7',
   },
   totalText: {
-    color: '#fff',
+    color: Colors.text,
     fontSize: 16,
     fontWeight: '600',
   },

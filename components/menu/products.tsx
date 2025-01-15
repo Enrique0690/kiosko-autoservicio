@@ -5,11 +5,9 @@ import RenderProductItem from './renderproductitem';
 
 const NUM_COLUMNS = 3;
 
-const Products = ({ selectedCategoryId, ProdutDinamic }: { selectedCategoryId: number | null, ProdutDinamic?: boolean }) => {
+const Products = ({ selectedCategoryId }: { selectedCategoryId: number | null}) => {
   const { products } = useDataContext();
-  const filteredProducts = products.filter(
-    (product) => product.habilitado && product.idLinea === selectedCategoryId
-  );
+  const filteredProducts = products.filter((product) => product.habilitado && product.idLinea === selectedCategoryId  );
   
   const chunkArray = (data: any[], numColumns: number) => {
     const result = [];

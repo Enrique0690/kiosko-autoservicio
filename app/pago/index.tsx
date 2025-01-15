@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { useDataContext } from '@/components/DataContext/datacontext';
 import { Ionicons } from '@expo/vector-icons';
 import Header from '@/components/header';
+import { Colors } from '@/constants/Colors';
 
 const PaymentMethod = () => {
   const router = useRouter();
@@ -60,7 +61,7 @@ const PaymentMethod = () => {
       <View style={styles.body}>
         <Text style={styles.paymentTitle}>¿Te gustaría agregar datos de facturación?</Text>
         <TouchableOpacity style={styles.addInvoiceDataButton} onPress={() => router.push('/pago/frm_factura')}>
-          <Ionicons name="file-tray" size={22} color="#fff" />
+          <Ionicons name="file-tray" size={22} color={Colors.primary} />
           <Text style={styles.addInvoiceDataText}>Agregar los datos de facturación</Text>
         </TouchableOpacity>
 
@@ -68,15 +69,15 @@ const PaymentMethod = () => {
 
         <View style={styles.buttonsContainer}>
           <TouchableOpacity style={styles.button} onPress={() => handlePaymentMethod('cash')}>
-            <Ionicons name="cash-outline" size={30} color="#fff" />
+            <Ionicons name="cash-outline" size={30} color={Colors.primary} />
             <Text style={styles.buttonText}>Pago en caja</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={() => handlePaymentMethod('deuna')}>
-            <Ionicons name="qr-code-outline" size={30} color="#fff" />
+            <Ionicons name="qr-code-outline" size={30} color={Colors.primary} />
             <Text style={styles.buttonText}>Deuna</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={() => handlePaymentMethod('card')}>
-            <Ionicons name="card-outline" size={30} color="#fff" />
+            <Ionicons name="card-outline" size={30} color={Colors.primary} />
             <Text style={styles.buttonText}>Tarjeta</Text>
           </TouchableOpacity>
         </View>
@@ -91,7 +92,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F7F7F7',
   },
   totalText: {
-    color: '#fff',
+    color: Colors.text,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -105,7 +106,7 @@ const styles = StyleSheet.create({
   paymentTitle: {
     fontSize: 26,
     fontWeight: '800',
-    color: '#333',
+    color: Colors.textsecondary,
     marginBottom: 20,
     textAlign: 'center',
     letterSpacing: 2,
@@ -124,7 +125,7 @@ const styles = StyleSheet.create({
     elevation: 8, // Sombras suaves para darle más profundidad
   },
   addInvoiceDataText: {
-    color: '#fff',
+    color: Colors.primary,
     fontSize: 16,
     fontWeight: '600',
     marginLeft: 15,
@@ -147,7 +148,7 @@ const styles = StyleSheet.create({
     marginVertical: 15,
   },
   buttonText: {
-    color: '#fff',
+    color: Colors.primary,
     fontSize: 18,
     fontWeight: '700',
     marginTop: 8,
