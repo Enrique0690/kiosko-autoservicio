@@ -2,7 +2,8 @@ import React from "react";
 import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
 import { useRouter } from "expo-router";
 import { useDataContext } from "@/components/DataContext/datacontext";
-
+import { Ionicons } from "@expo/vector-icons";
+import { Colors } from "@/constants/Colors";
 const Completed = () => {
   const router = useRouter();
   const { stopTimer, clearCart } = useDataContext();
@@ -16,7 +17,7 @@ const Completed = () => {
     <View style={styles.container}>
       <View style={styles.successContainer}>
         <View style={styles.iconContainer}>
-          <Text style={styles.checkmark}>✔️</Text>
+          <Ionicons name="checkmark-circle-outline" size={70} color={Colors.primary} />
         </View>
         <Text style={styles.successText}>Listo!</Text>
         <Text style={styles.instructionText}>
@@ -57,24 +58,24 @@ const styles = StyleSheet.create({
     fontSize: 40,
   },
   successText: {
-    fontSize: 24,
+    fontSize: 40,
     fontWeight: "bold",
     marginBottom: 10,
   },
   instructionText: {
-    fontSize: 16,
+    fontSize: 23,
     textAlign: "center",
     color: "#6c757d",
   },
   newOrderButton: {
-    backgroundColor: "#007bff",
+    backgroundColor: Colors.secondary,
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 10,
   },
   newOrderButtonText: {
-    color: "#fff",
-    fontSize: 16,
+    color: Colors.primary,
+    fontSize: 23,
     fontWeight: "bold",
   },
 });

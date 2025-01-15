@@ -18,7 +18,7 @@ const Header = ({ centerComponent, rightComponent }: HeaderProps) => {
   return (
     <View style={styles.header}>
       <TouchableOpacity style={styles.headerItem} onPress={handleBackPress}>
-        <Ionicons name='arrow-back' size={24} color= {Colors.primary} />
+        <Ionicons name='arrow-back' size={35} color= {Colors.primary} />
         <Text style={styles.headerText}>Volver</Text>
       </TouchableOpacity>
       <View style={styles.centerContainer}>
@@ -44,16 +44,17 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#B1D0B0',
+    height: 80,
   },
   headerItem: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   headerText: {
-    color: Colors.primary,
-    fontSize: 18,
+    color: Colors.textsecondary,
+    fontSize: 25,
     fontWeight: '700',
-    marginLeft: 10,
+    marginLeft: 5,
     letterSpacing: 1,
   },
   centerContainer: {
@@ -61,8 +62,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logo: {
-    width: 120,
-    height: 70,
+    width: 200,
+    height: 100,
   },
 });
 

@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   },
   totalText: {
     color: Colors.text,
-    fontSize: 16,
+    fontSize: 23,
     fontWeight: '600',
   },
   logo: {

@@ -23,7 +23,11 @@
       "bundler": "metro",
       "output": "static",
       "favicon": "./assets/images/favicon.png",
-      "publicPath": "./"
+      "publicPath": "./",
+      "assetsBundlePatterns": [
+        "assets/*",
+        "node_modules/@expo/vector-icons/**/*"
+      ]
     },
     "plugins": [
       "expo-router",

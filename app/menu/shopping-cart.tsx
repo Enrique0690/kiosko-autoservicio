@@ -71,7 +71,6 @@ const ShoppingCart = () => {
     <View style={styles.container}>
       <Header rightComponent={<Text style={styles.totalText}>Total: ${total.toFixed(2)}</Text>} />
 
-      {/* Carrito */}
       <View style={styles.cartHeader}>
         <Text style={styles.cartTitle}>Carrito</Text>
         <Text style={styles.cartDetails}>
@@ -119,7 +118,7 @@ const styles = StyleSheet.create({
   },
   totalText: {
     color: Colors.text,
-    fontSize: 16,
+    fontSize: 23,
     fontWeight: '600',
   },
   cartHeader: {
