@@ -5,7 +5,7 @@ import { useDataContext } from '@/components/DataContext/datacontext';
 import Header from '@/components/header';
 import { updateOrderDetails } from '@/utils/updateOrderDetails';
 import BuyButton from '@/components/menu/BuyButton';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { Colors } from '@/constants/Colors';
 
 const cardMethod = () => {
   const router = useRouter();
