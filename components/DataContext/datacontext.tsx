@@ -66,7 +66,6 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const [error, setError] = useState<string | null>(null);
   const [idleTimeLeft, setIdleTimeLeft] = useState<number>(0);
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
-  const [redirected, setRedirected] = useState(false);
   const [isInvoiceRequested, setIsInvoiceRequested] = useState<boolean>(false);
   const [clientData, setClientData] = useState<ClientData>({
     identification: '',
@@ -143,39 +142,38 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const startTimer = () => {
-    stopTimer(); 
-    setIdleTimeLeft(0);
+    if (timer) {
+      clearInterval(timer);
+    }
+
     const interval = setInterval(() => {
       setIdleTimeLeft((prev) => {
         console.log('Idle time left:', prev);
-        if (prev >= 600) { 
-          clearCart();
+        if (prev >= 30) {
+          clearInterval(interval);
           router.replace('/'); 
-          stopTimer();
-          return 600; 
+          return 0;
         }
-        return prev + 1; 
+        return prev + 1;
       });
     }, 1000);
+
     setTimer(interval);
   };
   
   const stopTimer = () => {
     if (timer) {
       clearInterval(timer);
-      setTimer(null);
     } 
   };
   
   const resetTimer = () => {
-    stopTimer(); 
     setIdleTimeLeft(0); 
     startTimer();
   };  
   
   useEffect(() => {
     fetchData();
-    stopTimer();
   }, []);
 
   const contextValue = {

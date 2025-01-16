@@ -5,7 +5,7 @@ import { useDataContext } from '@/components/DataContext/datacontext';
 
 const BuyButton = () => {
   const router = useRouter();
-  const { total, orderDetails, cart, sendOrderData } = useDataContext();
+  const { total, orderDetails, cart, sendOrderData, clearCart } = useDataContext();
 
   const handlePrintOrder = async () => {
     if (process.versions && process.versions.electron) {
@@ -67,6 +67,9 @@ const BuyButton = () => {
     } catch (error) {
       console.error('Error al enviar los datos del pedido:', error);
       return false;
+    }
+    finally {
+      clearCart();
     }
   };
 

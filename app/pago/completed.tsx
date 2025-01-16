@@ -8,7 +8,6 @@ const Completed = () => {
   const router = useRouter();
   const { stopTimer, clearCart } = useDataContext();
   const handleNewOrder = () => {
-    clearCart();
     stopTimer();
     router.replace("/");
   };
