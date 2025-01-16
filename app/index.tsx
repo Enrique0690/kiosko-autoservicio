@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useRouter } from 'expo-router';
-import { StyleSheet, ImageBackground} from 'react-native';
+import { StyleSheet } from 'react-native';
 import NextButton from '@/components/elements/NextButton';
+import Carousel from '@/components/carousel';
 
 const Index = () => {
   const router = useRouter();
@@ -11,15 +12,10 @@ const Index = () => {
   };
 
   return (
-    <ImageBackground
-      source={{
-        uri: 'https://marketplace.canva.com/EAGGr5F7vLs/2/0/1143w/canva-anuncio-restaurante-carne-costillas-masculino-negro-y-caf%C3%A9-G2vM4d2ugRE.jpg',
-      }}
-      style={styles.background}
-      resizeMode='stretch'
-    >
+    <>
+      <Carousel />
       <NextButton text='COMENZAR' onPress={handleStart} bottomPercentage={25} />
-    </ImageBackground>
+    </>
   );
 };
 
