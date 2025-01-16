@@ -1,6 +1,8 @@
 import React from 'react';
 import { FlatList, Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 import ProductImage from './productimage';
+import { Colors } from '@/constants/Colors';
+import { Ionicons } from '@expo/vector-icons';
 
 const ProductListDynamic = ({
   lineInfo,
@@ -20,24 +22,18 @@ const ProductListDynamic = ({
             onPress={() => handleQuantityChange(item.id, 1, type)} 
             style={styles.productButton}
           >
-            <ProductImage descripcion={item.descripcion} style={styles.productImage} />
+            <ProductImage descripcion={item.descripcion} style={styles.productImage} baseUrl='https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/' />
             <Text style={styles.productName}>{item.descripcion}</Text>
             {type === 'extra' && <Text style={styles.productPrice}>${item.pvp1.toFixed(2)}</Text>}
             <View style={styles.quantityContainer}>
-              <TouchableOpacity 
-                onPress={() => handleQuantityChange(item.id, -1, type)} 
-                style={styles.quantityButton}
-              >
-                <Text style={styles.quantityButtonText}>-</Text>
+              <TouchableOpacity onPress={() => handleQuantityChange(item.id, -1, type)} style={[styles.quantityButton, {backgroundColor: Colors.primary}]} >
+                <Ionicons name="remove-outline" size={30} color= {Colors.darkSecondary} />
               </TouchableOpacity>
               <Text style={styles.quantityText}>
                 {type === 'included' ? includedQuantities[item.id] || 0 : extraQuantities[item.id] || 0}
               </Text>
-              <TouchableOpacity 
-                onPress={() => handleQuantityChange(item.id, 1, type)} 
-                style={styles.quantityButton}
-              >
-                <Text style={styles.quantityButtonText}>+</Text>
+              <TouchableOpacity onPress={() => handleQuantityChange(item.id, 1, type)} style={[styles.quantityButton, {backgroundColor: Colors.secondary}]}>
+                <Ionicons name="add-outline" size={30} color={Colors.darkPrimary} />
               </TouchableOpacity>
             </View>
           </TouchableOpacity>
@@ -72,24 +68,24 @@ const styles = StyleSheet.create({
     overflow: 'hidden', 
   },
   productImage: {
-    width: 120, 
-    height: 120,
-    marginBottom: 12,
-    borderRadius: 12, 
+    width: 190, 
+    height: 190,
+    marginBottom: 10,
+    borderRadius: 8,
     resizeMode: 'cover', 
   },
   productName: {
     fontSize: 18, 
     fontWeight: '600', 
-    color: '#333', 
+    color: Colors.textsecondary, 
     marginBottom: 8,
     textAlign: 'center',
     lineHeight: 22, 
   },
   productPrice: {
-    fontSize: 16, 
+    fontSize: 18, 
     fontWeight: '500', 
-    color: '#4CAF50', 
+    color: Colors.textsecondary, 
     marginTop: 5,
     textAlign: 'center',
   },
@@ -99,21 +95,19 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   quantityButton: {
-    padding: 10,
-    backgroundColor: '#388E3C', 
+    padding: 10, 
     marginHorizontal: 12,
     borderRadius: 8, 
     elevation: 2, 
   },
   quantityButtonText: {
-    color: '#fff',
-    fontSize: 22, 
-    fontWeight: '700', 
+    fontSize: 24, 
+    fontWeight: '500', 
   },
   quantityText: {
     fontSize: 20, 
     fontWeight: '600',
-    color: '#333', 
+    color: Colors.textsecondary, 
   },
 });
 

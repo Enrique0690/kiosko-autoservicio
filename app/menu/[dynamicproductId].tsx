@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Button, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useDataContext } from '@/components/DataContext/datacontext';
 import ProductImage from '@/components/menu/productimage';
 import ProductListDynamic from '@/components/menu/productlistdynamic';
+import { Colors } from '@/constants/Colors';
+import AlertModal from '@/components/elements/AlertModal';
 
 type Quantities = Record<number, number>;
 
@@ -17,6 +19,9 @@ const DynamicProducts = () => {
   const [dynamicLinesInfo, setDynamicLinesInfo] = useState<any[]>([]);
   const [includedQuantities, setIncludedQuantities] = useState<Quantities>({});
   const [extraQuantities, setExtraQuantities] = useState<Quantities>({});
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isScrolledToEnd, setIsScrolledToEnd] = useState(false);
+  const scrollViewRef = useRef<ScrollView>(null);
 
   useEffect(() => {
     const product = products.find((p) => p.id === Number(dynamicproductId));
@@ -31,7 +36,7 @@ const DynamicProducts = () => {
         return {
           lineDescription: line ? line.descripcion : 'Sin descripción',
           products: productsForLine,
-          cantidadIncluye: dynamicLine.cantidadIncluye, 
+          cantidadIncluye: dynamicLine.cantidadIncluye,
         };
       });
       setDynamicLinesInfo(linesInfo);
@@ -81,7 +86,7 @@ const DynamicProducts = () => {
             [productId]: newQuantity >= 0 ? newQuantity : 0,
           };
         }
-        return prevQuantities; 
+        return prevQuantities;
       });
     } else {
       setExtraQuantities((prevQuantities: Quantities) => {
@@ -94,28 +99,29 @@ const DynamicProducts = () => {
         };
       });
     }
-  };  
-  
+  };
+
   const getProductsdynamic = (quantities: Record<number, number>) => {
     return Object.keys(quantities)
       .map((productId) => {
         const product = products.find((p) => p.id === Number(productId));
         if (product) {
           return {
-            id: product.id,
-            idLinea: product.idLinea,
-            codigo: product.codigo,
-            descripcion: product.descripcion,
-            pvp1: product.pvp1,
-            cantidad: quantities[Number(productId)],
+            ...product,
+            pvpSeleccionado: "pvp1",
+            __cantidad: quantities[Number(productId)],
+            _visualCantidad: quantities[Number(productId)],
+            _pagaIva: true,
+            __pvp1: product.pvp1,
           };
         }
         return null;
       })
-      .filter((item) => item !== null); 
+      .filter((item) => item !== null);
   };
 
   const handleAddToCart = () => {
+    if (!isScrolledToEnd) return setIsModalVisible(true);
     if (currentProduct) {
       const updatedDynamicLines = dynamicLinesInfo.map((lineInfo) => ({
         ...Object.keys(includedQuantities)
@@ -131,19 +137,19 @@ const DynamicProducts = () => {
                 codigo: product.codigo,
                 descripcion: product.descripcion,
                 pvp1: product.pvp1,
-                cantidad: includedQuantities[Number(productId)],  
+                cantidad: includedQuantities[Number(productId)],
               };
             }
             return null;
           })
           .filter(item => item !== null),
       }));
-  
+
       const mainProduct = {
         ...currentProduct,
-        articulosDinamicos: getProductsdynamic(includedQuantities), 
+        articulosDinamicos: getProductsdynamic(includedQuantities),
       };
-  
+
       const itemsToAdd = Object.keys(extraQuantities)
         .map((productId) => {
           const product = products.find((p) => p.id === Number(productId));
@@ -163,7 +169,14 @@ const DynamicProducts = () => {
       router.replace('/menu');
     }
   };
-  
+
+  const handleScroll = (event: any) => {
+    const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+    const isAtBottom =
+      layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
+    setIsScrolledToEnd(isAtBottom);
+  };
+
   if (!currentProduct) {
     return (
       <View style={styles.container}>
@@ -175,17 +188,18 @@ const DynamicProducts = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.headerItem} onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color="#fff" />
+        <TouchableOpacity style={styles.headerItem} onPress={() => router.replace('/menu')}>
+          <Ionicons name="arrow-back" size={35} color={Colors.primary} />
           <Text style={styles.headerText}>{currentProduct.descripcion}</Text>
         </TouchableOpacity>
       </View>
 
+      <ScrollView style={styles.content} ref={scrollViewRef}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}>
       <View style={styles.imageContainer}>
-        <ProductImage descripcion={currentProduct.descripcion} style={styles.productImage} />
+        <ProductImage descripcion={currentProduct.descripcion} style={styles.productImage} baseUrl='https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/' />
       </View>
-
-      <ScrollView style={styles.content}>
         {dynamicLinesInfo.map((lineInfo, index) => (
           <View key={index} style={styles.dynamicLineContainer}>
             <Text style={styles.sectionTitle}>Incluye {lineInfo.lineDescription} - {lineInfo.cantidadIncluye} (obligatorio)</Text>
@@ -198,7 +212,7 @@ const DynamicProducts = () => {
             />
           </View>
         ))}
-        
+
         {dynamicLinesInfo.map((lineInfo, index) => (
           <View key={index} style={styles.dynamicLineContainer}>
             <Text style={styles.sectionTitle}>Extras {lineInfo.lineDescription}</Text>
@@ -214,8 +228,11 @@ const DynamicProducts = () => {
       </ScrollView>
 
       <View style={styles.footer}>
-        <Button title="Continuar" onPress={handleAddToCart} color="#34C759" />
+        <TouchableOpacity style={styles.payButton} onPress={handleAddToCart}>
+          <Text style={styles.payButtonText}>Continuar</Text>
+        </TouchableOpacity>
       </View>
+      <AlertModal visible={isModalVisible} message="mire todos los productos para poder continuar, Desplace hacia abajo" onClose={() => setIsModalVisible(false)}/>
     </View>
   );
 };
@@ -223,25 +240,22 @@ const DynamicProducts = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9F9F9',
+    backgroundColor: Colors.neutralWhite,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#388E3C',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#B1D0B0',
+    backgroundColor: Colors.secondary,
+    height: 80,
   },
   headerItem: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   headerText: {
-    color: '#fff',
-    fontSize: 20,
+    color: Colors.primary,
+    fontSize: 23,
     fontWeight: '700',
     marginLeft: 10,
     letterSpacing: 1,
@@ -258,30 +272,38 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '600',
-    color: '#388E3C',
+    color: Colors.textsecondary,
     marginTop: 16,
     marginBottom: 8,
   },
   footer: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginTop: 16,
+    justifyContent: 'space-between',
+    marginTop: 20,
+    marginBottom: 20,
+    paddingHorizontal: 20,
+  },
+  payButton: {
+    backgroundColor: Colors.secondary,
+    padding: 20,
+    borderRadius: 8,
+    flex: 1,
     alignItems: 'center',
   },
-  totalText: {
-    fontSize: 18,
-    fontWeight: '600',
+  payButtonText: {
+    color: Colors.primary,
+    fontSize: 23,
+    fontWeight: 'bold',
   },
   productImage: {
-    width: 150,
-    height: 150,
-    marginVertical: 16,
-    borderRadius: 12,
+    marginVertical: 80,
+    width: 250,
+    height: 250,
+    marginBottom: 10,
+    borderRadius: 8,
     resizeMode: 'cover',
-    borderWidth: 2,
-    borderColor: '#388E3C',
   },
   loadingText: {
     fontSize: 18,

@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     width: 190, 
     height: 190,
     marginBottom: 10,
-    borderRadius: 12,
+    borderRadius: 8,
     resizeMode: 'cover', 
   },
   productName: {
