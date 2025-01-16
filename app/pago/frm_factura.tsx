@@ -5,6 +5,7 @@ import { useDataContext } from '@/components/DataContext/datacontext';
 import Header from '@/components/header';
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
+import AlertModal from '@/components/elements/AlertModal';
 
 const frmFactura = () => {
   const router = useRouter();
@@ -121,7 +122,10 @@ const frmFactura = () => {
           <ActivityIndicator size="large" color="#fff" />
         </View>
       )}
-      <Header rightComponent={<Text style={styles.totalText}>Total: ${total.toFixed(2)}</Text>} />
+      <Header
+      leftButtonText="Volver"
+      leftButtonRoute={'/pago'} 
+      rightComponent={<Text style={styles.totalText}>Total: ${total.toFixed(2)}</Text>} />
       <ScrollView>
       <View style={styles.formContainer}>
         <Text style={styles.formTitle}>Datos de facturación</Text>
@@ -201,20 +205,7 @@ const frmFactura = () => {
         </TouchableOpacity>
       </View>
       </ScrollView>
-      {isModalVisible && (
-        <Modal transparent={true} animationType="fade" visible={isModalVisible} onRequestClose={() => setIsModalVisible(false)}>
-          <TouchableWithoutFeedback onPress={() => setIsModalVisible(false)}> 
-            <View style={styles.modalOverlay}>
-              <View style={styles.modalContent}>
-                <Text style={styles.modalMessage}>Todos los campos son obligatorios</Text>
-                <TouchableOpacity style={styles.modalButton} onPress={() => setIsModalVisible(false)}>
-                  <Text style={styles.modalButtonText}>Cerrar</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </TouchableWithoutFeedback>
-        </Modal>
-      )}
+      <AlertModal visible={isModalVisible} message="Todos los campos son obligatorios" onClose={() => setIsModalVisible(false)} />
     </View>
   );
 };

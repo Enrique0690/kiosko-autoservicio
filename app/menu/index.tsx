@@ -7,15 +7,25 @@ import { useRouter } from 'expo-router';
 import { useDataContext } from '@/components/DataContext/datacontext';
 import Header from '@/components/header';
 import { Colors } from '@/constants/Colors';
+import Carbar from '@/components/menu/Carbar';
+import AlertModal from '@/components/elements/AlertModal';
 
 const Menu = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   const { totalItems } = useDataContext();
   const router = useRouter();
-
+  const [modalVisible, setModalVisible] = useState(false);
   const handleCategoryPress = useCallback((idLinea: number) => {
     setSelectedCategoryId(idLinea);
   }, []);
+  const handleContinue = () => {
+    if (totalItems === 0) {
+      setModalVisible(true);
+    }
+    else {
+      router.replace('/menu/shopping-cart');
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -23,18 +33,16 @@ const Menu = () => {
         leftButtonText="Volver"
         leftButtonRoute={'/review'}
         rightComponent={
-          <TouchableOpacity style={styles.headerItem} onPress={() => router.replace('/menu/shopping-cart')}>
+          <TouchableOpacity style={styles.headerItem} onPress={handleContinue}>
             <Ionicons name="cart" size={24} color={Colors.text} />
             <Text style={styles.totalText}> Ver carrito ({totalItems}) </Text>
           </TouchableOpacity>
         }
       />
-
       <View style={styles.columns}>
         <View style={styles.categoriesColumn}>
           <Lines onCategoryPress={handleCategoryPress} selectedCategoryId={selectedCategoryId} />
         </View>
-
         <View style={styles.productsColumn}>
           <ScrollView contentContainerStyle={styles.scrollContent}>
             <Products selectedCategoryId={selectedCategoryId} />
@@ -43,19 +51,13 @@ const Menu = () => {
       </View>
 
       {totalItems > 0 && (
-        <TouchableOpacity
-          style={styles.floatingButton}
-          onPress={() => router.replace('/menu/shopping-cart')}
-        >
-          <View style={styles.innerCircle}>
-            <Ionicons name="cart-outline" size={22} color="#4CAF50" />
-            <Text style={styles.buttonText}>Ver carrito</Text>
-            <View style={styles.badge}>
-              <Text style={styles.badgeText}>{totalItems}</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
+        <Carbar />
       )}
+      <AlertModal
+        visible={modalVisible}
+        message="El carrito no puede estar vacío, seleccione un producto"
+        onClose={() => setModalVisible(false)}
+      />
     </View>
   );
 };
@@ -74,11 +76,6 @@ const styles = StyleSheet.create({
     fontSize: 23,
     fontWeight: '600',
   },
-  logo: {
-    width: 120,
-    height: 40,
-    resizeMode: 'contain',
-  },
   columns: {
     flex: 1,
     flexDirection: 'row',
@@ -96,70 +93,6 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: 80,
-  },
-  cartSpacer: {
-    height: 20,
-  },
-  categoryItem: {
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    backgroundColor: '#fff',
-    marginVertical: 5,
-    borderRadius: 12,
-    elevation: 3,
-  },
-  categoryItemSelected: {
-    backgroundColor: '#4C6D3C',
-    elevation: 5,
-  },
-  floatingButton: {
-    position: 'absolute',
-    bottom: 40,
-    right: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 5, // Sombras suaves para dar profundidad
-    borderRadius: 60, // Para mantener el círculo perfectamente redondeado
-    overflow: 'hidden',
-  },
-  innerCircle: {
-    width: 140, // Ajustamos el tamaño para hacerlo más visible
-    height: 140,
-    borderRadius: 70, // Círculo perfecto
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff', // Fondo blanco para un look más limpio
-    borderWidth: 4, // Borde más grueso para más presencia
-    borderColor: '#4CAF50', // Borde verde suave
-    position: 'relative',
-    padding: 10, // Espaciado para que todo se vea equilibrado
-    flexDirection: 'column', // Coloca los elementos en una columna
-  },
-  buttonText: {
-    color: '#4CAF50',
-    fontSize: 14,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginTop: 5,
-    letterSpacing: 0.5,
-  },
-  badge: {
-    position: 'absolute',
-    top: 25, // Posicionamos el contador en la parte superior
-    right: 35, // Lo alineamos a la derecha
-    backgroundColor: '#FF4081', // Color vibrante para el badge
-    borderRadius: 12,
-    width: 24,
-    height: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#fff',
-  },
-  badgeText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: 'bold',
   },
 });
 

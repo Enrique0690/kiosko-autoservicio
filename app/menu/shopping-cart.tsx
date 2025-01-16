@@ -1,11 +1,11 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, TextInput, Keyboard } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useDataContext } from '@/components/DataContext/datacontext';
 import Header from '@/components/header';
-import ProductImage from '@/components/menu/productimage';
 import { Colors } from '@/constants/Colors';
+import CartItem from '@/components/menu/CarItem';
+import AlertModal from '@/components/elements/AlertModal';
 
 interface Product {
   id: number;
@@ -22,8 +22,7 @@ const ShoppingCart = () => {
   const { cart, total, addToCart, removeFromCart, clearCart, totalItems, setOrderDetails } = useDataContext();
   const router = useRouter();
   const [observations, setObservations] = useState('');
-  const inputRef = useRef<TextInput>(null); // Referencia al TextInput
-
+  const inputRef = useRef<TextInput>(null); 
   const handleIncrement = (product: CartItem) => addToCart(product);
 
   const handleDecrement = (product: CartItem) => {
@@ -46,67 +45,54 @@ const ShoppingCart = () => {
 
   const handleFocusInput = () => {
     if (inputRef.current) {
-      inputRef.current.focus(); // Focaliza el input manualmente
     }
   };
 
-  const renderProductItem = ({ item }: { item: CartItem }) => (
-    <View style={styles.productItem}>
-      <ProductImage descripcion={item.descripcion} style={styles.productImage} baseUrl='https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/'/>
-      <Text style={[styles.productText, { flex: 2 }]}>{item.descripcion}</Text>
-      <View style={styles.quantityContainer}>
-        <TouchableOpacity onPress={() => handleDecrement(item)} style={styles.quantityButton}>
-          <Ionicons name="remove-outline" size={16} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.productQuantity}>{item.cantidad}</Text>
-        <TouchableOpacity onPress={() => handleIncrement(item)} style={styles.quantityButton}>
-          <Ionicons name="add-outline" size={16} color="#fff" />
-        </TouchableOpacity>
-      </View>
-      <Text style={[styles.productQuantity, { flex: 1, textAlign: 'right' }]}>${(item.cantidad * item.pvp1).toFixed(2)}</Text>
-    </View>
-  );
-
   return (
     <View style={styles.container}>
-      <Header rightComponent={<Text style={styles.totalText}>Total: ${total.toFixed(2)}</Text>} />
+      <Header
+        leftButtonText="Volver"
+        leftButtonRoute={'/menu'}
+        rightComponent={<Text style={styles.totalText}>Total: ${total.toFixed(2)}</Text>} />
 
       <View style={styles.cartHeader}>
         <Text style={styles.cartTitle}>Carrito</Text>
-        <Text style={styles.cartDetails}>
-          {totalItems} producto{totalItems > 1 ? 's' : ''} - Total: ${total.toFixed(2)}
-        </Text>
       </View>
+      <ScrollView>
+        <View style={styles.cartContainer}>
+          {cart.map((item) => (
+            <CartItem key={item.id} item={item} onIncrement={handleIncrement} onDecrement={handleDecrement} />
+          ))}
+        </View>
 
-      <FlatList
-        data={cart}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderProductItem}
-        style={styles.cartList}
-      />
+        <View style={styles.cartDetailsContainer}>
+          <Text style={styles.cartDetails}>
+            {totalItems} producto{totalItems > 1 ? 's' : ''} - Total: ${total.toFixed(2)}
+          </Text>
+        </View>
+      </ScrollView>
 
       <View style={styles.observationsContainer}>
-        <Text style={styles.observationsLabel}>Observaciones:</Text>
-        <TouchableOpacity onPress={handleFocusInput}>
-          <TextInput
-            ref={inputRef} 
-            style={styles.observationsInput}
-            placeholder="Escribe tus observaciones aquí..."
-            value={observations}
-            onChangeText={setObservations}
-            multiline
-          />
-        </TouchableOpacity>
-      </View>
+          <Text style={styles.observationsLabel}>Observaciones:</Text>
+          <TouchableOpacity onPress={handleFocusInput}>
+            <TextInput
+              ref={inputRef}
+              style={styles.observationsInput}
+              placeholder="Escribe tus observaciones aquí..."
+              value={observations}
+              onChangeText={setObservations}
+              multiline
+            />
+          </TouchableOpacity>
+        </View>
 
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.clearButton} onPress={clearCart}>
-          <Text style={styles.clearButtonText}>Limpiar carrito</Text>
-        </TouchableOpacity>
         <TouchableOpacity style={styles.payButton} onPress={handlePay}>
           <Text style={styles.payButtonText}>Pagar</Text>
         </TouchableOpacity>
       </View>
+
+      <AlertModal visible={totalItems === 0} message="No hay elementos en el carrito" onClose={() => router.replace('/menu')} />
     </View>
   );
 };
@@ -129,46 +115,21 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ddd',
   },
   cartTitle: {
-    fontSize: 24,
+    fontSize: 23,
     fontWeight: 'bold',
     color: '#333',
     marginHorizontal: 15,
   },
   cartDetails: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#777',
     marginTop: 5,
     marginHorizontal: 15,
   },
-  cartList: {
+  cartContainer: {
+    flex: 1,
     marginBottom: 20,
-  },
-  productItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-    marginHorizontal: 15,
-  },
-  productText: {
-    fontSize: 14,
-    color: '#333',
-  },
-  quantityContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  quantityButton: {
-    padding: 8,
-    marginHorizontal: 10,
-    backgroundColor: '#388E3C',
-    borderRadius: 5,
-  },
-  productQuantity: {
-    fontSize: 16,
-    color: '#333',
+    paddingHorizontal: 15,
   },
   footer: {
     flexDirection: 'row',
@@ -177,45 +138,24 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingHorizontal: 20,
   },
-  clearButton: {
-    backgroundColor: '#f5f5f5',
-    padding: 12,
-    borderRadius: 5,
-    flex: 1,
-    marginRight: 10,
-    alignItems: 'center',
-  },
-  clearButtonText: {
-    color: '#D32F2F',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
   payButton: {
-    backgroundColor: '#388E3C',
-    padding: 12,
-    borderRadius: 5,
+    backgroundColor: Colors.secondary,
+    padding: 20,
+    borderRadius: 8,
     flex: 1,
     alignItems: 'center',
   },
   payButtonText: {
-    color: '#fff',
-    fontSize: 16,
+    color: Colors.primary,
+    fontSize: 23,
     fontWeight: 'bold',
-  },
-  productImage: {
-    width: 50,
-    height: 50,
-    marginBottom: 10,
-    borderRadius: 12,
-    marginRight: 10,
-    resizeMode: 'cover',
   },
   observationsContainer: {
     paddingHorizontal: 15,
     marginBottom: 20,
   },
   observationsLabel: {
-    fontSize: 16,
+    fontSize: 23,
     fontWeight: 'bold',
     color: '#333',
   },
@@ -227,7 +167,15 @@ const styles = StyleSheet.create({
     marginTop: 10,
     height: 100,
     textAlignVertical: 'top',
+    fontSize: 18,
   },
+  cartDetailsContainer: {
+    flexDirection: 'row', 
+    justifyContent: 'flex-end', 
+    width: '100%', 
+    paddingHorizontal: 15,
+    marginBottom: 20, 
+  }
 });
 
 export default ShoppingCart;
