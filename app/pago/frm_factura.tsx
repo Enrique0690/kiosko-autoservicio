@@ -6,6 +6,7 @@ import Header from '@/components/header';
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
 import AlertModal from '@/components/elements/AlertModal';
+import { Colors } from '@/constants/Colors';
 
 const frmFactura = () => {
   const router = useRouter();
@@ -42,29 +43,27 @@ const frmFactura = () => {
       (id === 'Ruc' && idValue.length === 13) ||
       (id === 'Pasaporte' && idValue.length === 8);
 
-    if (isLengthValid) {
-      const handler = setTimeout(() => {
+    const timeout = setTimeout(() => {
+      if (isLengthValid) {
         setDebouncedValue(idValue);
-      }, 2000);
-
-      return () => clearTimeout(handler);
-    } else {
-      const timeout = setTimeout(() => {
+      } else {
         if (idValue.length === 10 && id !== 'Cedula') {
           setId('Cedula');
-          handleSearchPress(idValue); 
         } else if (idValue.length === 13 && id !== 'Ruc') {
           setId('Ruc');
-          handleSearchPress(idValue); 
         } else if (idValue.length === 8 && id !== 'Pasaporte') {
           setId('Pasaporte');
-          handleSearchPress(idValue); 
         }
-      }, 2000);
-
-      return () => clearTimeout(timeout);
-    }
+      }
+    }, 2000);
+    return () => clearTimeout(timeout);
   }, [idValue, id]);
+
+  useEffect(() => {
+    if (debouncedValue) {
+      handleSearchPress(debouncedValue);
+    }
+  }, [debouncedValue]);
 
   const handleSearchPress = async (value?: string) => {
     setIsLoading(true);
@@ -123,89 +122,90 @@ const frmFactura = () => {
         </View>
       )}
       <Header
-      leftButtonText="Volver"
-      leftButtonRoute={'/pago'} 
-      rightComponent={<Text style={styles.totalText}>Total: ${total.toFixed(2)}</Text>} />
+        leftButtonText="Volver"
+        leftButtonRoute={'/pago'}
+        rightComponent={<Text style={styles.totalText}>Total: ${total.toFixed(2)}</Text>} />
       <ScrollView>
-      <View style={styles.formContainer}>
-        <Text style={styles.formTitle}>Datos de facturación</Text>
+        <View style={styles.formContainer}>
+          <Text style={styles.formTitle}>Datos de facturación</Text>
 
-        <View style={styles.buttonGroup}>
-          {['Cedula', 'Ruc', 'Pasaporte'].map((type) => (
-            <TouchableOpacity
-              key={type}
-              style={[styles.documentButton, id === type && styles.selectedButton, styles.buttonItem]}
-              onPress={() => handleDocumentTypeChange(type as 'Cedula' | 'Ruc' | 'Pasaporte')}
-            >
-              <Text style={[styles.documentButtonText, id === type && styles.selectedButtonText]}>
-                {type}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+          <View style={styles.buttonGroup}>
+            {['Cedula', 'Ruc', 'Pasaporte'].map((type) => (
+              <TouchableOpacity
+                key={type}
+                style={[styles.documentButton, id === type && styles.selectedButton, styles.buttonItem]}
+                onPress={() => handleDocumentTypeChange(type as 'Cedula' | 'Ruc' | 'Pasaporte')}
+              >
+                <Text style={[styles.documentButtonText, id === type && styles.selectedButtonText]}>
+                  {type}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
 
-        <View style={styles.inputGroup}>
-          <View style={styles.inputWrapper}>
+          <View style={styles.inputGroup}>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={styles.input}
+                placeholder={documentTexts[id].placeholder}
+                value={idValue}
+                onChangeText={setIdValue}
+                keyboardType="numeric"
+              />
+              <TouchableOpacity
+                style={styles.icon}
+                onPress={() => handleSearchPress(idValue)}
+              >
+                <Ionicons name="search" size={24} color="#000" />
+              </TouchableOpacity>
+            </View>
+            {errorMessage?.trim() !== '' && (
+              <Text style={styles.errorText}>{errorMessage}</Text>
+            )}
+            <Text style={styles.helpText}>{documentTexts[id].helpText}</Text>
+
             <TextInput
               style={styles.input}
-              placeholder={documentTexts[id].placeholder}
-              value={idValue}
-              onChangeText={setIdValue}
-              keyboardType="numeric"
+              placeholder="Razón Social"
+              value={razonSocial}
+              onChangeText={setRazonSocial}
             />
-            <TouchableOpacity
-              style={styles.icon}
-              onPress={() => handleSearchPress(idValue)}
-            >
-              <Ionicons name="search" size={24} color="#000" />
-            </TouchableOpacity>
+            <Text style={styles.helpText}>Escribe el nombre completo de la empresa.</Text>
+
+            <TextInput
+              style={styles.input}
+              placeholder="Teléfono"
+              keyboardType="phone-pad"
+              value={telefono}
+              onChangeText={setTelefono}
+            />
+            <Text style={styles.helpText}>Ingresa un número de teléfono válido.</Text>
+
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              keyboardType="email-address"
+              value={email}
+              onChangeText={setEmail}
+            />
+            <Text style={styles.helpText}>Introduce el correo electrónico de contacto.</Text>
+
+            <TextInput
+              style={styles.input}
+              placeholder="Direccion"
+              value={address}
+              onChangeText={setAddress}
+            />
+            <Text style={styles.helpText}>Introduce tu direccion.</Text>
           </View>
-          {errorMessage?.trim() !== '' && (
-            <Text style={styles.errorText}>{errorMessage}</Text>
-          )}
-          <Text style={styles.helpText}>{documentTexts[id].helpText}</Text>
 
-          <TextInput
-            style={styles.input}
-            placeholder="Razón Social"
-            value={razonSocial}
-            onChangeText={setRazonSocial}
-          />
-          <Text style={styles.helpText}>Escribe el nombre completo de la empresa.</Text>
-
-          <TextInput
-            style={styles.input}
-            placeholder="Teléfono"
-            keyboardType="phone-pad"
-            value={telefono}
-            onChangeText={setTelefono}
-          />
-          <Text style={styles.helpText}>Ingresa un número de teléfono válido.</Text>
-
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            keyboardType="email-address"
-            value={email}
-            onChangeText={setEmail}
-          />
-          <Text style={styles.helpText}>Introduce el correo electrónico de contacto.</Text>
-
-          <TextInput
-            style={styles.input}
-            placeholder="Direccion"
-            value={address}
-            onChangeText={setAddress}
-          />
-          <Text style={styles.helpText}>Introduce tu direccion.</Text>
+          <TouchableOpacity style={styles.continueButton} onPress={handleContinuePress}>
+            <Text style={styles.continueButtonText}>Continuar</Text>
+          </TouchableOpacity>
         </View>
-
-        <TouchableOpacity style={styles.continueButton} onPress={handleContinuePress}>
-          <Text style={styles.continueButtonText}>Continuar</Text>
-        </TouchableOpacity>
-      </View>
       </ScrollView>
       <AlertModal visible={isModalVisible} message="Todos los campos son obligatorios" onClose={() => setIsModalVisible(false)} />
+      <AlertModal visible={total === 0} message="No hay elementos en el carrito" onClose={() => router.replace('/menu')} />
     </View>
   );
 };
@@ -216,8 +216,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#F7F7F7',
   },
   totalText: {
-    color: '#fff',
-    fontSize: 16,
+    color: Colors.text,
+    fontSize: 23,
     fontWeight: '600',
   },
   formContainer: {
@@ -228,9 +228,9 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   formTitle: {
-    fontSize: 26,
+    fontSize: 23,
     fontWeight: '800',
-    color: '#333',
+    color: Colors.textsecondary,
     marginBottom: 20,
     textAlign: 'center',
     letterSpacing: 2,
@@ -256,15 +256,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   selectedButton: {
-    backgroundColor: '#388E3C',
+    backgroundColor: Colors.secondary,
   },
   documentButtonText: {
-    fontSize: 14,
+    fontSize: 20,
     fontWeight: '600',
-    color: '#333',
+    color: Colors.text,
   },
   selectedButtonText: {
-    color: '#fff',
+    color: Colors.primary,
   },
   inputGroup: {
     width: '85%',
@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 10,
     paddingHorizontal: 15,
-    fontSize: 16,
+    fontSize: 20,
     backgroundColor: '#fff',
     elevation: 2,
   },
@@ -294,8 +294,8 @@ const styles = StyleSheet.create({
     transform: [{ translateY: -12 }],
   },
   helpText: {
-    color: '#888',
-    fontSize: 14,
+    color: Colors.textsecondary,
+    fontSize: 18,
     marginBottom: 20,
     marginLeft: 10,
     fontStyle: 'italic',
@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#388E3C',
     paddingVertical: 18,
     paddingHorizontal: 40,
-    borderRadius: 35,
+    borderRadius: 8,
     marginTop: 20,
     width: '85%',
     alignItems: 'center',
@@ -312,8 +312,8 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   continueButtonText: {
-    color: '#fff',
-    fontSize: 18,
+    color: Colors.primary,
+    fontSize: 23,
     fontWeight: '600',
     letterSpacing: 1,
   },
@@ -326,47 +326,8 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: 'red',
-    fontSize: 14,
+    fontSize: 18,
     marginBottom: 10,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 16,
-    width: '50%',
-    alignItems: 'center',
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  modalMessage: {
-    fontSize: 16,
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  modalButton: {
-    backgroundColor: '#388E3C',
-    paddingVertical: 12,
-    paddingHorizontal: 30,
-    borderRadius: 35,
-  },
-  modalButtonText: {
-    color: '#fff',
-    fontSize: 16,
   },
 });
 

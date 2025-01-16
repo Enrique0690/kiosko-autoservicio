@@ -29,6 +29,7 @@ const CashPaymentMethod = () => {
             <Text style={styles.orderInfoText}>---------------------------------------</Text>
             <Text style={styles.orderInfoText}>Metodo de pago</Text>
             <Text style={styles.pendingText}>PENDIENTE DE PAGO (EFECTIVO)</Text>
+            <Text style={styles.pendingText}> Valor a cancelar ${total.toFixed(2)}</Text>
             <Text style={styles.orderInfoText}>---------------------------------------</Text>
           </View>
           <BuyButton />

@@ -17,6 +17,7 @@ const BuyButton = () => {
           uniqueCode: orderDetails.uniqueCode,
           formapago: orderDetails.formapago,
           formaDespacho: orderDetails.formaDespacho,
+          total: total,
         });
         console.log('datos enviados: ', pdfPath);
         return true;
