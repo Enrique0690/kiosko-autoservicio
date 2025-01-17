@@ -20,8 +20,6 @@ const DynamicProducts = () => {
   const [includedQuantities, setIncludedQuantities] = useState<Quantities>({});
   const [extraQuantities, setExtraQuantities] = useState<Quantities>({});
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isScrolledToEnd, setIsScrolledToEnd] = useState(false);
-  const scrollViewRef = useRef<ScrollView>(null);
 
   useEffect(() => {
     const product = products.find((p) => p.id === Number(dynamicproductId));
@@ -109,6 +107,7 @@ const DynamicProducts = () => {
           return {
             ...product,
             pvpSeleccionado: "pvp1",
+            cantidad: quantities[Number(productId)],
             __cantidad: quantities[Number(productId)],
             _visualCantidad: quantities[Number(productId)],
             _pagaIva: true,
@@ -120,61 +119,33 @@ const DynamicProducts = () => {
       .filter((item) => item !== null);
   };
 
-  const handleAddToCart = () => {
-    if (!isScrolledToEnd) return setIsModalVisible(true);
-    if (currentProduct) {
-      const updatedDynamicLines = dynamicLinesInfo.map((lineInfo) => ({
-        ...Object.keys(includedQuantities)
-          .filter((productId) =>
-            lineInfo.products.some((p: { id: number }) => p.id === Number(productId))
-          )
-          .map((productId) => {
-            const product = products.find(p => p.id === Number(productId));
-            if (product) {
-              return {
-                id: product.id,
-                idLinea: product.idLinea,
-                codigo: product.codigo,
-                descripcion: product.descripcion,
-                pvp1: product.pvp1,
-                cantidad: includedQuantities[Number(productId)],
-              };
-            }
-            return null;
-          })
-          .filter(item => item !== null),
-      }));
+  const validateIncludedProducts = () => {
+    return dynamicLinesInfo.every((line) => {
+      const selectedQuantity = Object.keys(includedQuantities)
+        .filter((productId) =>
+          line.products.some((p: any) => p.id === Number(productId))
+        )
+        .reduce((acc, productId) => acc + includedQuantities[Number(productId)], 0);
 
+      return selectedQuantity >= line.cantidadIncluye;
+    });
+  };
+
+  const handleAddToCart = () => {
+    if (!validateIncludedProducts()) return setIsModalVisible(true);
+    if (currentProduct) {
       const mainProduct = {
         ...currentProduct,
         articulosDinamicos: getProductsdynamic(includedQuantities),
+        dinamico: true,
+        pvpSeleccionado: 'pvp1',
       };
 
-      const itemsToAdd = Object.keys(extraQuantities)
-        .map((productId) => {
-          const product = products.find((p) => p.id === Number(productId));
-          if (product) {
-            return {
-              id: product.id,
-              descripcion: product.descripcion,
-              pvp1: product.pvp1,
-              cantidad: extraQuantities[Number(productId)],
-            };
-          }
-          return null;
-        })
-        .filter(item => item !== null);
+      const itemsToAdd = getProductsdynamic(extraQuantities)
       addToCart(mainProduct);
       itemsToAdd.forEach(item => addToCart(item));
       router.replace('/menu');
     }
-  };
-
-  const handleScroll = (event: any) => {
-    const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
-    const isAtBottom =
-      layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
-    setIsScrolledToEnd(isAtBottom);
   };
 
   if (!currentProduct) {
@@ -194,12 +165,10 @@ const DynamicProducts = () => {
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.content} ref={scrollViewRef}
-        onScroll={handleScroll}
-        scrollEventThrottle={16}>
-      <View style={styles.imageContainer}>
-        <ProductImage descripcion={currentProduct.descripcion} style={styles.productImage} baseUrl='https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/' />
-      </View>
+      <ScrollView style={styles.content}>
+        <View style={styles.imageContainer}>
+          <ProductImage descripcion={currentProduct.descripcion} style={styles.productImage} baseUrl='https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/' />
+        </View>
         {dynamicLinesInfo.map((lineInfo, index) => (
           <View key={index} style={styles.dynamicLineContainer}>
             <Text style={styles.sectionTitle}>Incluye {lineInfo.lineDescription} - {lineInfo.cantidadIncluye} (obligatorio)</Text>
@@ -225,14 +194,13 @@ const DynamicProducts = () => {
             />
           </View>
         ))}
+        <View style={styles.footer}>
+          <TouchableOpacity style={styles.payButton} onPress={handleAddToCart}>
+            <Text style={styles.payButtonText}>Continuar</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
-
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.payButton} onPress={handleAddToCart}>
-          <Text style={styles.payButtonText}>Continuar</Text>
-        </TouchableOpacity>
-      </View>
-      <AlertModal visible={isModalVisible} message="mire todos los productos para poder continuar, Desplace hacia abajo" onClose={() => setIsModalVisible(false)}/>
+      <AlertModal visible={isModalVisible} message="Seleccione los productos obligatorios" onClose={() => setIsModalVisible(false)} /> 
     </View>
   );
 };

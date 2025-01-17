@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'expo-router';
-import { fetchLines, fetchProducts, fetchUsers, sendOrder } from './api';
+import { fetchLines, fetchProducts, fetchUsers, sendOrder, fetchSettings } from './api';
 import { LoadingComponent, ErrorComponent } from './chargingstatus';
-import ArticuloWithCalcs from './ArticuloWithCals';
+import ArticuloWithCalcs from '../../utils/ArticuloWithCals';
 
 interface Product {
   id: number;
@@ -14,6 +14,9 @@ interface Product {
   pvp1: number;
   dinamicoLineas?: any[];
   articulosDinamicos?: any[];
+  dinamico?: boolean;
+  pvpSeleccionado?: string;
+  pagaIva?: boolean;
 }
 
 interface CartItem extends Product {
@@ -62,6 +65,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const [lines, setLines] = useState<any[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [users, setUsers] = useState<any[]>([]);
+  const [settings, setSettings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [idleTimeLeft, setIdleTimeLeft] = useState<number>(0);
@@ -82,11 +86,18 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     setError(null);
     try {
       const fetchedLines = await fetchLines();
-      const fetchedProducts = await fetchProducts();
+      let fetchedProducts = await fetchProducts();
       const fetchedUsers = await fetchUsers();
+      const fetchedSettings = await fetchSettings();
+      const porcentajeIVA = fetchedSettings.porcentajeIVA / 100;
+      fetchedProducts = fetchedProducts.map((product: Product) => ({
+        ...product,
+        pvp1: product.pagaIva ? product.pvp1 * (1 + porcentajeIVA) : product.pvp1,
+      }));
       setLines(fetchedLines);
       setProducts(fetchedProducts);
       setUsers(fetchedUsers);
+      setSettings(fetchedSettings);
     } catch (err) {
       setError('Hubo un error al cargar los datos. Intenta nuevamente.');
     } finally {
@@ -149,7 +160,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     const interval = setInterval(() => {
       setIdleTimeLeft((prev) => {
         console.log('Idle time left:', prev);
-        if (prev >= 30) {
+        if (prev >= 1800) {
           clearInterval(interval);
           router.replace('/'); 
           return 0;

@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useEffect} from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useDataContext } from '@/components/DataContext/datacontext';
+import { updateOrderDetails } from '@/utils/updateOrderDetails';
 
 const BuyButton = () => {
   const router = useRouter();
-  const { total, orderDetails, cart, sendOrderData, clearCart } = useDataContext();
+  const { total, orderDetails, setOrderDetails, cart, sendOrderData, clearCart, totalItems } = useDataContext();
+
+  useEffect(() => {
+      updateOrderDetails(setOrderDetails);
+    }, []);
 
   const handlePrintOrder = async () => {
     if (process.versions && process.versions.electron) {
@@ -40,11 +45,12 @@ const BuyButton = () => {
           mesa: orderDetails.orderNumber,
           identificador: orderDetails.uniqueCode,
           ordenante: orderDetails.Observaciones,
-          base0: total,
-          baseIva: 0,
+          base0: 0,
+          baseIva: total,
           iva: 0,
           total: total,
           descuentoTotal: 0,
+          maxIdDetalle: cart.length,
           detalle: cart.map((item) => ({
             id: item.id,
             descripcion: item.descripcion,
@@ -62,6 +68,7 @@ const BuyButton = () => {
           usuarioName: 'Kiosko autoservicio',
         },
       };
+      console.log('datos enviados: ', orderData);
       await sendOrderData(orderData);   
       return true;
     } catch (error) {
@@ -78,7 +85,7 @@ const BuyButton = () => {
     if (!isOrderSent) return; 
     const isPrinted = await handlePrintOrder();
     if (!isPrinted) return; 
-    router.replace('/pago/completed'); 
+    router.replace('/pago/success'); 
   };
 
   return (
