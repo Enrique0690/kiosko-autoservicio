@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useDataContext } from '@/components/DataContext/datacontext';
@@ -11,8 +11,10 @@ import { updateOrderDetails } from '@/utils/updateOrderDetails';
 const PaymentMethod = () => {
   const router = useRouter();
   const { total, setOrderDetails } = useDataContext();
-  const handlePaymentMethod = (method: 'cash' | 'deuna' | 'card') => {
+  useEffect(() => {
     updateOrderDetails(setOrderDetails);
+  }, []);
+  const handlePaymentMethod = (method: 'cash' | 'deuna' | 'card') => {
     switch (method) {
       case 'cash':
         setOrderDetails((prevDetails: any) => ({

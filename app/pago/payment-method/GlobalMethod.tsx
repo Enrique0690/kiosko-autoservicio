@@ -26,13 +26,12 @@ const GlobalMethod = () => {
         descuentoTotal: 0,
         maxIdDetalle: cart.length,
         detalle: cart.map((item) => ({
-          id: item.id,
-          descripcion: item.descripcion,
-          cantidad: item.cantidad,
-          precio: item.pvp1,
-          pagaIva: false,
+          ...item,
           idDetalle: item.rowNumber,
+          dinamico: item.dinamico,
+          pvpSeleccionado: item.pvpSeleccionado,
           articulosDinamicos: item.articulosDinamicos,
+          total: item.pvp1,
         })),
       },
       token: new Date().valueOf(),
@@ -44,6 +43,7 @@ const GlobalMethod = () => {
     };
     try {
       await sendOrderData(orderData); 
+      console.log('Datos enciados: ', orderData);
       setMessage('Pedido enviado correctamente');
       setError(null);  
       return true;

@@ -114,13 +114,13 @@ const Carousel = () => {
                 <Image
                     source={{ uri: PRELOADED_IMAGE }}
                     style={styles.image}
-                    resizeMode="cover"
+                    resizeMode="stretch"
                 />
             ) : (
                 <Animated.Image
                     source={{ uri: images[currentIndex] }}
                     style={[styles.image, animatedStyle]}
-                    resizeMode="cover"
+                    resizeMode="stretch"
                 />
             )}
         </View>
