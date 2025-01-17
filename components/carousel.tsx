@@ -1,32 +1,33 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { StyleSheet, View, Dimensions, PanResponder, } from 'react-native';
-import Animated, { useSharedValue, useAnimatedStyle, withTiming, } from 'react-native-reanimated';
-
-const images = [
-    'https://w.wallhaven.cc/full/8o/wallhaven-8o61d1.jpg',
-    'https://w.wallhaven.cc/full/qd/wallhaven-qdj6qr.jpg',
-    'https://w.wallhaven.cc/full/43/wallhaven-432x2v.jpg',
-];
+import { StyleSheet, View, Image, Dimensions, PanResponder } from 'react-native';
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing } from 'react-native-reanimated';
+import axios from 'axios';
 
 const { width, height } = Dimensions.get('window');
 
+const PRELOADED_IMAGE = 'https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/Carousel/1.jpg';
+
 const Carousel = () => {
+    const [images, setImages] = useState<string[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [timer, setTimer] = useState(0);
     const currentIndexRef = useRef(currentIndex);
     const timerRef = useRef(timer);
     const opacity = useSharedValue(1);
-    const translateX = useSharedValue(0);
+    const [isLoading, setIsLoading] = useState(true);
+    
     useEffect(() => {
         currentIndexRef.current = currentIndex;
     }, [currentIndex]);
+
     useEffect(() => {
         timerRef.current = timer;
     }, [timer]);
+
     useEffect(() => {
         const interval = setInterval(() => {
             setTimer(prevTimer => prevTimer + 1);
-            if (timerRef.current >= 30) {
+            if (timerRef.current >= 10) {
                 handleNextImage();
             }
         }, 1000);
@@ -34,22 +35,35 @@ const Carousel = () => {
         return () => clearInterval(interval);
     }, [timer]);
 
-    const handleNextImage = () => {
-        animateImageChange(() => {
-            const nextIndex = (currentIndexRef.current + 1) % images.length;
-            setCurrentIndex(nextIndex);
-            setTimer(0);
-        });
-    };
+    useEffect(() => {
+        const fetchImages = async () => {
+            const fetchedImages: string[] = [];
+            let i = 1;
 
-    const handlePreviousImage = () => {
-        animateImageChange(() => {
-            const prevIndex =
-                (currentIndexRef.current - 1 + images.length) % images.length;
-            setCurrentIndex(prevIndex);
-            setTimer(0);
-        });
-    };
+            while (true) {
+                try {
+                    const jpgUrl = `https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/Carousel/${i}.jpg`;
+                    await axios.get(jpgUrl);
+                    fetchedImages.push(jpgUrl);
+                    i++;
+                } catch (error) {
+                    const pngUrl = `https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/Carousel/${i}.png`;
+                    try {
+                        await axios.get(pngUrl);
+                        fetchedImages.push(pngUrl);
+                        i++;
+                    } catch (error) {
+                        break;
+                    }
+                }
+            }
+
+            setImages(fetchedImages);
+            setIsLoading(false);
+        };
+
+        fetchImages();
+    }, []);
 
     const panResponder = useRef(
         PanResponder.create({
@@ -67,24 +81,48 @@ const Carousel = () => {
         })
     ).current;
 
+    const handleNextImage = () => {
+        animateImageChange(() => {
+            const nextIndex = (currentIndexRef.current + 1) % images.length;
+            setCurrentIndex(nextIndex);
+            setTimer(0);
+        });
+    };
+
+    const handlePreviousImage = () => {
+        animateImageChange(() => {
+            const prevIndex = (currentIndexRef.current - 1 + images.length) % images.length;
+            setCurrentIndex(prevIndex);
+            setTimer(0);
+        });
+    };
+
     const animateImageChange = (callback: any) => {
-        opacity.value = withTiming(0, { duration: 300 }, () => {
+        opacity.value = withTiming(0, { duration: 600, easing: Easing.inOut(Easing.ease) }, () => {
             callback();
-            opacity.value = withTiming(1, { duration: 300 });
+            opacity.value = withTiming(1, { duration: 600, easing: Easing.inOut(Easing.ease) });
         });
     };
 
     const animatedStyle = useAnimatedStyle(() => ({
         opacity: opacity.value,
-        transform: [{ translateX: withTiming(translateX.value, { duration: 300 }) }],
     }));
 
     return (
-        <View style={styles.container} {...panResponder.panHandlers}>
-            <Animated.Image
-                source={{ uri: images[currentIndex] }}
-                style={[styles.image, animatedStyle]}
-            />
+        <View style={styles.container}>
+            {isLoading || images.length === 0 ? (
+                <Image
+                    source={{ uri: PRELOADED_IMAGE }}
+                    style={styles.image}
+                    resizeMode="cover"
+                />
+            ) : (
+                <Animated.Image
+                    source={{ uri: images[currentIndex] }}
+                    style={[styles.image, animatedStyle]}
+                    resizeMode="cover"
+                />
+            )}
         </View>
     );
 };
@@ -97,7 +135,6 @@ const styles = StyleSheet.create({
     image: {
         width: width,
         height: height,
-        resizeMode: 'cover',
         position: 'absolute',
     },
 });

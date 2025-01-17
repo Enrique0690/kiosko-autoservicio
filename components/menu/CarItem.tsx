@@ -10,12 +10,13 @@ interface CartItemProps {
     descripcion: string;
     pvp1: number;
     cantidad: number;
+    articulosDinamicos?: { descripcion: string, cantidad: number }[];
   };
   onIncrement: (product: any) => void;
   onDecrement: (product: any) => void;
 }
 
-const CartItem: React.FC<CartItemProps> = ({ item, onIncrement, onDecrement }) => {
+const CartItem = ({ item, onIncrement, onDecrement }: CartItemProps) => {
   return (
     <View style={styles.productItem}>
       <ProductImage
@@ -23,13 +24,22 @@ const CartItem: React.FC<CartItemProps> = ({ item, onIncrement, onDecrement }) =
         style={styles.productImage}
         baseUrl="https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/"
       />
-      <Text style={styles.productText}>{item.descripcion}</Text>
+      <View style={styles.descriptionContainer}>
+        <Text style={styles.productText}>{item.descripcion}</Text>
+        {item.articulosDinamicos && item.articulosDinamicos.length > 0 && (
+          <View style={styles.dynamicItemsContainer}>
+            {item.articulosDinamicos.map((articulo, index) => (
+              <Text key={index} style={styles.dynamicItemText}>• {articulo.descripcion} x {articulo.cantidad}</Text>
+            ))}
+          </View>
+        )}
+      </View>
       <View style={styles.quantityContainer}>
-        <TouchableOpacity onPress={() => onDecrement(item)} style={[styles.quantityButton, {backgroundColor: Colors.primary}]}>
-          <Ionicons name="remove-outline" size={30} color= {Colors.darkSecondary} />
+        <TouchableOpacity onPress={() => onDecrement(item)} style={[styles.quantityButton, { backgroundColor: Colors.primary }]}>
+          <Ionicons name="remove-outline" size={30} color={Colors.darkSecondary} />
         </TouchableOpacity>
         <Text style={styles.productQuantity}>{item.cantidad}</Text>
-        <TouchableOpacity onPress={() => onIncrement(item)} style={[styles.quantityButton, {backgroundColor: Colors.secondary}]}>
+        <TouchableOpacity onPress={() => onIncrement(item)} style={[styles.quantityButton, { backgroundColor: Colors.secondary }]}>
           <Ionicons name="add-outline" size={30} color={Colors.darkPrimary} />
         </TouchableOpacity>
       </View>
@@ -49,12 +59,21 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginBottom: 15,
   },
+  descriptionContainer: {
+    flex: 3,
+    marginLeft: 15,
+  },
   productText: {
     fontSize: 18,
-    color: Colors.textsecondary,
-    flex: 3,
+    color: Colors.text,
     fontWeight: '600',
-    marginLeft: 15,
+  },
+  dynamicItemsContainer: {
+    marginTop: 5,
+  },
+  dynamicItemText: {
+    fontSize: 14,
+    color: Colors.textsecondary,
   },
   quantityContainer: {
     flexDirection: 'row',

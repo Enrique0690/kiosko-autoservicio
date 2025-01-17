@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { useDataContext } from "@/components/DataContext/datacontext";
@@ -8,12 +8,26 @@ import { Colors } from "@/constants/Colors";
 const Success = () => {
   const router = useRouter();
   const { stopTimer, clearCart, total, orderDetails } = useDataContext();
+  const [ counter, setCounter ] = useState(30);
 
   const handleNewOrder = () => {
     clearCart();
     stopTimer();
     router.replace("/");
   };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCounter((prevCounter) => {
+        if (prevCounter <= 1) {
+          clearInterval(interval);
+          handleNewOrder(); 
+        }
+        return prevCounter - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval); 
+  }, []);
 
   return (
     <View style={styles.container}>

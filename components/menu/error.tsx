@@ -25,6 +25,7 @@ const ErrorScreen = () => {
 
                 <View style={styles.detailsContainer}>
                     <Text style={styles.instructionText}>Hubo un problema con tu pedido.</Text>
+                    <Text style={styles.instructionText}>Acercate a caja y pide asistencia.</Text>
                 </View>
 
                 <View style={styles.separator} />
