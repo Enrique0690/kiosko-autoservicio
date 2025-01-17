@@ -5,7 +5,7 @@ import { Colors } from '@/constants/Colors';
 import Success from '@/components/menu/success';
 import ErrorScreen from '@/components/menu/error';
 
-const CashPaymentMethod = () => {
+const GlobalMethod = () => {
   const { total, orderDetails, cart, sendOrderData, clearCart } = useDataContext();
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<string | null>(null); 
@@ -141,4 +141,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CashPaymentMethod;
+export default GlobalMethod;

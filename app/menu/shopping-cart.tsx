@@ -53,7 +53,7 @@ const ShoppingCart = () => {
       <Header
         leftButtonText="Volver"
         leftButtonRoute={'/menu'}
-        rightComponent={<Text style={styles.totalText}>Total: ${total.toFixed(2)}</Text>} />
+        rightComponent={<Text style={styles.totalText}>Total: {total.toFixed(2)} $</Text>} />
 
       <View style={styles.cartHeader}>
         <Text style={styles.cartTitle}>Carrito</Text>
@@ -67,7 +67,7 @@ const ShoppingCart = () => {
 
         <View style={styles.cartDetailsContainer}>
           <Text style={styles.cartDetails}>
-            {totalItems} producto{totalItems > 1 ? 's' : ''} - Total: ${total.toFixed(2)}
+            {totalItems} producto{totalItems > 1 ? 's' : ''} - Total: {total.toFixed(2)} $
           </Text>
         </View>
       </ScrollView>

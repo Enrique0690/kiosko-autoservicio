@@ -6,34 +6,34 @@ import { Ionicons } from '@expo/vector-icons';
 import Header from '@/components/header';
 import { Colors } from '@/constants/Colors';
 import AlertModal from '@/components/elements/AlertModal';
+import { updateOrderDetails } from '@/utils/updateOrderDetails';
 
 const PaymentMethod = () => {
   const router = useRouter();
   const { total, setOrderDetails } = useDataContext();
   const handlePaymentMethod = (method: 'cash' | 'deuna' | 'card') => {
+    updateOrderDetails(setOrderDetails);
     switch (method) {
       case 'cash':
-        router.replace('/pago/payment-method/cash-payment');
         setOrderDetails((prevDetails: any) => ({
           ...prevDetails,
           formapago: 'efectivo',
         }));
         break;
       case 'deuna':
-        router.replace('/pago/payment-method/deuna');
         setOrderDetails((prevDetails: any) => ({
           ...prevDetails,
           formapago: 'deuna',
         }));
         break;
       case 'card':
-        router.replace('/pago/payment-method/card');
         setOrderDetails((prevDetails: any) => ({
           ...prevDetails,
           formapago: 'card',
         }));
         break;
     }
+    router.replace('/pago/payment-method/GlobalMethod');
   };
 
   return (
@@ -41,7 +41,7 @@ const PaymentMethod = () => {
       <Header
         leftButtonText="Volver"
         leftButtonRoute={'/pago'}
-        rightComponent={<Text style={styles.totalText}>Total: ${total.toFixed(2)}</Text>}
+        rightComponent={<Text style={styles.totalText}>Total: {total.toFixed(2)} $</Text>}
       />
       <View style={styles.body}>
         <ScrollView>

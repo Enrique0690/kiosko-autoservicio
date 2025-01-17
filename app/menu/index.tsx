@@ -31,7 +31,7 @@ const Menu = () => {
     <View style={styles.container}>
       <Header
         leftButtonText="Volver"
-        leftButtonRoute={'/review'}
+        leftButtonRoute={'/pedido'}
         rightComponent={
           <TouchableOpacity style={styles.headerItem} onPress={handleContinue}>
             <Ionicons name="cart" size={24} color={Colors.text} />

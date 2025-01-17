@@ -13,7 +13,7 @@ const Pedido = () => {
     startTimer();
     setOrderDetails((prevDetails: any) => ({
       ...prevDetails,
-      formaDespacho: 'llevar',
+      formaDespacho: 'mesa',
     }));
     router.replace("/menu");
   };
@@ -23,7 +23,7 @@ const Pedido = () => {
     startTimer();
     setOrderDetails((prevDetails: any) => ({
       ...prevDetails,
-      formaDespacho: 'mesa',
+      formaDespacho: 'llevar',
     }));
     router.replace("/menu");
   };

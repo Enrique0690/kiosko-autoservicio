@@ -11,7 +11,7 @@ const Carbar = () => {
 
   return (
     <View style={styles.bottomBar}>
-      <Text style={styles.totalTextLeft}>Total: ${total.toFixed(2)}</Text>
+      <Text style={styles.totalTextLeft}>Total: {total.toFixed(2)} $</Text>
       <TouchableOpacity style={styles.continueButton} onPress={() => router.replace('/menu/shopping-cart')}>
         <Text style={styles.buttonText}>Continuar</Text>
       </TouchableOpacity>

@@ -124,7 +124,7 @@ const frmFactura = () => {
       <Header
         leftButtonText="Volver"
         leftButtonRoute={'/pago'}
-        rightComponent={<Text style={styles.totalText}>Total: ${total.toFixed(2)}</Text>} />
+        rightComponent={<Text style={styles.totalText}>Total: {total.toFixed(2)} $</Text>} />
       <ScrollView>
         <View style={styles.formContainer}>
           <Text style={styles.formTitle}>Datos de facturación</Text>

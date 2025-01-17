@@ -85,7 +85,7 @@ const BuyButton = () => {
     if (!isOrderSent) return; 
     const isPrinted = await handlePrintOrder();
     if (!isPrinted) return; 
-    router.replace('/pago/success'); 
+    router.replace('/pago'); 
   };
 
   return (

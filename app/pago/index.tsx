@@ -34,7 +34,7 @@ const PaymentMethod = () => {
       <Header
         leftButtonText="Volver"
         leftButtonRoute="/menu/shopping-cart"
-        rightComponent={<Text style={styles.totalText}>Total: ${total.toFixed(2)}</Text>}
+        rightComponent={<Text style={styles.totalText}>Total: {total.toFixed(2)} $</Text>}
       />
       <View style={styles.body}>
         <Text style={styles.title}>¿Deseas facturar tu pedido?</Text>

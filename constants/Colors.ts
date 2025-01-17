@@ -15,4 +15,5 @@ export const Colors = {
   neutralWhite: '#F9F9F9', // Blanco neutro
   neutralGray: '#D6D6D6', // Gris claro
   darkGray: '#4A4A4A', // Gris oscuro
+  error: '#FF0000',
 };

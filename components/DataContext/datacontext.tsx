@@ -107,13 +107,13 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
 
   const sendOrderData = async (orderData: any) => {
     try {
-      await sendOrder(orderData);  
-      router.replace('/pago/completed');  
+      await sendOrder(orderData);
     } catch (err) {
       console.error('Error al enviar los datos del pedido:', err);
-    } finally {
+      throw err;  
     }
   };
+  
 
   const addToCart = (product: Product) => {
     setCart((prevCart) => {
@@ -142,7 +142,6 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
 
   const clearCart = () => {
     setCart([]);
-    resetTimer();
   };
 
   const total = cart.reduce((acc, item) => acc + item.cantidad * item.pvp1, 0);
@@ -159,7 +158,6 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
 
     const interval = setInterval(() => {
       setIdleTimeLeft((prev) => {
-        console.log('Idle time left:', prev);
         if (prev >= 1800) {
           clearInterval(interval);
           router.replace('/'); 
