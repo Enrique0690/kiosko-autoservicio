@@ -30,14 +30,11 @@ const Menu = () => {
   return (
     <View style={styles.container}>
       <Header
-        leftButtonText="Volver"
+        leftButtonText="VOLVER"
         leftButtonRoute={'/pedido'}
-        rightComponent={
-          <TouchableOpacity style={styles.headerItem} onPress={handleContinue}>
-            <Ionicons name="cart" size={24} color={Colors.text} />
-            <Text style={styles.totalText}> Ver carrito ({totalItems}) </Text>
-          </TouchableOpacity>
-        }
+        rightButtonIcon={'cart-outline'}
+        rightButtonRoute={'/menu/shopping-cart'}
+        rightButtonText={'VER CARRITO (' + totalItems + ')'}
       />
       <View style={styles.columns}>
         <View style={styles.categoriesColumn}>
@@ -70,11 +67,6 @@ const styles = StyleSheet.create({
   headerItem: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  totalText: {
-    color: Colors.text,
-    fontSize: 23,
-    fontWeight: '600',
   },
   columns: {
     flex: 1,

@@ -7,6 +7,7 @@ import Header from '@/components/header';
 import { Colors } from '@/constants/Colors';
 import AlertModal from '@/components/elements/AlertModal';
 import { updateOrderDetails } from '@/utils/updateOrderDetails';
+import IconButton from '@/components/elements/IconButton';
 
 const PaymentMethod = () => {
   const router = useRouter();
@@ -19,19 +20,19 @@ const PaymentMethod = () => {
       case 'cash':
         setOrderDetails((prevDetails: any) => ({
           ...prevDetails,
-          formapago: 'efectivo',
+          formapago: 'Pago en caja',
         }));
         break;
       case 'deuna':
         setOrderDetails((prevDetails: any) => ({
           ...prevDetails,
-          formapago: 'deuna',
+          formapago: 'deUna',
         }));
         break;
       case 'card':
         setOrderDetails((prevDetails: any) => ({
           ...prevDetails,
-          formapago: 'card',
+          formapago: 'Tarjeta de crédito/debito',
         }));
         break;
     }
@@ -41,30 +42,17 @@ const PaymentMethod = () => {
   return (
     <View style={styles.container}>
       <Header
-        leftButtonText="Volver"
+        leftButtonText='volver'
         leftButtonRoute={'/pago'}
-        rightComponent={<Text style={styles.totalText}>Total: {total.toFixed(2)} $</Text>}
       />
       <View style={styles.body}>
-        <ScrollView>
-          <Text style={styles.paymentTitle}>Elige el método de pago</Text>
-
-          <View style={styles.buttonsContainer}>
-            <TouchableOpacity style={styles.button} onPress={() => handlePaymentMethod('cash')}>
-              <Ionicons name="cash-outline" size={70} color={Colors.primary} />
-              <Text style={styles.buttonText}>Pago en caja</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => handlePaymentMethod('deuna')}>
-              <Ionicons name="qr-code-outline" size={70} color={Colors.primary} />
-              <Text style={styles.buttonText}>Deuna</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => handlePaymentMethod('card')}>
-              <Ionicons name="card-outline" size={70} color={Colors.primary} />
-              <Text style={styles.buttonText}>Tarjeta</Text>
-            </TouchableOpacity>
+          <Text style={styles.title}>ELIGE EL MÉTODO DE PAGO</Text>
+          <View style={styles.buttonContainer}>
+            <IconButton iconName='cash-outline' text='Pago en caja' onPress={() => handlePaymentMethod('cash')} />
+            <IconButton iconName='qr-code-outline' text='Deuna' onPress={() => handlePaymentMethod('deuna')} />
+            <IconButton iconName='card-outline' text='Tarjeta' onPress={() => handlePaymentMethod('card')} />
           </View>
-        </ScrollView>
-        <AlertModal visible={total === 0} message="No hay elementos en el carrito" onClose={() => router.replace('/menu')} />
+        <AlertModal visible={total === 0} message='No hay elementos en el carrito' onClose={() => router.replace('/menu')} />
       </View>
     </View>
   );
@@ -81,44 +69,25 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   body: {
-    marginVertical: 'auto',
+    flex: 1,
     paddingHorizontal: 20,
     alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: 'transparent',
   },
-  paymentTitle: {
-    fontSize: 23,
-    fontWeight: '800',
-    color: Colors.textsecondary,
-    marginBottom: 20,
-    textAlign: 'center',
-    letterSpacing: 2,
-    marginTop: 30,
-  },
-  buttonsContainer: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-  },
-  button: {
-    backgroundColor: '#388E3C',
-    paddingVertical: 25,
-    width: 350,
-    borderRadius: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 10,
-    marginVertical: 20,
-  },
-  buttonText: {
-    color: Colors.text,
-    fontSize: 20,
+  title: {
+    marginTop: 50,
+    fontSize: 40,
     fontWeight: '700',
-    marginTop: 8,
+    color: Colors.textsecondary,
+    marginBottom: 60,
     textAlign: 'center',
+    letterSpacing: 1.5,
   },
+  buttonContainer: {
+    flexDirection: 'column',
+    width: '65%',
+    height: '70%',
+  }
 });
 
 export default PaymentMethod;

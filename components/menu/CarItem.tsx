@@ -35,12 +35,12 @@ const CartItem = ({ item, onIncrement, onDecrement }: CartItemProps) => {
         )}
       </View>
       <View style={styles.quantityContainer}>
-        <TouchableOpacity onPress={() => onDecrement(item)} style={[styles.quantityButton, { backgroundColor: Colors.primary }]}>
-          <Ionicons name="remove-outline" size={30} color={Colors.darkSecondary} />
+        <TouchableOpacity onPress={() => onDecrement(item)} style={[styles.quantityButton]}>
+          <Ionicons name="remove-outline" size={40} color={Colors.text} />
         </TouchableOpacity>
         <Text style={styles.productQuantity}>{item.cantidad}</Text>
-        <TouchableOpacity onPress={() => onIncrement(item)} style={[styles.quantityButton, { backgroundColor: Colors.secondary }]}>
-          <Ionicons name="add-outline" size={30} color={Colors.darkPrimary} />
+        <TouchableOpacity onPress={() => onIncrement(item)} style={[styles.quantityButton]}>
+          <Ionicons name="add-outline" size={40} color={Colors.text} />
         </TouchableOpacity>
       </View>
       <Text style={styles.productPrice}>${(item.cantidad * item.pvp1).toFixed(2)}</Text>
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
   productText: {
-    fontSize: 18,
+    fontSize: 25,
     color: Colors.text,
     fontWeight: '600',
   },
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   dynamicItemText: {
-    fontSize: 14,
+    fontSize: 18,
     color: Colors.textsecondary,
   },
   quantityContainer: {
@@ -85,13 +85,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   productQuantity: {
-    fontSize: 18,
+    fontSize: 25,
     color: Colors.text,
     marginHorizontal: 10,
     fontWeight: '600',
   },
   productPrice: {
-    fontSize: 18,
+    fontSize: 25,
     color: Colors.textsecondary,
     fontWeight: '600',
     textAlign: 'right',

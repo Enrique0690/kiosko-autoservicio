@@ -111,7 +111,7 @@ const frmFactura = () => {
       address,
     });
     setIsInvoiceRequested(true);
-    router.replace('/pago');
+    router.replace('/pago/payment-method');
   };
 
   return (
@@ -122,12 +122,15 @@ const frmFactura = () => {
         </View>
       )}
       <Header
-        leftButtonText="Volver"
+        leftButtonText="VOLVER"
         leftButtonRoute={'/pago'}
-        rightComponent={<Text style={styles.totalText}>Total: {total.toFixed(2)} $</Text>} />
+        rightButtonIcon={'arrow-forward-outline'}
+        rightButtonRoute={'/pago/payment-method'}
+        rightButtonText={'CONTINUAR'}
+      />
       <ScrollView>
         <View style={styles.formContainer}>
-          <Text style={styles.formTitle}>Datos de facturación</Text>
+          <Text style={styles.formTitle}>DATOS DE FACTURACIÓN</Text>
 
           <View style={styles.buttonGroup}>
             {['Cedula', 'Ruc', 'Pasaporte'].map((type) => (
@@ -162,7 +165,6 @@ const frmFactura = () => {
             {errorMessage?.trim() !== '' && (
               <Text style={styles.errorText}>{errorMessage}</Text>
             )}
-            <Text style={styles.helpText}>{documentTexts[id].helpText}</Text>
 
             <TextInput
               style={styles.input}
@@ -170,7 +172,6 @@ const frmFactura = () => {
               value={razonSocial}
               onChangeText={setRazonSocial}
             />
-            <Text style={styles.helpText}>Escribe el nombre completo de la empresa.</Text>
 
             <TextInput
               style={styles.input}
@@ -179,7 +180,6 @@ const frmFactura = () => {
               value={telefono}
               onChangeText={setTelefono}
             />
-            <Text style={styles.helpText}>Ingresa un número de teléfono válido.</Text>
 
             <TextInput
               style={styles.input}
@@ -188,7 +188,6 @@ const frmFactura = () => {
               value={email}
               onChangeText={setEmail}
             />
-            <Text style={styles.helpText}>Introduce el correo electrónico de contacto.</Text>
 
             <TextInput
               style={styles.input}
@@ -196,11 +195,10 @@ const frmFactura = () => {
               value={address}
               onChangeText={setAddress}
             />
-            <Text style={styles.helpText}>Introduce tu direccion.</Text>
           </View>
 
           <TouchableOpacity style={styles.continueButton} onPress={handleContinuePress}>
-            <Text style={styles.continueButtonText}>Continuar</Text>
+            <Text style={styles.continueButtonText}>CONTINUAR</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -215,20 +213,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F7F7F7',
   },
-  totalText: {
-    color: Colors.text,
-    fontSize: 23,
-    fontWeight: '600',
-  },
   formContainer: {
     marginTop: 50,
     paddingHorizontal: 20,
     alignItems: 'center',
     backgroundColor: 'transparent',
-    paddingBottom: 20,
+    paddingBottom: 40,
   },
   formTitle: {
-    fontSize: 23,
+    fontSize: 40,
     fontWeight: '800',
     color: Colors.textsecondary,
     marginBottom: 20,
@@ -238,11 +231,11 @@ const styles = StyleSheet.create({
   buttonGroup: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '40%',
+    width: '85%',
     borderRadius: 8,
     overflow: 'hidden',
-    backgroundColor: '#F7F7F7',
-    marginBottom: 10,
+    backgroundColor: Colors.neutralWhite,
+    marginBottom: 20,
     borderWidth: 1,
     borderColor: '#ddd',
   },
@@ -250,7 +243,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: 10,
   },
   documentButton: {
     backgroundColor: 'transparent',
@@ -259,7 +252,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.secondary,
   },
   documentButtonText: {
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: '600',
     color: Colors.text,
   },
@@ -276,14 +269,14 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   input: {
-    height: 45,
+    height: 70,
     width: '100%',
     borderColor: '#ccc',
     borderWidth: 1,
     borderRadius: 8,
-    marginBottom: 10,
+    marginVertical: 20,
     paddingHorizontal: 15,
-    fontSize: 20,
+    fontSize: 25,
     backgroundColor: '#fff',
     elevation: 2,
   },
@@ -313,7 +306,7 @@ const styles = StyleSheet.create({
   },
   continueButtonText: {
     color: Colors.primary,
-    fontSize: 23,
+    fontSize: 30,
     fontWeight: '600',
     letterSpacing: 1,
   },
@@ -326,8 +319,8 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: 'red',
-    fontSize: 18,
-    marginBottom: 10,
+    fontSize: 20,
+    marginBottom: 15,
   },
 });
 

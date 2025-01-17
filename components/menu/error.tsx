@@ -19,7 +19,7 @@ const ErrorScreen = () => {
         <View style={styles.container}>
             <View style={styles.errorContainer}>
                 <View style={styles.iconContainer}>
-                    <Ionicons name="close-circle-outline" size={70} color='white' />
+                    <Ionicons name="close-circle-outline" size={100} color='white' />
                 </View>
                 <Text style={styles.errorText}>¡Vaya!</Text>
 
@@ -55,18 +55,23 @@ const styles = StyleSheet.create({
         width: "100%",
         maxWidth: 500,
         paddingHorizontal: 20,
+        paddingVertical: 40,
+        borderRadius: 8,
+        borderColor: Colors.secondary,
+        borderWidth: 5,
+        boxShadow: "15px 10px 10px rgba(0, 0, 0, 0.2)",
     },
     iconContainer: {
-        width: 80,
-        height: 80,
-        backgroundColor: Colors.error,
-        borderRadius: 40,
+        width: 100,
+        height: 100,
+        backgroundColor: "#28a745",
+        borderRadius: 50,
         justifyContent: "center",
         alignItems: "center",
         marginBottom: 20,
     },
     errorText: {
-        fontSize: 36,
+        fontSize: 40,
         fontWeight: "bold",
         color: Colors.error,
         marginBottom: 20,
@@ -76,13 +81,12 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
         paddingHorizontal: 10,
         borderRadius: 8,
-        backgroundColor: Colors.neutralGray,
         marginBottom: 20,
         alignItems: "center",
         justifyContent: "center",
     },
     instructionText: {
-        fontSize: 20,
+        fontSize: 25,
         textAlign: "center",
         color: Colors.text,
         marginVertical: 5,
@@ -108,8 +112,7 @@ const styles = StyleSheet.create({
     },
     retryButtonText: {
         color: Colors.primary,
-        fontSize: 20,
-        fontWeight: "bold",
+        fontSize: 30
     },
 });
 

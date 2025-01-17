@@ -19,11 +19,17 @@ interface CartItem extends Product {
 }
 
 const ShoppingCart = () => {
-  const { cart, total, addToCart, removeFromCart, clearCart, totalItems, setOrderDetails } = useDataContext();
+  const { cart, total, addToCart, removeFromCart, totalItems, setOrderDetails } = useDataContext();
   const router = useRouter();
   const [observations, setObservations] = useState('');
   const inputRef = useRef<TextInput>(null); 
   const handleIncrement = (product: CartItem) => addToCart(product);
+  const [inputHeight, setInputHeight] = useState(40);
+
+  const handleContentSizeChange = (e: any) => {
+    const { height } = e.nativeEvent.contentSize;
+    setInputHeight(Math.min(height, 250));
+  };
 
   const handleDecrement = (product: CartItem) => {
     if (product.cantidad <= 1) {
@@ -51,12 +57,14 @@ const ShoppingCart = () => {
   return (
     <View style={styles.container}>
       <Header
-        leftButtonText="Volver"
+        leftButtonText="VOLVER"
         leftButtonRoute={'/menu'}
-        rightComponent={<Text style={styles.totalText}>Total: {total.toFixed(2)} $</Text>} />
-
+        rightButtonIcon={'arrow-forward-outline'}
+        rightButtonRoute={'/pago'}
+        rightButtonText={'PAGAR'}
+      />
       <View style={styles.cartHeader}>
-        <Text style={styles.cartTitle}>Carrito</Text>
+        <Text style={styles.cartTitle}>CONFIRMA TU PEDIDO</Text>
       </View>
       <ScrollView>
         <View style={styles.cartContainer}>
@@ -67,7 +75,7 @@ const ShoppingCart = () => {
 
         <View style={styles.cartDetailsContainer}>
           <Text style={styles.cartDetails}>
-            {totalItems} producto{totalItems > 1 ? 's' : ''} - Total: {total.toFixed(2)} $
+            {totalItems} producto{totalItems > 1 ? 's' : ''} - Total: $ {total.toFixed(2)} 
           </Text>
         </View>
       </ScrollView>
@@ -77,18 +85,19 @@ const ShoppingCart = () => {
           <TouchableOpacity onPress={handleFocusInput}>
             <TextInput
               ref={inputRef}
-              style={styles.observationsInput}
               placeholder="Escribe tus observaciones aquí..."
               value={observations}
               onChangeText={setObservations}
+              style={[styles.observationsInput, { height: inputHeight }]}
               multiline
+              onContentSizeChange={handleContentSizeChange}
             />
           </TouchableOpacity>
         </View>
 
       <View style={styles.footer}>
         <TouchableOpacity style={styles.payButton} onPress={handlePay}>
-          <Text style={styles.payButtonText}>Pagar</Text>
+          <Text style={styles.payButtonText}>PAGAR</Text>
         </TouchableOpacity>
       </View>
 
@@ -102,11 +111,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F7F7F7',
   },
-  totalText: {
-    color: Colors.text,
-    fontSize: 23,
-    fontWeight: '600',
-  },
   cartHeader: {
     marginTop: 10,
     marginBottom: 20,
@@ -115,13 +119,14 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ddd',
   },
   cartTitle: {
-    fontSize: 23,
+    paddingTop: 20,
+    fontSize: 40,
     fontWeight: 'bold',
     color: '#333',
-    marginHorizontal: 15,
+    textAlign: 'center',
   },
   cartDetails: {
-    fontSize: 18,
+    fontSize: 20,
     color: '#777',
     marginTop: 5,
     marginHorizontal: 15,
@@ -147,7 +152,7 @@ const styles = StyleSheet.create({
   },
   payButtonText: {
     color: Colors.primary,
-    fontSize: 23,
+    fontSize: 30,
     fontWeight: 'bold',
   },
   observationsContainer: {
@@ -155,7 +160,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   observationsLabel: {
-    fontSize: 23,
+    fontSize: 30,
     fontWeight: 'bold',
     color: '#333',
   },
@@ -167,7 +172,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     height: 100,
     textAlignVertical: 'top',
-    fontSize: 18,
+    fontSize: 25,
   },
   cartDetailsContainer: {
     flexDirection: 'row', 

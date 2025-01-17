@@ -65,7 +65,7 @@ const GlobalMethod = () => {
           uniqueCode: orderDetails.uniqueCode,
           formapago: orderDetails.formapago,
           formaDespacho: orderDetails.formaDespacho,
-          total: total,
+          total: total.toFixed(2),
         });
         console.log('datos enviados: ', pdfPath);
         return true;
@@ -97,7 +97,7 @@ const GlobalMethod = () => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={Colors.secondary} />
+        <ActivityIndicator size={120} color={Colors.secondary} />
         <Text style={styles.loadingText}>Procesando la orden...</Text>
       </View>
     );
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     marginTop: 20,
-    fontSize: 16,
+    fontSize: 30,
     color: Colors.neutralGray,
   },
   errorText: {

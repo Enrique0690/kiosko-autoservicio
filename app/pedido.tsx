@@ -4,6 +4,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useDataContext } from "@/components/DataContext/datacontext";
 import { Colors } from "@/constants/Colors";
+import IconButton from "@/components/elements/IconButton";
 
 const Pedido = () => {
   const router = useRouter();
@@ -32,14 +33,8 @@ const Pedido = () => {
     <View style={styles.container}>
       <Text style={styles.title}>¿Cómo deseas disfrutar tu comida?</Text>
       <View style={styles.optionsContainer}>
-        <TouchableOpacity style={styles.optionButton} onPress={handleComerAqui}>
-          <Ionicons name="restaurant-outline" size={70} color={Colors.primary} />
-          <Text style={styles.buttonText}>Comer Aquí</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.optionButton} onPress={handleParaLlevar}>
-          <Ionicons name="bag-outline" size={70} color={Colors.primary} />
-          <Text style={styles.buttonText}>Para Llevar</Text>
-        </TouchableOpacity>
+        <IconButton iconName="restaurant-outline" text="Comer aquí" onPress={handleComerAqui} />
+        <IconButton iconName="bag-outline" text="Para llevar" onPress={handleParaLlevar} />
       </View>
     </View>
   );
@@ -54,7 +49,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   title: {
-    fontSize: 28,
+    fontSize: 60,
     fontWeight: "700", 
     color: Colors.textsecondary,
     marginBottom: 50,
@@ -62,32 +57,13 @@ const styles = StyleSheet.create({
     letterSpacing: 1.5, 
   },
   optionsContainer: {
+    marginTop: 150,
     flexDirection: "row",
     justifyContent: "space-evenly",
     alignItems: "center",
     width: "100%",
-    maxWidth: 800,
     paddingHorizontal: 20,
-  },
-  optionButton: {
-    flex: 1,
-    backgroundColor: "#4CAF50", 
-    paddingVertical: 25,
-    borderRadius: 20,
-    marginHorizontal: 15,
-    alignItems: "center",
-    justifyContent: "center",
-    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
-    elevation: 6,
-  },
-  buttonText: {
-    color: Colors.text,
-    fontSize: 20,
-    fontWeight: "600", 
-    marginTop: 12,
-    textTransform: "uppercase",
-    letterSpacing: 1,
-  },
+  }
 });
 
 export default Pedido;

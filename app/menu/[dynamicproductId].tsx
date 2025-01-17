@@ -163,6 +163,9 @@ const DynamicProducts = () => {
           <Ionicons name="arrow-back" size={35} color={Colors.primary} />
           <Text style={styles.headerText}>{currentProduct.descripcion}</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.continueButton} onPress={handleAddToCart}>
+          <Text style={styles.headerText}>CONTINUAR</Text>
+        </TouchableOpacity>
       </View>
 
       <ScrollView style={styles.content}>
@@ -196,11 +199,11 @@ const DynamicProducts = () => {
         ))}
         <View style={styles.footer}>
           <TouchableOpacity style={styles.payButton} onPress={handleAddToCart}>
-            <Text style={styles.payButtonText}>Continuar</Text>
+            <Text style={styles.payButtonText}>CONTINUAR</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
-      <AlertModal visible={isModalVisible} message="Seleccione los productos obligatorios" onClose={() => setIsModalVisible(false)} /> 
+      <AlertModal visible={isModalVisible} message="Seleccione los productos obligatorios" onClose={() => setIsModalVisible(false)} />
     </View>
   );
 };
@@ -229,6 +232,7 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   imageContainer: {
+    width: '100%',
     alignItems: 'center',
     marginBottom: 20,
   },
@@ -240,11 +244,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: '600',
     color: Colors.textsecondary,
     marginTop: 16,
     marginBottom: 8,
+    textAlign: 'center',
   },
   footer: {
     flexDirection: 'row',
@@ -267,8 +272,8 @@ const styles = StyleSheet.create({
   },
   productImage: {
     marginVertical: 80,
-    width: 250,
-    height: 250,
+    width: 500,
+    height: 500,
     marginBottom: 10,
     borderRadius: 8,
     resizeMode: 'cover',
@@ -278,6 +283,11 @@ const styles = StyleSheet.create({
     color: '#888',
     textAlign: 'center',
     marginTop: 20,
+  },
+  continueButton: {
+    padding: 10,
+    marginRight: 10,
+    borderRadius: 8,
   },
 });
 

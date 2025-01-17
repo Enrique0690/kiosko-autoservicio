@@ -5,21 +5,19 @@ import { Colors } from '@/constants/Colors';
 
 interface HeaderProps {
   centerComponent?: React.ReactNode; 
-  rightComponent?: React.ReactNode; 
   leftButtonText?: string; 
   leftButtonRoute?: any;
+  rightButtonText?: string;
+  rightButtonRoute?: any;
+  rightButtonIcon?: any;
 }
 
-const Header = ({ centerComponent, rightComponent, leftButtonText, leftButtonRoute }: HeaderProps) => {
+const Header = ({ centerComponent, rightButtonText, rightButtonRoute, rightButtonIcon, leftButtonText, leftButtonRoute }: HeaderProps) => {
   const router = useRouter();
-
-  const handleBackPress = () => {
-    router.replace(leftButtonRoute);
-  };
 
   return (
     <View style={styles.header}>
-      <TouchableOpacity style={styles.headerItem} onPress={handleBackPress}>
+      <TouchableOpacity style={styles.headerItem} onPress={() => router.replace(leftButtonRoute)}>
         <Ionicons name='arrow-back' size={35} color={Colors.primary} />
         <Text style={styles.headerText}>{leftButtonText}</Text> 
       </TouchableOpacity>
@@ -31,7 +29,10 @@ const Header = ({ centerComponent, rightComponent, leftButtonText, leftButtonRou
           />
         )}
       </View>
-      <View style={styles.headerItem}>{rightComponent}</View>
+      <TouchableOpacity style={styles.headerItem} onPress={() => router.replace(rightButtonRoute)}>
+        <Text style={[styles.headerText, { color: Colors.text}]}>{rightButtonText}</Text> 
+        <Ionicons name={rightButtonIcon} size={35} color={Colors.text} />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -41,7 +42,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#388E3C',
+    backgroundColor: Colors.secondary,
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderBottomWidth: 1,
@@ -54,9 +55,9 @@ const styles = StyleSheet.create({
   },
   headerText: {
     color: Colors.primary,
-    fontSize: 25,
+    fontSize: 30,
     fontWeight: '700',
-    marginLeft: 5,
+    marginHorizontal: 5,
     letterSpacing: 1,
   },
   centerContainer: {

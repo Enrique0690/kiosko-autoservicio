@@ -8,7 +8,7 @@ import { Colors } from "@/constants/Colors";
 const Success = () => {
   const router = useRouter();
   const { stopTimer, clearCart, total, orderDetails } = useDataContext();
-  const [ counter, setCounter ] = useState(30);
+  const [ counter, setCounter ] = useState(30000);
 
   const handleNewOrder = () => {
     clearCart();
@@ -33,24 +33,25 @@ const Success = () => {
     <View style={styles.container}>
       <View style={styles.successContainer}>
         <View style={styles.iconContainer}>
-          <Ionicons name="checkmark-circle-outline" size={70} color={Colors.primary} />
+          <Ionicons name="checkmark-circle-outline" size={100} color={Colors.primary} />
         </View>
-        <Text style={styles.successText}>¡Listo!</Text>
+        <Text style={styles.successText}>¡LISTO!</Text>
         
         <View style={styles.detailsContainer}>
           <Text style={styles.instructionText}>Retira tu recibo y acércate a recibir tu producto.</Text>
+          <View style={styles.separator} />
           <Text style={styles.instructionText}>Tu número de pedido es: <Text style={styles.boldText}>{orderDetails.orderNumber}</Text></Text>
           <Text style={styles.instructionText}>Método de pago: <Text style={styles.boldText}>{orderDetails.formapago}</Text></Text>
-          <Text style={styles.instructionText}>Valor a cancelar: <Text style={styles.boldText}>{total.toFixed(2)} $</Text></Text>
+          <Text style={styles.instructionText}>Valor a cancelar: <Text style={styles.boldText}>$ {total.toFixed(2)} </Text></Text>
         </View>
 
         <View style={styles.separator} />
 
-        <Text style={styles.thanksText}>¡Gracias por tu compra!</Text>
+        <Text style={styles.thanksText}>¡GRACIAS POR TU COMPRA!</Text>
       </View>
       
       <TouchableOpacity style={styles.newOrderButton} onPress={handleNewOrder}>
-        <Text style={styles.newOrderButtonText}>Finalizar</Text>
+        <Text style={styles.newOrderButtonText}>FINALIZAR</Text>
       </TouchableOpacity>
     </View>
   );
@@ -71,18 +72,23 @@ const styles = StyleSheet.create({
     width: "100%",
     maxWidth: 500,
     paddingHorizontal: 20,
+    paddingVertical: 40,
+    borderRadius: 8,
+    borderColor: Colors.secondary,
+    borderWidth: 5,
+    boxShadow: "15px 10px 10px rgba(0, 0, 0, 0.2)",
   },
   iconContainer: {
-    width: 80,
-    height: 80,
+    width: 100,
+    height: 100,
     backgroundColor: "#28a745",
-    borderRadius: 40,
+    borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 20,
   },
   successText: {
-    fontSize: 36,
+    fontSize: 40,
     fontWeight: "bold",
     color: Colors.secondary,
     marginBottom: 20,
@@ -92,13 +98,12 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 10,
     borderRadius: 8,
-    backgroundColor: Colors.neutralGray,
     marginBottom: 20,
     alignItems: "center",
     justifyContent: "center",
   },
   instructionText: {
-    fontSize: 20,
+    fontSize: 25,
     textAlign: "center",
     color: Colors.text,
     marginVertical: 5,
@@ -114,7 +119,7 @@ const styles = StyleSheet.create({
     marginVertical: 15,
   },
   thanksText: {
-    fontSize: 34,
+    fontSize: 35,
     textAlign: "center",
     color: Colors.secondary,
     marginBottom: 20,
@@ -128,8 +133,7 @@ const styles = StyleSheet.create({
   },
   newOrderButtonText: {
     color: Colors.primary,
-    fontSize: 20,
-    fontWeight: "bold",
+    fontSize: 30,
   },
 });
 

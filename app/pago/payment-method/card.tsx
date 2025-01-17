@@ -17,7 +17,7 @@ const cardMethod = () => {
 
   return (
     <View style={styles.container}>
-      <Header rightComponent={<Text style={styles.totalText}>Total: {total.toFixed(2)} $</Text>} />
+      <Header rightComponent={<Text style={styles.totalText}>Total: $ {total.toFixed(2)} </Text>} />
       <View style={styles.body}>
         <ScrollView>
           <View style={styles.orderDetailsContainer}>

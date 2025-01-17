@@ -1,91 +1,129 @@
-import React from 'react';
-import { FlatList, Text, View, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { FlatList, Text, View, TouchableOpacity, StyleSheet, Dimensions, PanResponder } from 'react-native';
 import ProductImage from './productimage';
 import { Colors } from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 
-const ProductListDynamic = ({
-  lineInfo,
-  type,
-  includedQuantities,
-  extraQuantities,
-  handleQuantityChange
+const ProductListDynamic = ({   lineInfo,   type,   includedQuantities,   extraQuantities,   handleQuantityChange
 }: any) => {
+  const flatListRef = useRef<FlatList>(null);
+  const [currentOffset, setCurrentOffset] = useState(0); 
+  const productWidth = 210; 
+  const visibleWidth = Dimensions.get('window').width - 80; 
+  const productsPerPage = Math.floor(visibleWidth / productWidth);
+  const scrollLeft = () => {
+    const newOffset = Math.max(0, currentOffset - productWidth * productsPerPage);
+    flatListRef.current?.scrollToOffset({ offset: newOffset, animated: true });
+    setCurrentOffset(newOffset);
+  };
+  const scrollRight = () => {
+    const maxOffset = Math.max(0, lineInfo.products.length * productWidth - visibleWidth);
+    const newOffset = Math.min(maxOffset, currentOffset + productWidth * productsPerPage);
+    flatListRef.current?.scrollToOffset({ offset: newOffset, animated: true });
+    setCurrentOffset(newOffset);
+  };
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderMove: (e, gestureState) => {
+        if (gestureState.dx > 0) {
+          scrollLeft();
+        } else if (gestureState.dx < 0) {
+          scrollRight();
+        }
+      },
+      onPanResponderRelease: () => {},
+    })
+  ).current;
+
   return (
-    <FlatList
-      data={lineInfo.products}
-      keyExtractor={(item) => item.id.toString()}
-      numColumns={4}
-      renderItem={({ item }) => (
-        <View style={styles.productContainer}>
-          <TouchableOpacity 
-            onPress={() => handleQuantityChange(item.id, 1, type)} 
-            style={styles.productButton}
-          >
-            <ProductImage descripcion={item.descripcion} style={styles.productImage} baseUrl='https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/' />
+    <View style={styles.container}  {...panResponder.panHandlers}>
+      <TouchableOpacity style={styles.arrowButton} onPress={scrollLeft}>
+        <Ionicons name="chevron-back" size={32} color={Colors.textsecondary} />
+      </TouchableOpacity>
+      <FlatList
+        ref={flatListRef}
+        data={lineInfo.products}
+        keyExtractor={(item) => item.id.toString()}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.listContainer}
+        snapToInterval={250} 
+        decelerationRate="fast" 
+        renderItem={({ item }) => (
+          <View style={styles.productContainer}>
+            <ProductImage
+              descripcion={item.descripcion}
+              style={styles.productImage}
+              baseUrl='https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/'
+            />
             <Text style={styles.productName}>{item.descripcion}</Text>
             {type === 'extra' && <Text style={styles.productPrice}>${item.pvp1.toFixed(2)}</Text>}
             <View style={styles.quantityContainer}>
-              <TouchableOpacity onPress={() => handleQuantityChange(item.id, -1, type)} style={[styles.quantityButton, {backgroundColor: Colors.primary}]} >
-                <Ionicons name="remove-outline" size={30} color= {Colors.darkSecondary} />
+              <TouchableOpacity
+                onPress={() => handleQuantityChange(item.id, -1, type)}
+                style={styles.quantityButton}>
+                <Ionicons name="remove-outline" size={20} color={Colors.textsecondary} />
               </TouchableOpacity>
               <Text style={styles.quantityText}>
                 {type === 'included' ? includedQuantities[item.id] || 0 : extraQuantities[item.id] || 0}
               </Text>
-              <TouchableOpacity onPress={() => handleQuantityChange(item.id, 1, type)} style={[styles.quantityButton, {backgroundColor: Colors.secondary}]}>
-                <Ionicons name="add-outline" size={30} color={Colors.darkPrimary} />
+              <TouchableOpacity
+                onPress={() => handleQuantityChange(item.id, 1, type)}
+                style={styles.quantityButton}>
+                <Ionicons name="add-outline" size={20} color={Colors.textsecondary} />
               </TouchableOpacity>
             </View>
-          </TouchableOpacity>
-        </View>
-      )}
-    />
+          </View>
+        )}
+      />
+      <TouchableOpacity style={styles.arrowButton} onPress={scrollRight}>
+        <Ionicons name="chevron-forward" size={32} color={Colors.textsecondary} />
+      </TouchableOpacity>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  productContainer: {
-    flex: 1,
+  container: {
+    flexDirection: 'row',
     alignItems: 'center',
-    margin: 10,
-    borderRadius: 16, 
+  },
+  listContainer: {
     paddingVertical: 20,
-    elevation: 8, 
-    backgroundColor: '#fff', 
-    shadowColor: '#000', 
-    shadowOffset: { width: 0, height: 4 }, 
-    shadowOpacity: 0.1, 
-    shadowRadius: 8, 
-    position: 'relative',
-    maxWidth: '23%', 
+    paddingHorizontal: 10,
+  },
+  productContainer: {
+    alignItems: 'center',
+    marginHorizontal: 10,
+    borderRadius: 8,
+    paddingVertical: 20,
+    elevation: 8,
+    backgroundColor: '#fff',
+    boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.2)',
+    width: 200, 
     overflow: 'hidden',
   },
-  productButton: {
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 12, 
-    overflow: 'hidden', 
-  },
   productImage: {
-    width: 190, 
-    height: 190,
+    width: 150,
+    height: 150,
     marginBottom: 10,
     borderRadius: 8,
-    resizeMode: 'cover', 
+    resizeMode: 'cover',
   },
   productName: {
-    fontSize: 18, 
-    fontWeight: '600', 
-    color: Colors.textsecondary, 
+    fontSize: 18,
+    fontWeight: '600',
+    color: Colors.textsecondary,
     marginBottom: 8,
     textAlign: 'center',
-    lineHeight: 22, 
+    lineHeight: 18,
   },
   productPrice: {
-    fontSize: 18, 
-    fontWeight: '500', 
-    color: Colors.textsecondary, 
+    fontSize: 18,
+    fontWeight: '500',
+    color: Colors.textsecondary,
     marginTop: 5,
     textAlign: 'center',
   },
@@ -93,21 +131,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 12,
+    bottom: '1%',
   },
   quantityButton: {
-    padding: 10, 
-    marginHorizontal: 12,
-    borderRadius: 8, 
-    elevation: 2, 
-  },
-  quantityButtonText: {
-    fontSize: 24, 
-    fontWeight: '500', 
+    marginHorizontal: 8,
+    borderRadius: 8,
+    elevation: 1,
+    width: 30,
+    height: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   quantityText: {
-    fontSize: 20, 
-    fontWeight: '600',
-    color: Colors.textsecondary, 
+    fontSize: 18,
+    fontWeight: '500',
+    color: Colors.textsecondary,
+  },
+  arrowButton: {
+    padding: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

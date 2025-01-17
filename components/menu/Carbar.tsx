@@ -11,9 +11,9 @@ const Carbar = () => {
 
   return (
     <View style={styles.bottomBar}>
-      <Text style={styles.totalTextLeft}>Total: {total.toFixed(2)} $</Text>
+      <Text style={styles.totalTextLeft}>TOTAL: $ {total.toFixed(2)} </Text>
       <TouchableOpacity style={styles.continueButton} onPress={() => router.replace('/menu/shopping-cart')}>
-        <Text style={styles.buttonText}>Continuar</Text>
+        <Text style={styles.buttonText}>CONTINUAR</Text>
       </TouchableOpacity>
     </View>
   );
@@ -36,23 +36,23 @@ const styles = StyleSheet.create({
     height: 80,
   },
   totalTextLeft: {
-    fontSize: 23,
-    fontWeight: '600',
+    fontSize: 30,
     color: Colors.primary,
     marginVertical: 'auto',
   },
   continueButton: {
-    backgroundColor: Colors.primary, 
+    backgroundColor: 'rgba(255, 255, 0, 0.25)', 
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
+    borderColor: Colors.primary,
+    borderWidth: 1,
   },
   buttonText: {
-    color: Colors.secondary,
-    fontSize: 23,
-    fontWeight: 'bold',
+    color: Colors.text,
+    fontSize: 30,
   },
 });
 

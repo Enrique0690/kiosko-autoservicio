@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Header from '@/components/header';
 import { Colors } from '@/constants/Colors';
 import AlertModal from '@/components/elements/AlertModal';
+import IconButton from '@/components/elements/IconButton';
 
 const PaymentMethod = () => {
   const router = useRouter();
@@ -32,24 +33,16 @@ const PaymentMethod = () => {
   return (
     <View style={styles.container}>
       <Header
-        leftButtonText="Volver"
-        leftButtonRoute="/menu/shopping-cart"
-        rightComponent={<Text style={styles.totalText}>Total: {total.toFixed(2)} $</Text>}
+        leftButtonText='VOLVER'
+        leftButtonRoute='/menu/shopping-cart'
       />
       <View style={styles.body}>
-        <Text style={styles.title}>¿Deseas facturar tu pedido?</Text>
-        <View style={styles.optionsContainer}>
-          <TouchableOpacity style={styles.optionButton} onPress={handleEndConsumer}>
-            <Ionicons name="help-circle-outline" size={80} color={Colors.primary} />
-            <Text style={styles.buttonText}>Consumidor Final</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.optionButton} onPress={handleInvoice}>
-            <Ionicons name="document-text-outline" size={80} color={Colors.primary} />
-            <Text style={styles.buttonText}>Facturas</Text>
-          </TouchableOpacity>
+        <Text style={styles.title}>¿Datos para la facturación?</Text>
+        <View style={styles.buttonContainer}>
+          <IconButton iconName='help-circle-outline' text='Consumidor Final' onPress={handleEndConsumer} />
+          <IconButton iconName='document-text-outline' text='Ingresa tus datos' onPress={handleInvoice} />
         </View>
-
-        <AlertModal visible={total === 0} message="No hay elementos en el carrito" onClose={() => router.replace('/menu')} />
+        <AlertModal visible={total === 0} message='No hay elementos en el carrito' onClose={() => router.replace('/menu')} />
       </View>
     </View>
   );
@@ -69,47 +62,22 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: 'transparent',
   },
   title: {
-    fontSize: 30,
+    marginTop: 50,
+    fontSize: 40,
     fontWeight: '700',
     color: Colors.textsecondary,
     marginBottom: 60,
     textAlign: 'center',
     letterSpacing: 1.5,
   },
-  optionsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
-    width: '100%',
-    maxWidth: 800,
-    paddingHorizontal: 20,
-  },
-  optionButton: {
-    flex: 1,
-    backgroundColor: '#4CAF50',
-    paddingVertical: 35,
-    borderRadius: 25,
-    marginHorizontal: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  buttonText: {
-    color: Colors.text,
-    fontSize: 22,
-    fontWeight: '700',
-    marginTop: 12,
-    textTransform: 'uppercase',
-    letterSpacing: 1.2,
-  },
+  buttonContainer: {
+    flexDirection: 'column',
+    width: '65%',
+    height: '50%',
+  }
 });
 
 export default PaymentMethod;
