@@ -2,7 +2,6 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { useRouter } from 'expo-router';
 import { fetchLines, fetchProducts, fetchUsers, sendOrder, fetchSettings } from './api';
 import { LoadingComponent, ErrorComponent } from './chargingstatus';
-import ArticuloWithCalcs from '../../utils/ArticuloWithCals';
 
 interface Product {
   id: number;
@@ -36,6 +35,7 @@ interface DataContextType {
   lines: any[];
   products: Product[];
   users: any[];
+  settings: any[];
   cart: CartItem[];
   addToCart: (product: Product) => void;
   removeFromCart: (id: number) => void;
@@ -189,6 +189,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     lines,
     products,
     users,
+    settings,
     cart,
     addToCart,
     removeFromCart,

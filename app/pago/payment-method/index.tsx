@@ -1,19 +1,28 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, View, Text} from 'react-native';
 import { useRouter } from 'expo-router';
 import { useDataContext } from '@/components/DataContext/datacontext';
-import { Ionicons } from '@expo/vector-icons';
 import Header from '@/components/header';
 import { Colors } from '@/constants/Colors';
 import AlertModal from '@/components/elements/AlertModal';
 import { updateOrderDetails } from '@/utils/updateOrderDetails';
 import IconButton from '@/components/elements/IconButton';
+import { calcularIVA } from '@/utils/ArticuloWithCals';
 
 const PaymentMethod = () => {
   const router = useRouter();
-  const { total, setOrderDetails } = useDataContext();
+  const { total, cart, settings, setOrderDetails } = useDataContext();
   useEffect(() => {
     updateOrderDetails(setOrderDetails);
+    const resultado = calcularIVA(cart, settings);
+    setOrderDetails((prevDetails: any) => ({
+      ...prevDetails,
+      baseIVA: resultado.baseIVA,
+      base0: resultado.base0,
+      ivaTotal: resultado.ivaTotal,
+      total: resultado.total,
+    }));
+    
   }, []);
   const handlePaymentMethod = (method: 'cash' | 'deuna' | 'card') => {
     switch (method) {
@@ -36,6 +45,7 @@ const PaymentMethod = () => {
         }));
         break;
     }
+   
     router.replace('/pago/payment-method/GlobalMethod');
   };
 

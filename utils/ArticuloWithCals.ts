@@ -1,38 +1,24 @@
-export default class ArticuloWithCalcs {
-    pvp1: number;
-    _IVA_: number;
-    pagaIva: boolean = true;
-    _METODO_REDONDEO_DECIMALES_: "NORMAL" = "NORMAL"; 
-
-    constructor(pvp1: number, _IVA_: number, pagaIva: boolean = true, metodoRedondeo: "NORMAL" = "NORMAL") {
-        this.pvp1 = pvp1;
-        this._IVA_ = _IVA_;
-        this.pagaIva = pagaIva;
-        this._METODO_REDONDEO_DECIMALES_ = metodoRedondeo;
-    }
-
-    pvp() {
-        return this.pvp1 || 0;
-    }
-
-    iva(ivaPorcentaje?: number) {
-        let iiva = ivaPorcentaje ?? this._IVA_; 
-        if (!this.pagaIva) return 0;
-
-        if (this._METODO_REDONDEO_DECIMALES_ === "NORMAL") {
-            return parseFloat(((this.pvp() * iiva) / 100).toFixed(2));
+export const calcularIVA = (cart: any[], settings: any) => {
+    let baseIVA = 0;
+    let base0 = 0;
+    let ivaTotal = 0;
+    let total = 0;
+    cart.forEach(item => {
+        if (item.pagaIva) {
+            const base = item.pvp1 / (1 + settings.porcentajeIVA / 100);
+            const iva = item.pvp1 - base;
+            baseIVA += base * item.cantidad;
+            ivaTotal += iva * item.cantidad;
+        } else {
+            base0 += item.pvp1 * item.cantidad;
         }
+    });
+    total = baseIVA + base0 + ivaTotal;
 
-        return ((this.pvp() * iiva) / 100);
-    }
-
-    pvpIVA() {
-        let h = this.pvp();
-        let iva = (h * this._IVA_ / 100);
-        return parseFloat((iva + h).toFixed(2));
-    }
-
-    neto() {
-        return this.pvp() - this.iva();
-    }
-}
+    return {
+        baseIVA: parseFloat(baseIVA.toFixed(2)),
+        base0: parseFloat(base0.toFixed(2)),
+        ivaTotal: parseFloat(ivaTotal.toFixed(2)),
+        total: parseFloat(total.toFixed(2)),
+    };
+};
