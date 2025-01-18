@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, ActivityIndicator } from 'react-native';
 import { useDataContext } from '@/components/DataContext/datacontext';
 import { Colors } from '@/constants/Colors';
-import Success from '@/components/menu/success';
-import ErrorScreen from '@/components/menu/error';
+import Success from '@/app/pago/payment-method/success';
+import ErrorScreen from '@/app/pago/payment-method/error';
 
 const CashPaymentMethod = () => {
   const { total, orderDetails, cart, sendOrderData, clearCart } = useDataContext();
