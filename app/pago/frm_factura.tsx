@@ -145,7 +145,6 @@ const frmFactura = () => {
     return Object.keys(errors).length === 0;
   };
 
-
   const handleContinuePress = () => {
     if (validateFields()) {
       setClientData({
@@ -200,16 +199,11 @@ const frmFactura = () => {
                 placeholder={documentTexts[id].placeholder}
                 value={idValue}
                 onChangeText={(text) => {
-                  if (id === 'Cedula' || id === 'Ruc' || id === 'Pasaporte') {
-                    const filteredText = text.replace(/[^0-9]/g, '');
-                    setIdValue(filteredText);
-                  } else {
-                    setIdValue(text);
-                  }
+                  const filteredText = text.replace(/[^0-9]/g, '');
+                  setIdValue(filteredText);
                 }}
                 keyboardType="numeric"
               />
-
               <TouchableOpacity
                 style={styles.icon}
                 onPress={() => handleSearchPress(idValue)}
@@ -247,7 +241,10 @@ const frmFactura = () => {
               placeholder="Email"
               keyboardType="email-address"
               value={email}
-              onChangeText={setEmail}
+              onChangeText={(text) => {
+                const filteredText = text.replace(/[^a-zA-Z0-9@._-]/g, '');
+                setEmail(filteredText);
+              }}
             />
             {fieldError.email && <Text style={styles.errorText}>{fieldError.email}</Text>}
 
