@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, ActivityIndicator, Modal, TouchableWithoutFeedback, ScrollView } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useDataContext } from '@/components/DataContext/datacontext';
 import Header from '@/components/header';
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
-import AlertModal from '@/components/elements/AlertModal';
 import { Colors } from '@/constants/Colors';
+import { validationRules } from '@/constants/ValidationsRules';
 
 const frmFactura = () => {
   const router = useRouter();
@@ -20,7 +20,12 @@ const frmFactura = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [debouncedValue, setDebouncedValue] = useState('');
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [fieldError, setFieldError] = useState<{ [key: string]: string }>({});
+  const idValueRef = useRef<TextInput>(null);
+  const razonSocialRef = useRef<TextInput>(null);
+  const telefonoRef = useRef<TextInput>(null);
+  const emailRef = useRef<TextInput>(null);
+  const addressRef = useRef<TextInput>(null);
 
   const documentTexts = {
     Cedula: {
@@ -92,26 +97,67 @@ const frmFactura = () => {
       setIsLoading(false);
     }
   };
+
   const handleDocumentTypeChange = (type: 'Cedula' | 'Ruc' | 'Pasaporte') => {
     setId(type);
     setErrorMessage('');
   };
 
-  const handleContinuePress = () => {
-    if (!idValue || !razonSocial || !telefono || !email || !address) {
-      setIsModalVisible(true);
-      return;
+  const validateFields = () => {
+    let errors: { [key: string]: string } = {};
+    if (!idValue) errors.idValue = 'Ingrese tu Cédula, RUC o Pasaporte';
+    else {
+      const idValidation = validationRules.IDNumber(idValue);
+      if (idValidation) errors.idValue = idValidation;
     }
+    if (!razonSocial) errors.razonSocial = 'Ingrese tu Razón Social';
+    else {
+      const textValidation = validationRules.text(razonSocial);
+      if (textValidation) errors.razonSocial = textValidation;
+    }
+    if (!telefono) errors.telefono = 'Ingrese tu Teléfono';
+    else {
+      const phoneValidation = validationRules.phone(telefono);
+      if (phoneValidation) errors.telefono = phoneValidation;
+    }
+    if (!email) errors.email = 'Ingrese tu Email';
+    else {
+      const emailValidation = validationRules.email(email);
+      if (emailValidation) errors.email = emailValidation;
+    }
+    if (!address) errors.address = 'Ingrese tu Dirección';
+    else {
+      const textValidation = validationRules.text(address);
+      if (textValidation) errors.address = textValidation;
+    }
+    setFieldError(errors);
+    if (errors.idValue) {
+      idValueRef.current?.focus();
+    } else if (errors.razonSocial) {
+      razonSocialRef.current?.focus();
+    } else if (errors.telefono) {
+      telefonoRef.current?.focus();
+    } else if (errors.email) {
+      emailRef.current?.focus();
+    } else if (errors.address) {
+      addressRef.current?.focus();
+    }
+    return Object.keys(errors).length === 0;
+  };
 
-    setClientData({
-      identification: idValue,
-      razonSocial,
-      telefono,
-      email,
-      address,
-    });
-    setIsInvoiceRequested(true);
-    router.replace('/pago/payment-method');
+
+  const handleContinuePress = () => {
+    if (validateFields()) {
+      setClientData({
+        identification: idValue,
+        razonSocial,
+        telefono,
+        email,
+        address,
+      });
+      setIsInvoiceRequested(true);
+      router.replace('/pago/payment-method');
+    }
   };
 
   return (
@@ -149,12 +195,21 @@ const frmFactura = () => {
           <View style={styles.inputGroup}>
             <View style={styles.inputWrapper}>
               <TextInput
+                ref={idValueRef}
                 style={styles.input}
                 placeholder={documentTexts[id].placeholder}
                 value={idValue}
-                onChangeText={setIdValue}
+                onChangeText={(text) => {
+                  if (id === 'Cedula' || id === 'Ruc' || id === 'Pasaporte') {
+                    const filteredText = text.replace(/[^0-9]/g, '');
+                    setIdValue(filteredText);
+                  } else {
+                    setIdValue(text);
+                  }
+                }}
                 keyboardType="numeric"
               />
+
               <TouchableOpacity
                 style={styles.icon}
                 onPress={() => handleSearchPress(idValue)}
@@ -162,48 +217,58 @@ const frmFactura = () => {
                 <Ionicons name="search" size={24} color="#000" />
               </TouchableOpacity>
             </View>
-            {errorMessage?.trim() !== '' && (
-              <Text style={styles.errorText}>{errorMessage}</Text>
-            )}
+            {fieldError.idValue && <Text style={styles.errorText}>{fieldError.idValue}</Text>}
 
             <TextInput
+              ref={razonSocialRef}
               style={styles.input}
               placeholder="Razón Social"
               value={razonSocial}
               onChangeText={setRazonSocial}
             />
+            {fieldError.razonSocial && <Text style={styles.errorText}>{fieldError.razonSocial}</Text>}
 
             <TextInput
+              ref={telefonoRef}
               style={styles.input}
               placeholder="Teléfono"
               keyboardType="phone-pad"
               value={telefono}
-              onChangeText={setTelefono}
+              onChangeText={(text) => {
+                const filteredText = text.replace(/[^0-9+\-\s()]/g, '');
+                setTelefono(filteredText);
+              }}
             />
+            {fieldError.telefono && <Text style={styles.errorText}>{fieldError.telefono}</Text>}
 
             <TextInput
+              ref={emailRef}
               style={styles.input}
               placeholder="Email"
               keyboardType="email-address"
               value={email}
               onChangeText={setEmail}
             />
+            {fieldError.email && <Text style={styles.errorText}>{fieldError.email}</Text>}
 
             <TextInput
+              ref={addressRef}
               style={styles.input}
               placeholder="Direccion"
               value={address}
               onChangeText={setAddress}
             />
-          </View>
+            {fieldError.address && <Text style={styles.errorText}>{fieldError.address}</Text>}
 
-          <TouchableOpacity style={styles.continueButton} onPress={handleContinuePress}>
-            <Text style={styles.continueButtonText}>CONTINUAR</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.continueButton}
+              onPress={handleContinuePress}
+            >
+              <Text style={styles.continueButtonText}>CONTINUAR</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
-      <AlertModal visible={isModalVisible} message="Todos los campos son obligatorios" onClose={() => setIsModalVisible(false)} />
-      <AlertModal visible={total === 0} message="No hay elementos en el carrito" onClose={() => router.replace('/menu')} />
     </View>
   );
 };
@@ -232,7 +297,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '85%',
-    borderRadius: 8,
+    borderRadius: 25,
     overflow: 'hidden',
     backgroundColor: Colors.neutralWhite,
     marginBottom: 20,
