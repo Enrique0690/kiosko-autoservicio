@@ -257,10 +257,7 @@ const frmFactura = () => {
             />
             {fieldError.address && <Text style={styles.errorText}>{fieldError.address}</Text>}
 
-            <TouchableOpacity
-              style={styles.continueButton}
-              onPress={handleContinuePress}
-            >
+            <TouchableOpacity style={styles.continueButton} onPress={handleContinuePress}>
               <Text style={styles.continueButtonText}>CONTINUAR</Text>
             </TouchableOpacity>
           </View>
@@ -361,7 +358,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
     borderRadius: 8,
     marginTop: 20,
-    width: '85%',
+    width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 8,
