@@ -134,16 +134,17 @@ const DynamicProducts = () => {
   const handleAddToCart = () => {
     if (!validateIncludedProducts()) return setIsModalVisible(true);
     if (currentProduct) {
+      const includedProducts = getProductsdynamic(includedQuantities);
+      const extraProducts = getProductsdynamic(extraQuantities);
+      const extraTotal = extraProducts.reduce((acc, product) => acc + product.__pvp1 * product.cantidad, 0);
       const mainProduct = {
         ...currentProduct,
-        articulosDinamicos: getProductsdynamic(includedQuantities),
+        articulosDinamicos: [...includedProducts, ...extraProducts],
         dinamico: true,
         pvpSeleccionado: 'pvp1',
+        pvp1: currentProduct.pvp1 + extraTotal,
       };
-
-      const itemsToAdd = getProductsdynamic(extraQuantities)
       addToCart(mainProduct);
-      itemsToAdd.forEach(item => addToCart(item));
       router.replace('/menu');
     }
   };
