@@ -38,8 +38,17 @@ const ProductListDynamic = ({   lineInfo,   type,   includedQuantities,   extraQ
     })
   ).current;
 
+  const isLineLimitReached = (lineDescription: string) => {
+    const lineQuantities = lineInfo.products
+      .filter((product: any) => product.lineDescription === lineDescription)
+      .map((product: any) => includedQuantities[product.id] || 0);
+    
+    const totalQuantity = lineQuantities.reduce((acc: number, qty: number) => acc + qty, 0);
+    return totalQuantity >= lineInfo.cantidadIncluye;
+  };
+
   return (
-    <View style={styles.container}  {...panResponder.panHandlers}>
+    <View style={styles.container} {...panResponder.panHandlers}>
       <TouchableOpacity style={styles.arrowButton} onPress={scrollLeft}>
         <Ionicons name="chevron-back" size={32} color={Colors.textsecondary} />
       </TouchableOpacity>
@@ -52,32 +61,38 @@ const ProductListDynamic = ({   lineInfo,   type,   includedQuantities,   extraQ
         contentContainerStyle={styles.listContainer}
         snapToInterval={250} 
         decelerationRate="fast" 
-        renderItem={({ item }) => (
-          <View style={styles.productContainer}>
-            <ProductImage
-              descripcion={item.descripcion}
-              style={styles.productImage}
-              baseUrl='https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/'
-            />
-            <Text style={styles.productName}>{item.descripcion}</Text>
-            {type === 'extra' && <Text style={styles.productPrice}><CurrencySymbol />{item.pvp1.toFixed(2)}</Text>}
-            <View style={styles.quantityContainer}>
-              <TouchableOpacity
-                onPress={() => handleQuantityChange(item.id, -1, type)}
-                style={styles.quantityButton}>
-                <Ionicons name="remove-outline" size={20} color={Colors.textsecondary} />
-              </TouchableOpacity>
-              <Text style={styles.quantityText}>
-                {type === 'included' ? includedQuantities[item.id] || 0 : extraQuantities[item.id] || 0}
-              </Text>
-              <TouchableOpacity
-                onPress={() => handleQuantityChange(item.id, 1, type)}
-                style={styles.quantityButton}>
-                <Ionicons name="add-outline" size={20} color={Colors.textsecondary} />
-              </TouchableOpacity>
+        renderItem={({ item }) => {
+          const isSelected = type === 'included' && (includedQuantities[item.id] || 0) > 0;
+          const isLineLimitReachedForProduct = isLineLimitReached(item.lineDescription); 
+          const isDisabled = type === 'included' && isLineLimitReachedForProduct && !isSelected; 
+
+          return (
+            <View style={[styles.productContainer, isDisabled && styles.disabledProduct]}>
+              <ProductImage
+                descripcion={item.descripcion}
+                style={styles.productImage}
+                baseUrl='https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/'
+              />
+              <Text style={styles.productName}>{item.descripcion}</Text>
+              {type === 'extra' && <Text style={styles.productPrice}><CurrencySymbol />{item.pvp1.toFixed(2)}</Text>}
+              <View style={styles.quantityContainer}>
+                <TouchableOpacity
+                  onPress={() => handleQuantityChange(item.id, -1, type)}
+                  style={styles.quantityButton}>
+                  <Ionicons name="remove-outline" size={20} color={Colors.textsecondary} />
+                </TouchableOpacity>
+                <Text style={styles.quantityText}>
+                  {type === 'included' ? includedQuantities[item.id] || 0 : extraQuantities[item.id] || 0}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => handleQuantityChange(item.id, 1, type)}
+                  style={styles.quantityButton}>
+                  <Ionicons name="add-outline" size={20} color={Colors.textsecondary} />
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        )}
+          );
+        }}
       />
       <TouchableOpacity style={styles.arrowButton} onPress={scrollRight}>
         <Ionicons name="chevron-forward" size={32} color={Colors.textsecondary} />
@@ -105,6 +120,10 @@ const styles = StyleSheet.create({
     boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.2)',
     width: 200, 
     overflow: 'hidden',
+  },
+  disabledProduct: {
+    backgroundColor: '#D3D3D3', 
+    opacity: 0.5, 
   },
   productImage: {
     width: 150,
