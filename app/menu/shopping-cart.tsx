@@ -6,6 +6,7 @@ import Header from '@/components/header';
 import { Colors } from '@/constants/Colors';
 import CartItem from '@/components/menu/CarItem';
 import AlertModal from '@/components/elements/AlertModal';
+import CurrencySymbol from '@/components/menu/CurrencySymbol';
 
 interface Product {
   id: number;
@@ -75,7 +76,7 @@ const ShoppingCart = () => {
 
         <View style={styles.cartDetailsContainer}>
           <Text style={styles.cartDetails}>
-            {totalItems} producto{totalItems > 1 ? 's' : ''} - Total: $ {total.toFixed(2)} 
+            {totalItems} producto{totalItems > 1 ? 's' : ''} - Total: <CurrencySymbol /> {total.toFixed(2)} 
           </Text>
         </View>
       </ScrollView>

@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import ProductImage from '@/components/menu/productimage';
 import { Colors } from '@/constants/Colors';
+import CurrencySymbol from './CurrencySymbol';
 
 interface CartItemProps {
   item: {
@@ -43,7 +44,7 @@ const CartItem = ({ item, onIncrement, onDecrement }: CartItemProps) => {
           <Ionicons name="add-outline" size={40} color={Colors.text} />
         </TouchableOpacity>
       </View>
-      <Text style={styles.productPrice}>${(item.cantidad * item.pvp1).toFixed(2)}</Text>
+      <Text style={styles.productPrice}> <CurrencySymbol />{(item.cantidad * item.pvp1).toFixed(2)}</Text>
     </View>
   );
 };

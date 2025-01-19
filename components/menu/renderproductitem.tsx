@@ -3,6 +3,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useDataContext } from "@/components/DataContext/datacontext";
 import ProductImage from './productimage';
+import CurrencySymbol from './CurrencySymbol';
 
 export interface Product {
   id: number;
@@ -44,7 +45,7 @@ function RenderProductItem({ item }: { item: Product }) {
       >
         <ProductImage descripcion={item.descripcion} style={styles.productImage} baseUrl='https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/'/>
         <Text style={styles.productName}>{item.descripcion}</Text>
-        <Text style={styles.productPrice}>${(item.pvp1).toFixed(2)}</Text>
+        <Text style={styles.productPrice}><CurrencySymbol />{(item.pvp1).toFixed(2)}</Text>
         {quantity > 0 && (
           <View style={styles.quantityBadge}>
             <Text style={styles.quantityText}>{quantity}</Text>

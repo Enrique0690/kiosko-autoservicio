@@ -1,9 +1,9 @@
-// components/menu/BottomBar.tsx
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useDataContext } from '@/components/DataContext/datacontext';
 import { Colors } from '@/constants/Colors';
+import CurrencySymbol from './CurrencySymbol';
 
 const Carbar = () => {
   const { total } = useDataContext(); 
@@ -11,7 +11,7 @@ const Carbar = () => {
 
   return (
     <View style={styles.bottomBar}>
-      <Text style={styles.totalTextLeft}>TOTAL: $ {total.toFixed(2)} </Text>
+      <Text style={styles.totalTextLeft}>TOTAL: <CurrencySymbol />{total.toFixed(2)}</Text>
       <TouchableOpacity style={styles.continueButton} onPress={() => router.replace('/menu/shopping-cart')}>
         <Text style={styles.buttonText}>CONTINUAR</Text>
       </TouchableOpacity>

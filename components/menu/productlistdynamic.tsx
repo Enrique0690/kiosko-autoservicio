@@ -3,6 +3,7 @@ import { FlatList, Text, View, TouchableOpacity, StyleSheet, Dimensions, PanResp
 import ProductImage from './productimage';
 import { Colors } from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
+import CurrencySymbol from './CurrencySymbol';
 
 const ProductListDynamic = ({   lineInfo,   type,   includedQuantities,   extraQuantities,   handleQuantityChange
 }: any) => {
@@ -59,7 +60,7 @@ const ProductListDynamic = ({   lineInfo,   type,   includedQuantities,   extraQ
               baseUrl='https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/'
             />
             <Text style={styles.productName}>{item.descripcion}</Text>
-            {type === 'extra' && <Text style={styles.productPrice}>${item.pvp1.toFixed(2)}</Text>}
+            {type === 'extra' && <Text style={styles.productPrice}><CurrencySymbol />{item.pvp1.toFixed(2)}</Text>}
             <View style={styles.quantityContainer}>
               <TouchableOpacity
                 onPress={() => handleQuantityChange(item.id, -1, type)}

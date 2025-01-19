@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 import { useDataContext } from "@/components/DataContext/datacontext";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
+import CurrencySymbol from "@/components/menu/CurrencySymbol";
 
 const Success = () => {
   const router = useRouter();
@@ -42,7 +43,7 @@ const Success = () => {
           <View style={styles.separator} />
           <Text style={styles.instructionText}>Tu número de pedido es: <Text style={styles.boldText}>{orderDetails.orderNumber}</Text></Text>
           <Text style={styles.instructionText}>Método de pago: <Text style={styles.boldText}>{orderDetails.formapago}</Text></Text>
-          <Text style={styles.instructionText}>Valor a cancelar: <Text style={styles.boldText}>$ {total.toFixed(2)} </Text></Text>
+          <Text style={styles.instructionText}>Valor a cancelar: <Text style={styles.boldText}> <CurrencySymbol />{total.toFixed(2)} </Text></Text>
         </View>
 
         <View style={styles.separator} />

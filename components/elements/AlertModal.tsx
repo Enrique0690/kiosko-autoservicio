@@ -32,12 +32,12 @@ const styles = StyleSheet.create({
   modalContent: {
     backgroundColor: 'white',
     padding: 20,
-    borderRadius: 16,
-    width: '40%',
+    borderRadius: 8,
+    width: '30%',
     alignItems: 'center',
   },
   modalMessage: {
-    fontSize: 16,
+    fontSize: 40,
     marginBottom: 20,
     textAlign: 'center',
   },
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   },
   modalButtonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 30,
   },
 });
 
