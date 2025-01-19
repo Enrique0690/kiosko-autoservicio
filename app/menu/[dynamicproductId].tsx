@@ -19,7 +19,7 @@ const DynamicProducts = () => {
   const [dynamicLinesInfo, setDynamicLinesInfo] = useState<any[]>([]);
   const [includedQuantities, setIncludedQuantities] = useState<Quantities>({});
   const [extraQuantities, setExtraQuantities] = useState<Quantities>({});
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [missingLines, setMissingLines] = useState<number[]>([]);
 
   useEffect(() => {
     const product = products.find((p) => p.id === Number(dynamicproductId));
@@ -120,19 +120,25 @@ const DynamicProducts = () => {
   };
 
   const validateIncludedProducts = () => {
-    return dynamicLinesInfo.every((line) => {
+    const incompleteLines: number[] = [];
+    dynamicLinesInfo.forEach((line, index) => {
       const selectedQuantity = Object.keys(includedQuantities)
         .filter((productId) =>
           line.products.some((p: any) => p.id === Number(productId))
         )
         .reduce((acc, productId) => acc + includedQuantities[Number(productId)], 0);
-
-      return selectedQuantity >= line.cantidadIncluye;
+      if (selectedQuantity < line.cantidadIncluye) {
+        incompleteLines.push(index);
+      }
     });
+    setMissingLines(incompleteLines);
+    return incompleteLines.length === 0;
   };
 
   const handleAddToCart = () => {
-    if (!validateIncludedProducts()) return setIsModalVisible(true);
+    const isValid = validateIncludedProducts();
+    if (!isValid) return;
+    
     if (currentProduct) {
       const includedProducts = getProductsdynamic(includedQuantities);
       const extraProducts = getProductsdynamic(extraQuantities);
@@ -174,8 +180,10 @@ const DynamicProducts = () => {
           <ProductImage descripcion={currentProduct.descripcion} style={styles.productImage} baseUrl='https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/' />
         </View>
         {dynamicLinesInfo.map((lineInfo, index) => (
-          <View key={index} style={styles.dynamicLineContainer}>
-            <Text style={styles.sectionTitle}>Incluye {lineInfo.lineDescription} - {lineInfo.cantidadIncluye} (obligatorio)</Text>
+          <View key={index} style={[styles.dynamicLineContainer, missingLines.includes(index) && styles.missingLine]}>
+            <Text style={styles.sectionTitle}>
+              Incluye {lineInfo.lineDescription} - {lineInfo.cantidadIncluye} (obligatorio)
+            </Text>
             <ProductListDynamic
               lineInfo={lineInfo}
               type="included"
@@ -204,7 +212,6 @@ const DynamicProducts = () => {
           </TouchableOpacity>
         </View>
       </ScrollView>
-      <AlertModal visible={isModalVisible} message="Seleccione los productos obligatorios" onClose={() => setIsModalVisible(false)} />
     </View>
   );
 };
@@ -288,6 +295,12 @@ const styles = StyleSheet.create({
   continueButton: {
     padding: 10,
     marginRight: 10,
+    borderRadius: 8,
+  },
+  missingLine: {
+    borderWidth: 2,
+    borderColor: 'red', 
+    backgroundColor: '#ffe6e6', 
     borderRadius: 8,
   },
 });
