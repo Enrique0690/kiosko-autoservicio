@@ -31,6 +31,7 @@
     "expo-image": "~2.0.3",
     "expo-linear-gradient": "~14.0.1",
     "expo-linking": "~7.0.3",
+    "expo-localization": "~16.0.1",
     "expo-router": "~4.0.15",
     "expo-splash-screen": "~0.29.18",
     "expo-status-bar": "~2.0.0",
@@ -53,7 +54,7 @@
     "react-native-video": "^6.9.0",
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
-    "expo-localization": "~16.0.1"
+    "expo-file-system": "~18.0.7"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

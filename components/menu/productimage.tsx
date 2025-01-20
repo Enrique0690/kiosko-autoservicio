@@ -1,44 +1,50 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, StyleProp, ViewStyle } from 'react-native';
 import { Image } from 'expo-image';
-import axios from 'axios';
+import { useImageCache } from '../DataContext/Context/ImageCacheContext';
 
 interface ProductImageProps {
   descripcion: string;
-  baseUrl: string; 
-  style: object;
+  baseUrl: string;
+  style?: object;
 }
 
 const ProductImage = ({ descripcion, baseUrl, style }: ProductImageProps) => {
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [imageUri, setImageUri] = useState<string | null>(null);
+  const { imageCache, addToCache } = useImageCache();
+  const placeholderUri = require('../../assets/images/placeholder/products.webp');
+  const possibleExtensions = ['jpg', 'png'];
 
-  const fetchImageUrl = async () => {
-    const possibleExtensions = ['jpg', 'png'];
+  const fetchImage = async () => {
     for (const ext of possibleExtensions) {
-      try {
-        const url = `${baseUrl}${descripcion}.${ext}`;
-        await axios.head(url); 
-        setImageUrl(url);
-        setIsLoading(false);
+      const url = `${baseUrl}${descripcion}.${ext}`;
+      if (imageCache.has(url)) {
+        setImageUri(imageCache.get(url) || placeholderUri);
         return;
+      }
+      try {
+        const response = await fetch(url, { method: 'HEAD' });
+        if (response.ok) {
+          addToCache(url, url);
+          setImageUri(url);
+          return;
+        }
       } catch (error) {
       }
     }
-    setImageUrl(require('../../assets/images/placeholder/products.webp')); 
-    setIsLoading(false);
+    setImageUri(placeholderUri);
   };
 
   useEffect(() => {
-    fetchImageUrl();
-  }, []);
+    fetchImage();
+  }, [descripcion, baseUrl]);
 
   return (
     <Image
-      source={isLoading ? require('../../assets/images/placeholder/products.webp') : imageUrl}
+      source={imageUri}
       style={[styles.image, style]}
-      contentFit='cover'
-      cachePolicy='memory'
+      contentFit="cover"
+      cachePolicy="disk"
     />
   );
 };

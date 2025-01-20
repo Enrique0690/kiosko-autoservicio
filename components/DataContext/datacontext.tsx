@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { useRouter } from 'expo-router';
 import { fetchLines, fetchProducts, fetchUsers, sendOrder, fetchSettings } from './api';
 import { LoadingComponent, ErrorComponent } from './chargingstatus';
+import { ImageCacheProvider } from './Context/ImageCacheContext';
 
 interface Product {
   id: number;
@@ -214,6 +215,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <DataContext.Provider value={contextValue}>
+    <ImageCacheProvider>
       {loading ? (
         <LoadingComponent />
       ) : error ? (
@@ -221,7 +223,8 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
       ) : (
         children
       )}
-    </DataContext.Provider>
+    </ImageCacheProvider>
+  </DataContext.Provider>
   );
 };
 
