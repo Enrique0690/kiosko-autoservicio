@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
-import { useDataContext } from "../../../components/DataContext";
+import { useDataContext } from "@/components/DataContext/datacontext";
 
 const ErrorScreen = () => {
     const router = useRouter();
@@ -57,14 +57,14 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 40,
         borderRadius: 8,
-        borderColor: Colors.secondary,
+        borderColor: Colors.error,
         borderWidth: 5,
         boxShadow: "15px 10px 10px rgba(0, 0, 0, 0.2)",
     },
     iconContainer: {
         width: 100,
         height: 100,
-        backgroundColor: "#28a745",
+        backgroundColor: Colors.error,
         borderRadius: 50,
         justifyContent: "center",
         alignItems: "center",
