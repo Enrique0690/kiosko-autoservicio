@@ -18,26 +18,15 @@ const Review = () => {
     <View style={styles.container}>
       <View style={styles.videoContainer}>
         {videoPlaying ? (
-          Platform.OS === 'android' ? (
-            <WebView
-              source={{
-                uri: 'https://www.youtube.com/watch?v=GQ1A6V1eoZs&pp=ygUHcnVuZm9vZA%3D%3D',
-              }}
-              style={styles.video}
-              allowsFullscreenVideo
-            />
-          ) : (
-            <View style={styles.iframeContainer}>
-              <iframe
-                src="https://www.youtube.com/embed/GQ1A6V1eoZs?autoplay=1"
-                width="100%"
-                height="100%"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-            </View>
-          )
+          <View style={styles.iframeContainer}>
+            <iframe
+              src="https://www.youtube.com/embed/GQ1A6V1eoZs?autoplay=1"
+              width="100%"
+              height="100%"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </View>
         ) : (
           <View style={styles.emptyVideo}></View> 
         )}
