@@ -1,7 +1,6 @@
 import React from "react";
 import { useRouter } from "expo-router";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { StyleSheet, View, Text } from "react-native";
 import { useDataContext } from "@/components/DataContext/datacontext";
 import { Colors } from "@/constants/Colors";
 import IconButton from "@/components/elements/IconButton";
@@ -20,7 +19,6 @@ const Pedido = () => {
   };
 
   const handleParaLlevar = () => {
-    console.log('Iniciando temporizador...');
     startTimer();
     setOrderDetails((prevDetails: any) => ({
       ...prevDetails,

@@ -1,9 +1,7 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import { View, StyleSheet, ScrollView, Text, TouchableOpacity, Image } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useState, useCallback } from 'react';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import Lines from '../../components/menu/lines';
 import Products from '../../components/menu/products';
-import { useRouter } from 'expo-router';
 import { useDataContext } from '@/components/DataContext/datacontext';
 import Header from '@/components/header';
 import { Colors } from '@/constants/Colors';
@@ -13,19 +11,10 @@ import AlertModal from '@/components/elements/AlertModal';
 const Menu = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   const { totalItems } = useDataContext();
-  const router = useRouter();
   const [modalVisible, setModalVisible] = useState(false);
   const handleCategoryPress = useCallback((idLinea: number) => {
     setSelectedCategoryId(idLinea);
   }, []);
-  const handleContinue = () => {
-    if (totalItems === 0) {
-      setModalVisible(true);
-    }
-    else {
-      router.replace('/menu/shopping-cart');
-    }
-  }
 
   return (
     <View style={styles.container}>

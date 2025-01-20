@@ -6,7 +6,6 @@ import { useDataContext } from '@/components/DataContext/datacontext';
 import ProductImage from '@/components/menu/productimage';
 import ProductListDynamic from '@/components/menu/productlistdynamic';
 import { Colors } from '@/constants/Colors';
-import AlertModal from '@/components/elements/AlertModal';
 
 type Quantities = Record<number, number>;
 
