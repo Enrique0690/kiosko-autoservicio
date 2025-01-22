@@ -82,10 +82,15 @@ const GlobalMethod = () => {
   useEffect(() => {
     const processOrder = async () => {
       const sendOrderSuccess = await SendOrder();
-      const printOrderSuccess = await PrintOrder();
       
-      if (sendOrderSuccess && printOrderSuccess) {
-        setMessage('Orden procesada correctamente');
+      if (sendOrderSuccess) {
+        const printOrderSuccess = await PrintOrder();
+        
+        if (printOrderSuccess) {
+          setMessage('Orden procesada correctamente');
+        } else {
+          setError('Hubo un error al intentar imprimir la orden');
+        }
       } else {
         setError('Hubo un error al procesar la orden');
       }
