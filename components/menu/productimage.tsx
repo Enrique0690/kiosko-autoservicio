@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, StyleProp, ViewStyle } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Image } from 'expo-image';
 import { useImageCache } from '../DataContext/Context/ImageCacheContext';
 
@@ -11,27 +11,32 @@ interface ProductImageProps {
 
 const ProductImage = ({ descripcion, baseUrl, style }: ProductImageProps) => {
   const [imageUri, setImageUri] = useState<string | null>(null);
-  const { imageCache, addToCache } = useImageCache();
+  const { getFromCache, addToCache } = useImageCache();
   const placeholderUri = require('../../assets/images/placeholder/products.webp');
   const possibleExtensions = ['jpg', 'png'];
 
   const fetchImage = async () => {
     for (const ext of possibleExtensions) {
       const url = `${baseUrl}${descripcion}.${ext}`;
-      if (imageCache.has(url)) {
-        setImageUri(imageCache.get(url) || placeholderUri);
+
+      const cachedBlob = getFromCache(url);
+      if (cachedBlob) {
+        setImageUri(URL.createObjectURL(cachedBlob));
         return;
       }
       try {
-        const response = await fetch(url, { method: 'HEAD' });
-        if (response.ok) {
-          addToCache(url, url);
-          setImageUri(url);
+        const response = await fetch(url);
+
+        if (response.ok && response.headers.get('content-type')?.startsWith('image/')) {
+          const blob = await response.blob();
+          addToCache(url, blob);
+          setImageUri(URL.createObjectURL(blob));
           return;
         }
       } catch (error) {
       }
     }
+
     setImageUri(placeholderUri);
   };
 
@@ -44,7 +49,7 @@ const ProductImage = ({ descripcion, baseUrl, style }: ProductImageProps) => {
       source={imageUri}
       style={[styles.image, style]}
       contentFit="cover"
-      cachePolicy="disk"
+      cachePolicy="none"
     />
   );
 };

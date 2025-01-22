@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, ActivityIndicator, ScrollView, KeyboardTypeOptions } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useDataContext } from '@/components/DataContext/datacontext';
 import Header from '@/components/header';
+import { fetchPersonData } from '@/components/frmfactura/fetchPersonData';
 import { Ionicons } from '@expo/vector-icons';
-import axios from 'axios';
 import { Colors } from '@/constants/Colors';
 import { validationRules } from '@/constants/ValidationsRules';
 
@@ -28,19 +28,16 @@ const frmFactura = () => {
   const addressRef = useRef<TextInput>(null);
 
   const documentTexts = {
-    Cedula: {
-      placeholder: 'Cédula',
-      helpText: 'Ingresa el número de cédula de la empresa.'
-    },
-    Ruc: {
-      placeholder: 'RUC',
-      helpText: 'Ingresa el número de RUC de la empresa.'
-    },
-    Pasaporte: {
-      placeholder: 'Pasaporte',
-      helpText: 'Ingresa el número de pasaporte de la empresa.'
-    }
+    Cedula: { placeholder: 'Cédula', helpText: 'Ingresa el número de cédula de la empresa.' },
+    Ruc: { placeholder: 'RUC', helpText: 'Ingresa el número de RUC de la empresa.' },
+    Pasaporte: { placeholder: 'Pasaporte', helpText: 'Ingresa el número de pasaporte de la empresa.' }
   };
+
+  const formFields = [{ name: 'razonSocial', ref: razonSocialRef, value: razonSocial, setValue: setRazonSocial, placeholder: 'Razón Social' },
+  { name: 'telefono', ref: telefonoRef, value: telefono, setValue: setTelefono, placeholder: 'Teléfono', keyboardType: 'phone-pad' as KeyboardTypeOptions },
+  { name: 'email', ref: emailRef, value: email, setValue: setEmail, placeholder: 'Email', keyboardType: 'email-address' as KeyboardTypeOptions },
+  { name: 'address', ref: addressRef, value: address, setValue: setAddress, placeholder: 'Dirección' }
+  ];
 
   useEffect(() => {
     const isLengthValid =
@@ -73,29 +70,13 @@ const frmFactura = () => {
   const handleSearchPress = async (value?: string) => {
     setIsLoading(true);
     setErrorMessage('');
-    try {
-      const response = await axios.get(
-        `https://ec-s1.runfoodapp.com/apps/demo-digital-mind/api/v1/sri/person-public-data/?identificacion=${idValue}`
-      );
-      const data = response.data;
-      if (data) {
-        setRazonSocial(data.razonSocial || '');
-        setTelefono(data.telefono || '');
-        setEmail(data.email || '');
-        setAddress(data.direccion || '');
-      } else {
-        throw new Error('No encontrado');
-      }
-    } catch (error) {
-      setErrorMessage(
-        `No se pudo encontrar el numero de ${id.toLowerCase()} proporcionado.`
-      );
-      setRazonSocial('');
-      setTelefono('');
-      setEmail('');
-    } finally {
-      setIsLoading(false);
-    }
+    const result = await fetchPersonData(idValue, id);
+    setRazonSocial(result.razonSocial);
+    setTelefono(result.telefono);
+    setEmail(result.email);
+    setAddress(result.address);
+    setErrorMessage(result.errorMessage);
+    setIsLoading(false);
   };
 
   const handleDocumentTypeChange = (type: 'Cedula' | 'Ruc' | 'Pasaporte') => {
@@ -105,42 +86,19 @@ const frmFactura = () => {
 
   const validateFields = () => {
     let errors: { [key: string]: string } = {};
-    if (!idValue) errors.idValue = 'Ingrese tu Cédula, RUC o Pasaporte';
+    if (!idValue) errors.idValue = 'Ingrese su Cédula, RUC o Pasaporte';
     else {
       const idValidation = validationRules.IDNumber(idValue);
       if (idValidation) errors.idValue = idValidation;
     }
-    if (!razonSocial) errors.razonSocial = 'Ingrese tu Razón Social';
-    else {
-      const textValidation = validationRules.text(razonSocial);
-      if (textValidation) errors.razonSocial = textValidation;
-    }
-    if (!telefono) errors.telefono = 'Ingrese tu Teléfono';
-    else {
-      const phoneValidation = validationRules.phone(telefono);
-      if (phoneValidation) errors.telefono = phoneValidation;
-    }
-    if (!email) errors.email = 'Ingrese tu Email';
-    else {
-      const emailValidation = validationRules.email(email);
-      if (emailValidation) errors.email = emailValidation;
-    }
-    if (!address) errors.address = 'Ingrese tu Dirección';
-    else {
-      const textValidation = validationRules.text(address);
-      if (textValidation) errors.address = textValidation;
-    }
+    if (!razonSocial) errors.razonSocial = 'Ingrese su Razón Social';
+    if (!telefono) errors.telefono = 'Ingrese su Teléfono';
+    if (!email) errors.email = 'Ingrese su Email';
+    if (!address) errors.address = 'Ingrese su Dirección';
     setFieldError(errors);
-    if (errors.idValue) {
-      idValueRef.current?.focus();
-    } else if (errors.razonSocial) {
-      razonSocialRef.current?.focus();
-    } else if (errors.telefono) {
-      telefonoRef.current?.focus();
-    } else if (errors.email) {
-      emailRef.current?.focus();
-    } else if (errors.address) {
-      addressRef.current?.focus();
+    if (Object.keys(errors).length > 0) {
+      const firstErrorField = formFields.find((field) => errors[field.name]);
+      firstErrorField?.ref.current?.focus();
     }
     return Object.keys(errors).length === 0;
   };
@@ -159,6 +117,18 @@ const frmFactura = () => {
     }
   };
 
+  const handleInputChange = (fieldName: string, value: string, setValue: (val: string) => void, keyboardType?: KeyboardTypeOptions) => {
+    if (keyboardType === 'numeric') {
+      value = value.replace(/[^0-9]/g, '');
+    }
+    setValue(value);
+    setFieldError((prevErrors) => {
+      const updatedErrors = { ...prevErrors };
+      delete updatedErrors[fieldName];
+      return updatedErrors;
+    });
+  };
+
   return (
     <View style={styles.container}>
       {isLoading && (
@@ -167,16 +137,15 @@ const frmFactura = () => {
         </View>
       )}
       <Header
-        leftButtonText="VOLVER"
+        leftButtonText="Regresar"
         leftButtonRoute={'/pago'}
+        centerText={'Ingrese sus datos'}
         rightButtonIcon={'arrow-forward-outline'}
         rightButtonRoute={'/pago/payment-method'}
-        rightButtonText={'CONTINUAR'}
+        rightButtonText={'Contirnuar'}
       />
       <ScrollView>
         <View style={styles.formContainer}>
-          <Text style={styles.formTitle}>DATOS DE FACTURACIÓN</Text>
-
           <View style={styles.buttonGroup}>
             {['Cedula', 'Ruc', 'Pasaporte'].map((type) => (
               <TouchableOpacity
@@ -190,77 +159,40 @@ const frmFactura = () => {
               </TouchableOpacity>
             ))}
           </View>
-
-          <View style={styles.inputGroup}>
-            <View style={styles.inputWrapper}>
-              <TextInput
-                ref={idValueRef}
-                style={styles.input}
-                placeholder={documentTexts[id].placeholder}
-                value={idValue}
-                onChangeText={(text) => {
-                  const filteredText = text.replace(/[^0-9]/g, '');
-                  setIdValue(filteredText);
-                }}
-                keyboardType="numeric"
-              />
-              <TouchableOpacity
-                style={styles.icon}
-                onPress={() => handleSearchPress(idValue)}
-              >
-                <Ionicons name="search" size={24} color="#000" />
-              </TouchableOpacity>
-            </View>
-            {fieldError.idValue && <Text style={styles.errorText}>{fieldError.idValue}</Text>}
-
+          <View style={styles.inputWrapper}>
             <TextInput
-              ref={razonSocialRef}
+              ref={idValueRef}
               style={styles.input}
-              placeholder="Razón Social"
-              value={razonSocial}
-              onChangeText={setRazonSocial}
+              placeholder={documentTexts[id].placeholder}
+              value={idValue}
+              onChangeText={(text) => handleInputChange('idValue', text, setIdValue, 'numeric')}
+              keyboardType="numeric"
+              maxLength={id === 'Cedula' ? 10 : id === 'Ruc' ? 13 : 8}
             />
-            {fieldError.razonSocial && <Text style={styles.errorText}>{fieldError.razonSocial}</Text>}
-
-            <TextInput
-              ref={telefonoRef}
-              style={styles.input}
-              placeholder="Teléfono"
-              keyboardType="phone-pad"
-              value={telefono}
-              onChangeText={(text) => {
-                const filteredText = text.replace(/[^0-9+\-\s()]/g, '');
-                setTelefono(filteredText);
-              }}
-            />
-            {fieldError.telefono && <Text style={styles.errorText}>{fieldError.telefono}</Text>}
-
-            <TextInput
-              ref={emailRef}
-              style={styles.input}
-              placeholder="Email"
-              keyboardType="email-address"
-              value={email}
-              onChangeText={(text) => {
-                const filteredText = text.replace(/[^a-zA-Z0-9@._-]/g, '');
-                setEmail(filteredText);
-              }}
-            />
-            {fieldError.email && <Text style={styles.errorText}>{fieldError.email}</Text>}
-
-            <TextInput
-              ref={addressRef}
-              style={styles.input}
-              placeholder="Direccion"
-              value={address}
-              onChangeText={setAddress}
-            />
-            {fieldError.address && <Text style={styles.errorText}>{fieldError.address}</Text>}
-
-            <TouchableOpacity style={styles.continueButton} onPress={handleContinuePress}>
-              <Text style={styles.continueButtonText}>CONTINUAR</Text>
+            <TouchableOpacity
+              style={styles.icon}
+              onPress={() => handleSearchPress(idValue)}
+            >
+              <Ionicons name="search" size={30} color={Colors.darkGray} />
             </TouchableOpacity>
+            {(fieldError.idValue || errorMessage) && (<Text style={styles.errorText}> {fieldError.idValue || errorMessage} </Text>)}
           </View>
+          {formFields.map((field) => (
+            <View key={field.name} style={styles.inputWrapper}>
+              <TextInput
+                ref={field.ref}
+                style={styles.input}
+                placeholder={field.placeholder}
+                value={field.value}
+                onChangeText={(text) => handleInputChange(field.name, text, field.setValue, field.keyboardType)}
+                keyboardType={field.keyboardType}
+              />
+              {fieldError[field.name] && <Text style={styles.errorText}>{fieldError[field.name]}</Text>}
+            </View>
+          ))}
+          <TouchableOpacity style={styles.continueButton} onPress={handleContinuePress}>
+            <Text style={styles.continueButtonText}>CONTINUAR</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </View>
@@ -323,21 +255,19 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    position: 'relative',
+    width: '85%',
+    marginBottom: 40,
+    position: 'relative'
   },
   input: {
-    height: 70,
+    height: 50,
     width: '100%',
     borderColor: '#ccc',
     borderWidth: 1,
     borderRadius: 8,
-    marginVertical: 20,
     paddingHorizontal: 15,
     fontSize: 25,
-    backgroundColor: '#fff',
-    elevation: 2,
+    backgroundColor: Colors.background
   },
   icon: {
     position: 'absolute',
@@ -357,14 +287,14 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
     paddingHorizontal: 40,
     borderRadius: 8,
-    marginTop: 20,
-    width: '100%',
+    marginTop: 50,
+    width: '80%',
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 8,
   },
   continueButtonText: {
-    color: Colors.primary,
+    color: Colors.secondary,
     fontSize: 30,
     fontWeight: '600',
     letterSpacing: 1,
@@ -376,11 +306,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     zIndex: 10,
   },
-  errorText: {
-    color: 'red',
-    fontSize: 20,
-    marginBottom: 15,
-  },
+  errorText: { position: 'absolute', top: '100%', left: 0, fontSize: 16, color: Colors.error },
 });
 
 export default frmFactura;

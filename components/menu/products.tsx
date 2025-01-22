@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useDataContext } from '@/components/DataContext/datacontext';
 import RenderProductItem from './renderproductitem';
+import { Colors } from '@/constants/Colors';
 
 const NUM_COLUMNS = 3;
 
@@ -47,29 +48,24 @@ const Products = ({ selectedCategoryId }: { selectedCategoryId: number | null}) 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 15,
-    backgroundColor: '#FFF',
+    backgroundColor: Colors.background,
+    paddingBottom: 30,
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 10,
   },
   noProductsText: {
     fontSize: 16,
-    color: '#BDBDBD',
+    color: Colors.textsecondary,
     textAlign: 'center',
     marginTop: 20,
   },
   itemContainer: {
     flex: 1,
-    aspectRatio: 1,
     margin: 5,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F5F5F5',
-    borderRadius: 12,
-    elevation: 4,
   },
   emptyItem: {
     backgroundColor: 'transparent',

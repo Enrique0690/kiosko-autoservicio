@@ -1,57 +1,63 @@
 import React, { useRef, useState } from 'react';
-import { FlatList, Text, View, TouchableOpacity, StyleSheet, Dimensions, PanResponder } from 'react-native';
+import { FlatList, Text, View, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import ProductImage from './productimage';
 import { Colors } from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import CurrencySymbol from './CurrencySymbol';
 
-const ProductListDynamic = ({   lineInfo,   type,   includedQuantities,   extraQuantities,   handleQuantityChange
+const ProductListDynamic = ({
+  lineInfo,
+  type,
+  includedQuantities,
+  extraQuantities,
+  handleQuantityChange,
 }: any) => {
   const flatListRef = useRef<FlatList>(null);
-  const [currentOffset, setCurrentOffset] = useState(0); 
-  const productWidth = 210; 
-  const visibleWidth = Dimensions.get('window').width - 80; 
+  const [scrollOffset, setScrollOffset] = useState(0);
+  const [isAtStart, setIsAtStart] = useState(true);
+  const [isAtEnd, setIsAtEnd] = useState(false);
+  const productWidth = 210;
+  const visibleWidth = Dimensions.get('window').width - 80;
   const productsPerPage = Math.floor(visibleWidth / productWidth);
-  const scrollLeft = () => {
-    const newOffset = Math.max(0, currentOffset - productWidth * productsPerPage);
-    flatListRef.current?.scrollToOffset({ offset: newOffset, animated: true });
-    setCurrentOffset(newOffset);
-  };
-  const scrollRight = () => {
-    const maxOffset = Math.max(0, lineInfo.products.length * productWidth - visibleWidth);
-    const newOffset = Math.min(maxOffset, currentOffset + productWidth * productsPerPage);
-    flatListRef.current?.scrollToOffset({ offset: newOffset, animated: true });
-    setCurrentOffset(newOffset);
+
+  const handleScroll = (event: any) => {
+    const offset = event.nativeEvent.contentOffset.x;
+    const contentWidth = event.nativeEvent.contentSize.width;
+    const maxOffset = contentWidth - visibleWidth;
+    setScrollOffset(offset);
+    setIsAtStart(offset <= 0);
+    setIsAtEnd(offset >= maxOffset);
   };
 
-  const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onPanResponderMove: (e, gestureState) => {
-        if (gestureState.dx > 0) {
-          scrollLeft();
-        } else if (gestureState.dx < 0) {
-          scrollRight();
-        }
-      },
-      onPanResponderRelease: () => {},
-    })
-  ).current;
+  const scrollBy = (direction: 'left' | 'right') => {
+    const newOffset =
+      direction === 'left'
+        ? Math.max(0, scrollOffset - productWidth * productsPerPage)
+        : Math.min(scrollOffset + productWidth * productsPerPage, scrollOffset + visibleWidth);
+    flatListRef.current?.scrollToOffset({ offset: newOffset, animated: true });
+  };
 
   const isLineLimitReached = (lineDescription: string) => {
     const lineQuantities = lineInfo.products
       .filter((product: any) => product.lineDescription === lineDescription)
       .map((product: any) => includedQuantities[product.id] || 0);
-    
     const totalQuantity = lineQuantities.reduce((acc: number, qty: number) => acc + qty, 0);
     return totalQuantity >= lineInfo.cantidadIncluye;
   };
 
+  const shouldShowArrows = lineInfo.products.length > productsPerPage;
+
   return (
-    <View style={styles.container} {...panResponder.panHandlers}>
-      <TouchableOpacity style={styles.arrowButton} onPress={scrollLeft}>
-        <Ionicons name="chevron-back" size={32} color={Colors.textsecondary} />
-      </TouchableOpacity>
+    <View style={styles.container}>
+      {shouldShowArrows && (
+        <TouchableOpacity
+          style={[styles.arrowButton, isAtStart && styles.disabledButton]}
+          onPress={() => scrollBy('left')}
+          disabled={isAtStart}
+        >
+          <Ionicons name="chevron-back" size={32} color={isAtStart ? Colors.neutralGray : Colors.textsecondary} />
+        </TouchableOpacity>
+      )}
       <FlatList
         ref={flatListRef}
         data={lineInfo.products}
@@ -59,26 +65,34 @@ const ProductListDynamic = ({   lineInfo,   type,   includedQuantities,   extraQ
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.listContainer}
-        snapToInterval={250} 
-        decelerationRate="fast" 
+        snapToInterval={productWidth}
+        decelerationRate="fast"
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
         renderItem={({ item }) => {
           const isSelected = type === 'included' && (includedQuantities[item.id] || 0) > 0;
-          const isLineLimitReachedForProduct = isLineLimitReached(item.lineDescription); 
-          const isDisabled = type === 'included' && isLineLimitReachedForProduct && !isSelected; 
+          const isLineLimitReachedForProduct = isLineLimitReached(item.lineDescription);
+          const isDisabled = type === 'included' && isLineLimitReachedForProduct && !isSelected;
 
           return (
             <View style={[styles.productContainer, isDisabled && styles.disabledProduct]}>
               <ProductImage
                 descripcion={item.descripcion}
                 style={styles.productImage}
-                baseUrl='https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/'
+                baseUrl="https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/"
               />
               <Text style={styles.productName}>{item.descripcion}</Text>
-              {type === 'extra' && <Text style={styles.productPrice}><CurrencySymbol />{item.pvp1.toFixed(2)}</Text>}
+              {type === 'extra' && (
+                <Text style={styles.productPrice}>
+                  <CurrencySymbol />
+                  {item.pvp1.toFixed(2)}
+                </Text>
+              )}
               <View style={styles.quantityContainer}>
                 <TouchableOpacity
                   onPress={() => handleQuantityChange(item.id, -1, type)}
-                  style={styles.quantityButton}>
+                  style={styles.quantityButton}
+                >
                   <Ionicons name="remove-outline" size={20} color={Colors.textsecondary} />
                 </TouchableOpacity>
                 <Text style={styles.quantityText}>
@@ -86,7 +100,8 @@ const ProductListDynamic = ({   lineInfo,   type,   includedQuantities,   extraQ
                 </Text>
                 <TouchableOpacity
                   onPress={() => handleQuantityChange(item.id, 1, type)}
-                  style={styles.quantityButton}>
+                  style={styles.quantityButton}
+                >
                   <Ionicons name="add-outline" size={20} color={Colors.textsecondary} />
                 </TouchableOpacity>
               </View>
@@ -94,9 +109,15 @@ const ProductListDynamic = ({   lineInfo,   type,   includedQuantities,   extraQ
           );
         }}
       />
-      <TouchableOpacity style={styles.arrowButton} onPress={scrollRight}>
-        <Ionicons name="chevron-forward" size={32} color={Colors.textsecondary} />
-      </TouchableOpacity>
+      {shouldShowArrows && (
+        <TouchableOpacity
+          style={[styles.arrowButton, isAtEnd && styles.disabledButton]}
+          onPress={() => scrollBy('right')}
+          disabled={isAtEnd}
+        >
+          <Ionicons name="chevron-forward" size={32} color={isAtEnd ? Colors.neutralGray : Colors.textsecondary} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -112,51 +133,39 @@ const styles = StyleSheet.create({
   },
   productContainer: {
     alignItems: 'center',
-    marginHorizontal: 10,
+    marginHorizontal: 20,
     borderRadius: 8,
-    paddingVertical: 20,
     elevation: 8,
     backgroundColor: '#fff',
-    boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.2)',
     width: 200, 
     overflow: 'hidden',
-  },
-  disabledProduct: {
-    backgroundColor: '#D3D3D3', 
-    opacity: 0.5, 
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
   },
   productImage: {
-    width: 150,
-    height: 150,
-    marginBottom: 10,
-    borderRadius: 8,
-    resizeMode: 'cover',
+    width: '100%', 
+    aspectRatio: 1.5, 
+    resizeMode: 'contain', 
+    borderTopRightRadius: 8,
+    borderTopLeftRadius: 8,
   },
   productName: {
     fontSize: 18,
-    fontWeight: '600',
+    marginTop: 2,
     color: Colors.textsecondary,
-    marginBottom: 8,
     textAlign: 'center',
-    lineHeight: 18,
   },
   productPrice: {
     fontSize: 18,
-    fontWeight: '500',
     color: Colors.textsecondary,
-    marginTop: 5,
     textAlign: 'center',
   },
   quantityContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 12,
-    bottom: '1%',
   },
   quantityButton: {
     marginHorizontal: 8,
     borderRadius: 8,
-    elevation: 1,
     width: 30,
     height: 30,
     alignItems: 'center',
@@ -164,13 +173,19 @@ const styles = StyleSheet.create({
   },
   quantityText: {
     fontSize: 18,
-    fontWeight: '500',
     color: Colors.textsecondary,
   },
   arrowButton: {
     padding: 5,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  disabledButton: {
+    opacity: 0.5,
+  },
+  disabledProduct: {
+    backgroundColor: '#D3D3D3',
+    opacity: 0.5,
   },
 });
 

@@ -33,11 +33,11 @@ const PaymentMethod = () => {
   return (
     <View style={styles.container}>
       <Header
-        leftButtonText='VOLVER'
+        leftButtonText='Regresar'
         leftButtonRoute='/menu/shopping-cart'
+        centerText='Selecciona tu forma de pago'
       />
       <View style={styles.body}>
-        <Text style={styles.title}>¿Datos para la facturación?</Text>
         <View style={styles.buttonContainer}>
           <IconButton iconName='help-circle-outline' text='Consumidor Final' onPress={handleEndConsumer} />
           <IconButton iconName='document-text-outline' text='Ingresa tus datos' onPress={handleInvoice} />
@@ -64,19 +64,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'transparent',
   },
-  title: {
-    marginTop: 50,
-    fontSize: 40,
-    fontWeight: '700',
-    color: Colors.textsecondary,
-    marginBottom: 60,
-    textAlign: 'center',
-    letterSpacing: 1.5,
-  },
   buttonContainer: {
     flexDirection: 'column',
-    width: '65%',
-    height: '50%',
   }
 });
 

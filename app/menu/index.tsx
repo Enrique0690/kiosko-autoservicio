@@ -19,26 +19,24 @@ const Menu = () => {
   return (
     <View style={styles.container}>
       <Header
-        leftButtonText="VOLVER"
+        leftButtonText="Regresar"
         leftButtonRoute={'/pedido'}
+        centerText="Selecciona tus productos"
         rightButtonIcon={'cart-outline'}
         rightButtonRoute={'/menu/shopping-cart'}
-        rightButtonText={'VER CARRITO (' + totalItems + ')'}
+        rightButtonText={'Ver carrrito (' + totalItems + ')'}
       />
       <View style={styles.columns}>
         <View style={styles.categoriesColumn}>
           <Lines onCategoryPress={handleCategoryPress} selectedCategoryId={selectedCategoryId} />
         </View>
         <View style={styles.productsColumn}>
-          <ScrollView contentContainerStyle={styles.scrollContent}>
+          <ScrollView>
             <Products selectedCategoryId={selectedCategoryId} />
           </ScrollView>
         </View>
       </View>
-
-      {totalItems > 0 && (
-        <Carbar />
-      )}
+      <Carbar />
       <AlertModal
         visible={modalVisible}
         message="El carrito no puede estar vacío, seleccione un producto"
@@ -60,21 +58,14 @@ const styles = StyleSheet.create({
   columns: {
     flex: 1,
     flexDirection: 'row',
-    marginBottom: 10,
   },
   categoriesColumn: {
-    flex: 1.1,
-    marginRight: 15,
+    flex: 0.8,
     backgroundColor: Colors.neutralWhite,
-    padding: 10,
-    elevation: 5,
   },
   productsColumn: {
     flex: 2.9,
-  },
-  scrollContent: {
-    paddingBottom: 80,
-  },
+  }
 });
 
 export default Menu;

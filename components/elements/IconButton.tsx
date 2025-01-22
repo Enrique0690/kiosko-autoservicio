@@ -16,8 +16,9 @@ const styles = StyleSheet.create({
   optionButton: {
     flex: 1,
     backgroundColor: Colors.secondary,
-    height: 500,
     borderRadius: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
     marginHorizontal: 20,
     marginVertical: 40,
     alignItems: 'center',

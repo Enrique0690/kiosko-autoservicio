@@ -67,7 +67,6 @@ const styles = StyleSheet.create({
   productText: {
     fontSize: 25,
     color: Colors.text,
-    fontWeight: '600',
   },
   dynamicItemsContainer: {
     marginTop: 5,
@@ -89,12 +88,10 @@ const styles = StyleSheet.create({
     fontSize: 25,
     color: Colors.text,
     marginHorizontal: 10,
-    fontWeight: '600',
   },
   productPrice: {
     fontSize: 25,
     color: Colors.textsecondary,
-    fontWeight: '600',
     textAlign: 'right',
     flex: 1,
   },

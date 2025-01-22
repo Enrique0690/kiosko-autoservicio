@@ -75,14 +75,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 40,
     borderRadius: 8,
-    borderColor: Colors.secondary,
+    borderColor: Colors.success,
     borderWidth: 5,
     boxShadow: "15px 10px 10px rgba(0, 0, 0, 0.2)",
   },
   iconContainer: {
     width: 100,
     height: 100,
-    backgroundColor: "#28a745",
     borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",
@@ -91,7 +90,7 @@ const styles = StyleSheet.create({
   successText: {
     fontSize: 40,
     fontWeight: "bold",
-    color: Colors.secondary,
+    color: Colors.success,
     marginBottom: 20,
   },
   detailsContainer: {
@@ -122,18 +121,18 @@ const styles = StyleSheet.create({
   thanksText: {
     fontSize: 35,
     textAlign: "center",
-    color: Colors.secondary,
+    color: Colors.success,
     marginBottom: 20,
   },
   newOrderButton: {
-    backgroundColor: Colors.secondary,
+    backgroundColor: Colors.success,
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 10,
     marginTop: 20,
   },
   newOrderButtonText: {
-    color: Colors.primary,
+    color: Colors.secondary,
     fontSize: 30,
   },
 });

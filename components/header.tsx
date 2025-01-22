@@ -1,10 +1,10 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Colors } from '@/constants/Colors';
 
 interface HeaderProps {
-  centerComponent?: React.ReactNode; 
+  centerText?: string; // Nuevo argumento para texto central
   leftButtonText?: string; 
   leftButtonRoute?: any;
   rightButtonText?: string;
@@ -12,7 +12,7 @@ interface HeaderProps {
   rightButtonIcon?: any;
 }
 
-const Header = ({ centerComponent, rightButtonText, rightButtonRoute, rightButtonIcon, leftButtonText, leftButtonRoute }: HeaderProps) => {
+const Header = ({ centerText, rightButtonText, rightButtonRoute, rightButtonIcon, leftButtonText, leftButtonRoute }: HeaderProps) => {
   const router = useRouter();
 
   return (
@@ -21,17 +21,10 @@ const Header = ({ centerComponent, rightButtonText, rightButtonRoute, rightButto
         <Ionicons name='arrow-back' size={35} color={Colors.primary} />
         <Text style={styles.headerText}>{leftButtonText}</Text> 
       </TouchableOpacity>
-      <View style={styles.centerContainer}>
-        {centerComponent || (
-          <Image
-            source={{ uri: 'https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/logo.png' }}
-            style={styles.logo}
-          />
-        )}
-      </View>
+       <Text style={styles.headerText}>{centerText}</Text>
       <TouchableOpacity style={styles.headerItem} onPress={() => router.replace(rightButtonRoute)}>
-        <Text style={[styles.headerText, { color: Colors.text}]}>{rightButtonText}</Text> 
-        <Ionicons name={rightButtonIcon} size={35} color={Colors.text} />
+        <Text style={styles.headerText}>{rightButtonText}</Text> 
+        <Ionicons name={rightButtonIcon} size={35} color={Colors.primary} />
       </TouchableOpacity>
     </View>
   );
@@ -56,17 +49,20 @@ const styles = StyleSheet.create({
   headerText: {
     color: Colors.primary,
     fontSize: 30,
-    fontWeight: '700',
     marginHorizontal: 5,
     letterSpacing: 1,
   },
   centerContainer: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  logo: {
-    width: 200,
-    height: 100,
+  centerText: {
+    paddingTop: 20,
+    fontSize: 35,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
   },
 });
 

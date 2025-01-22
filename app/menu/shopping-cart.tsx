@@ -23,7 +23,7 @@ const ShoppingCart = () => {
   const { cart, total, addToCart, removeFromCart, totalItems, setOrderDetails } = useDataContext();
   const router = useRouter();
   const [observations, setObservations] = useState('');
-  const inputRef = useRef<TextInput>(null); 
+  const inputRef = useRef<TextInput>(null);
   const handleIncrement = (product: CartItem) => addToCart(product);
   const [inputHeight, setInputHeight] = useState(40);
 
@@ -58,47 +58,41 @@ const ShoppingCart = () => {
   return (
     <View style={styles.container}>
       <Header
-        leftButtonText="VOLVER"
+        leftButtonText='Regresar'
         leftButtonRoute={'/menu'}
+        centerText='Confirma tu pedido'
         rightButtonIcon={'arrow-forward-outline'}
         rightButtonRoute={'/pago'}
-        rightButtonText={'PAGAR'}
+        rightButtonText={'Pagar'}
       />
-      <View style={styles.cartHeader}>
-        <Text style={styles.cartTitle}>CONFIRMA TU PEDIDO</Text>
-      </View>
       <ScrollView>
         <View style={styles.cartContainer}>
           {cart.map((item) => (
             <CartItem key={item.id} item={item} onIncrement={handleIncrement} onDecrement={handleDecrement} />
           ))}
         </View>
-
-        <View style={styles.cartDetailsContainer}>
-          <Text style={styles.cartDetails}>
-            {totalItems} producto{totalItems > 1 ? 's' : ''} - Total: <CurrencySymbol /> {total.toFixed(2)} 
-          </Text>
-        </View>
       </ScrollView>
-
+      <Text style={styles.cartDetails}>
+        {totalItems} producto{totalItems > 1 ? 's' : ''} - Total: <CurrencySymbol /> {total.toFixed(2)}
+      </Text>
       <View style={styles.observationsContainer}>
-          <Text style={styles.observationsLabel}>Observaciones:</Text>
-          <TouchableOpacity onPress={handleFocusInput}>
-            <TextInput
-              ref={inputRef}
-              placeholder="Escribe tus observaciones aquí..."
-              value={observations}
-              onChangeText={setObservations}
-              style={[styles.observationsInput, { height: inputHeight }]}
-              multiline
-              onContentSizeChange={handleContentSizeChange}
-            />
-          </TouchableOpacity>
-        </View>
+        <Text style={styles.observationsLabel}>Observaciones:</Text>
+        <TouchableOpacity onPress={handleFocusInput}>
+          <TextInput
+            ref={inputRef}
+            placeholder="Escribe tus observaciones aquí..."
+            value={observations}
+            onChangeText={setObservations}
+            style={[styles.observationsInput, { height: inputHeight }]}
+            multiline
+            onContentSizeChange={handleContentSizeChange}
+          />
+        </TouchableOpacity>
+      </View>
 
       <View style={styles.footer}>
         <TouchableOpacity style={styles.payButton} onPress={handlePay}>
-          <Text style={styles.payButtonText}>PAGAR</Text>
+          <Text style={styles.payButtonText}>PAGAR (<CurrencySymbol />{total.toFixed(2)})</Text>
         </TouchableOpacity>
       </View>
 
@@ -110,27 +104,13 @@ const ShoppingCart = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F7F7',
-  },
-  cartHeader: {
-    marginTop: 10,
-    marginBottom: 20,
-    paddingBottom: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-  },
-  cartTitle: {
-    paddingTop: 20,
-    fontSize: 40,
-    fontWeight: 'bold',
-    color: '#333',
-    textAlign: 'center',
   },
   cartDetails: {
     fontSize: 20,
-    color: '#777',
+    color: Colors.darkGray,
     marginTop: 5,
     marginHorizontal: 15,
+    textAlign: 'right',
   },
   cartContainer: {
     flex: 1,
@@ -145,14 +125,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   payButton: {
-    backgroundColor: Colors.secondary,
+    backgroundColor: Colors.primary,
     padding: 20,
     borderRadius: 8,
     flex: 1,
     alignItems: 'center',
   },
   payButtonText: {
-    color: Colors.primary,
+    color: Colors.secondary,
     fontSize: 30,
     fontWeight: 'bold',
   },
@@ -162,7 +142,6 @@ const styles = StyleSheet.create({
   },
   observationsLabel: {
     fontSize: 30,
-    fontWeight: 'bold',
     color: '#333',
   },
   observationsInput: {
@@ -176,11 +155,11 @@ const styles = StyleSheet.create({
     fontSize: 25,
   },
   cartDetailsContainer: {
-    flexDirection: 'row', 
-    justifyContent: 'flex-end', 
-    width: '100%', 
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    width: '100%',
     paddingHorizontal: 15,
-    marginBottom: 20, 
+    marginBottom: 20,
   }
 });
 

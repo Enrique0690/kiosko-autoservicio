@@ -1,22 +1,30 @@
 import React, { createContext, useContext, useMemo, useState } from 'react';
 
 interface ImageCacheContextType {
-  imageCache: Map<string, string>;
-  addToCache: (key: string, value: string) => void;
+  imageCache: Map<string, Blob>;
+  addToCache: (key: string, blob: Blob) => void;
+  getFromCache: (key: string) => Blob | undefined;
 }
 
 const ImageCacheContext = createContext<ImageCacheContextType | undefined>(undefined);
 
 export const ImageCacheProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [imageCache] = useState<Map<string, string>>(new Map());
+  const [imageCache] = useState<Map<string, Blob>>(new Map());
 
-  const addToCache = (key: string, value: string) => {
+  const addToCache = (key: string, blob: Blob) => {
     if (!imageCache.has(key)) {
-      imageCache.set(key, value);
+      imageCache.set(key, blob);
     }
   };
 
-  const value = useMemo(() => ({ imageCache, addToCache }), [imageCache]);
+  const getFromCache = (key: string): Blob | undefined => {
+    return imageCache.get(key);
+  };
+
+  const value = useMemo(
+    () => ({ imageCache, addToCache, getFromCache }),
+    [imageCache]
+  );
 
   return <ImageCacheContext.Provider value={value}>{children}</ImageCacheContext.Provider>;
 };

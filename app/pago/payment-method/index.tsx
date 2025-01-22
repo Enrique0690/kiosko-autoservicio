@@ -52,11 +52,11 @@ const PaymentMethod = () => {
   return (
     <View style={styles.container}>
       <Header
-        leftButtonText='volver'
+        leftButtonText='Regresar'
         leftButtonRoute={'/pago'}
+        centerText='Elige el método de Pago'
       />
       <View style={styles.body}>
-          <Text style={styles.title}>ELIGE EL MÉTODO DE PAGO</Text>
           <View style={styles.buttonContainer}>
             <IconButton iconName='cash-outline' text='Pago en caja' onPress={() => handlePaymentMethod('cash')} />
             <IconButton iconName='qr-code-outline' text='Deuna' onPress={() => handlePaymentMethod('deuna')} />

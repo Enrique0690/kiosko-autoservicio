@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     height: 250,
     borderRadius: 10,
     borderWidth: 5,
-    borderColor: Colors.primary,
+    borderColor: Colors.secondary,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 255, 0, 0.05)', 
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   buttonText: {
-    color: Colors.primary,
+    color: Colors.secondary,
     fontSize: 60,
     fontWeight: '600',
     textTransform: 'uppercase',

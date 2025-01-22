@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Button, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useDataContext } from '@/components/DataContext/datacontext';
@@ -19,6 +19,7 @@ const DynamicProducts = () => {
   const [includedQuantities, setIncludedQuantities] = useState<Quantities>({});
   const [extraQuantities, setExtraQuantities] = useState<Quantities>({});
   const [missingLines, setMissingLines] = useState<number[]>([]);
+  const [showFeedback, setShowFeedback] = useState<boolean>(false);
 
   useEffect(() => {
     const product = products.find((p) => p.id === Number(dynamicproductId));
@@ -53,6 +54,21 @@ const DynamicProducts = () => {
     });
     setTotal(newTotal);
   }, [extraQuantities, products, currentProduct]);
+
+  useEffect(() => {
+    const incompleteLines: number[] = [];
+    dynamicLinesInfo.forEach((line, index) => {
+      const selectedQuantity = Object.keys(includedQuantities)
+        .filter((productId) =>
+          line.products.some((p: any) => p.id === Number(productId))
+        )
+        .reduce((acc, productId) => acc + includedQuantities[Number(productId)], 0);
+      if (selectedQuantity < line.cantidadIncluye) {
+        incompleteLines.push(index);
+      }
+    });
+    setMissingLines(incompleteLines);
+  }, [includedQuantities, dynamicLinesInfo]);
 
   const handleQuantityChange = (productId: number, delta: number, type: 'included' | 'extra') => {
     if (type === 'included') {
@@ -136,8 +152,8 @@ const DynamicProducts = () => {
 
   const handleAddToCart = () => {
     const isValid = validateIncludedProducts();
-    if (!isValid) return;
-    
+    if (!isValid) return setShowFeedback(true);
+
     if (currentProduct) {
       const includedProducts = getProductsdynamic(includedQuantities);
       const extraProducts = getProductsdynamic(extraQuantities);
@@ -150,7 +166,8 @@ const DynamicProducts = () => {
         pvp1: currentProduct.pvp1 + extraTotal,
       };
       addToCart(mainProduct);
-      router.replace('/menu');
+      const LineId = currentProduct.idLinea;
+      router.replace(`/menu?lineId=${LineId}`);
     }
   };
 
@@ -165,7 +182,9 @@ const DynamicProducts = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.headerItem} onPress={() => router.replace('/menu')}>
+        <TouchableOpacity style={styles.headerItem} onPress={() => {
+          const LineId = currentProduct?.idLinea;
+          router.replace(`/menu?lineId=${LineId}`);}}>
           <Ionicons name="arrow-back" size={35} color={Colors.primary} />
           <Text style={styles.headerText}>{currentProduct.descripcion}</Text>
         </TouchableOpacity>
@@ -179,7 +198,13 @@ const DynamicProducts = () => {
           <ProductImage descripcion={currentProduct.descripcion} style={styles.productImage} baseUrl='https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/' />
         </View>
         {dynamicLinesInfo.map((lineInfo, index) => (
-          <View key={index} style={[styles.dynamicLineContainer, missingLines.includes(index) && styles.missingLine]}>
+          <View
+            key={index}
+            style={[
+              styles.dynamicLineContainer,
+              missingLines.includes(index) && showFeedback && styles.missingLine,
+            ]}
+          >
             <Text style={styles.sectionTitle}>
               Incluye {lineInfo.lineDescription} - {lineInfo.cantidadIncluye} (obligatorio)
             </Text>
@@ -192,7 +217,6 @@ const DynamicProducts = () => {
             />
           </View>
         ))}
-
         {dynamicLinesInfo.map((lineInfo, index) => (
           <View key={index} style={styles.dynamicLineContainer}>
             <Text style={styles.sectionTitle}>Extras {lineInfo.lineDescription}</Text>
@@ -279,8 +303,8 @@ const styles = StyleSheet.create({
   },
   productImage: {
     marginVertical: 80,
-    width: 500,
-    height: 500,
+    width: 400,
+    height: 400,
     marginBottom: 10,
     borderRadius: 8,
     resizeMode: 'cover',
@@ -298,8 +322,8 @@ const styles = StyleSheet.create({
   },
   missingLine: {
     borderWidth: 2,
-    borderColor: 'red', 
-    backgroundColor: '#ffe6e6', 
+    borderColor: 'red',
+    backgroundColor: '#ffe6e6',
     borderRadius: 8,
   },
 });
