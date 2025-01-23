@@ -10,7 +10,6 @@ export default function Layout() {
       <View style={[styles.safeArea, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
         <Stack
           screenOptions={{
-             
             animation: 'fade',
             headerShown: false,
             contentStyle: styles.stackContent,

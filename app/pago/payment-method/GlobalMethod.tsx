@@ -56,25 +56,16 @@ const GlobalMethod = () => {
   };
   
   const PrintOrder = async () => {
-    if (process.versions && process.versions.electron) {
-      const { ipcRenderer } = window.require('electron');
+    if (window.electronAPI) {
       try {
-        const pdfPath = await ipcRenderer.invoke('print-order-details', {
-          date: orderDetails.date,
-          orderNumber: orderDetails.orderNumber,
-          uniqueCode: orderDetails.uniqueCode,
-          formapago: orderDetails.formapago,
-          formaDespacho: orderDetails.formaDespacho,
-          total: total.toFixed(2),
-        });
-        console.log('datos enviados: ', pdfPath);
+        await window.electronAPI.printOrder(orderDetails);
         return true;
       } catch (error) {
         console.error('Error al imprimir:', error);
         return false;
       }
     } else {
-      console.log('No esta en el entorno de Electron');
+      console.log('No está en el entorno de Electron');
       return true;
     }
   };

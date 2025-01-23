@@ -23,7 +23,7 @@ const CartItem = ({ item, onIncrement, onDecrement }: CartItemProps) => {
       <ProductImage
         descripcion={item.descripcion}
         style={styles.productImage}
-        baseUrl="https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/"
+        type='articulo'
       />
       <View style={styles.descriptionContainer}>
         <Text style={styles.productText}>{item.descripcion}</Text>

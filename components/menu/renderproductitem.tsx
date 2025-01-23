@@ -41,7 +41,7 @@ function RenderProductItem({ item }: { item: Product }) {
   return (
     <View style={styles.productContainer}>
       <TouchableOpacity onPress={handlePress} style={styles.productButton}       >
-        <ProductImage descripcion={item.descripcion} style={styles.productImage} baseUrl='https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/' />
+        <ProductImage descripcion={item.descripcion} style={styles.productImage} type='articulo' />
         <Text style={styles.productName}>{item.descripcion}</Text>
         <Text style={styles.productPrice}><CurrencySymbol />{(item.pvp1).toFixed(2)}</Text>
         {quantity > 0 && (

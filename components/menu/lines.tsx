@@ -48,7 +48,7 @@ const Lines = ({ onCategoryPress, selectedCategoryId }: {
               <ProductImage
                 descripcion={item.descripcion}
                 style={styles.categoryImage}
-                baseUrl='https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/Lineas/'
+                type='linea'
               />
               <Text
                 style={[

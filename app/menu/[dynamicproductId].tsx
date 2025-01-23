@@ -195,7 +195,7 @@ const DynamicProducts = () => {
 
       <ScrollView style={styles.content}>
         <View style={styles.imageContainer}>
-          <ProductImage descripcion={currentProduct.descripcion} style={styles.productImage} baseUrl='https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/' />
+          <ProductImage descripcion={currentProduct.descripcion} style={styles.productImage} type='articulo' />
         </View>
         {dynamicLinesInfo.map((lineInfo, index) => (
           <View

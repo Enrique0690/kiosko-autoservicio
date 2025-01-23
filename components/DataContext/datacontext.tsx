@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'expo-router';
-import { fetchLines, fetchProducts, fetchUsers, sendOrder, fetchSettings } from './api';
+import createApiService from './api';
 import { LoadingComponent, ErrorComponent } from './chargingstatus';
 import { ImageCacheProvider } from './Context/ImageCacheContext';
 
@@ -83,13 +83,14 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
 
   const fetchData = async () => {
+    const apiService = await createApiService();
     setLoading(true);
     setError(null);
     try {
-      const fetchedLines = await fetchLines();
-      let fetchedProducts = await fetchProducts();
-      const fetchedUsers = await fetchUsers();
-      const fetchedSettings = await fetchSettings();
+      const fetchedLines = await apiService.fetchLines();
+      let fetchedProducts = await apiService.fetchProducts();
+      const fetchedUsers = await apiService.fetchUsers();
+      const fetchedSettings = await apiService.fetchSettings();
       const porcentajeIVA = fetchedSettings.porcentajeIVA / 100;
       fetchedProducts = fetchedProducts.map((product: Product) => ({
         ...product,
@@ -107,8 +108,9 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const sendOrderData = async (orderData: any) => {
+    const apiService = await createApiService();
     try {
-      await sendOrder(orderData);
+      await apiService.sendOrder(orderData);
     } catch (err) {
       console.error('Error al enviar los datos del pedido:', err);
       throw err;  
