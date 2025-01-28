@@ -4,6 +4,7 @@ import { StyleSheet, View, Text } from "react-native";
 import { useDataContext } from "@/components/DataContext/datacontext";
 import { Colors } from "@/constants/Colors";
 import IconButton from "@/components/elements/IconButton";
+import Typography from "@/components/elements/Typography";
 
 const Pedido = () => {
   const router = useRouter();
@@ -29,10 +30,10 @@ const Pedido = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>¿Cómo deseas disfrutar tu comida?</Text>
+      <Typography variant='largest' color={Colors.textsecondary} t='¿Quieres comer aquí o para llevar?' />
       <View style={styles.optionsContainer}>
-        <IconButton iconName="restaurant-outline" text="Comer aquí" onPress={handleComerAqui} />
-        <IconButton iconName="bag-outline" text="Para llevar" onPress={handleParaLlevar} />
+        <IconButton iconName="restaurant-outline" text="COMER AQUI" onPress={handleComerAqui} />
+        <IconButton iconName="bag-outline" text="PARA LLEVAR" onPress={handleParaLlevar} />
       </View>
     </View>
   );
@@ -45,14 +46,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: Colors.neutralWhite,
     paddingHorizontal: 20,
-  },
-  title: {
-    fontSize: 60,
-    fontWeight: "700", 
-    color: Colors.textsecondary,
-    marginBottom: 50,
-    textAlign: "center",
-    letterSpacing: 1.5, 
   },
   optionsContainer: {
     marginTop: 150,

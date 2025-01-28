@@ -7,6 +7,7 @@ import { Colors } from '@/constants/Colors';
 import CartItem from '@/components/menu/CarItem';
 import AlertModal from '@/components/elements/AlertModal';
 import CurrencySymbol from '@/components/menu/CurrencySymbol';
+import Typography from '@/components/elements/Typography';
 
 interface Product {
   id: number;
@@ -72,12 +73,13 @@ const ShoppingCart = () => {
           ))}
         </View>
       </ScrollView>
-      <Text style={styles.cartDetails}>
-        {totalItems} producto{totalItems > 1 ? 's' : ''} - Total: <CurrencySymbol /> {total.toFixed(2)}
-      </Text>
+      <View style={styles.totalContainer}>
+        <Typography variant='body' color={Colors.text} t={`${totalItems} producto${totalItems > 1 ? 's' : ''} - Total: $${total.toFixed(2)}`} />
+      </View>
       <View style={styles.observationsContainer}>
-        <Text style={styles.observationsLabel}>Observaciones:</Text>
-        <TouchableOpacity onPress={handleFocusInput}>
+        <Typography variant='subtitle' color={Colors.text} t='Observaciones:' />
+      </View>
+      <TouchableOpacity onPress={handleFocusInput}>
           <TextInput
             ref={inputRef}
             placeholder="Escribe tus observaciones aquí..."
@@ -88,11 +90,10 @@ const ShoppingCart = () => {
             onContentSizeChange={handleContentSizeChange}
           />
         </TouchableOpacity>
-      </View>
 
       <View style={styles.footer}>
         <TouchableOpacity style={styles.payButton} onPress={handlePay}>
-          <Text style={styles.payButtonText}>PAGAR (<CurrencySymbol />{total.toFixed(2)})</Text>
+          <Typography variant='subtitle' color={Colors.secondary} t={`Pagar ${total.toFixed(2)}`} />
         </TouchableOpacity>
       </View>
 
@@ -137,8 +138,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   observationsContainer: {
+    alignItems: 'flex-start',
     paddingHorizontal: 15,
-    marginBottom: 20,
   },
   observationsLabel: {
     fontSize: 30,
@@ -155,6 +156,13 @@ const styles = StyleSheet.create({
     fontSize: 25,
   },
   cartDetailsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    width: '100%',
+    paddingHorizontal: 15,
+    marginBottom: 20,
+  },
+  totalContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
     width: '100%',

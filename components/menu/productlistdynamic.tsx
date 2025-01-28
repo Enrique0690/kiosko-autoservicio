@@ -4,6 +4,8 @@ import ProductImage from './productimage';
 import { Colors } from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import CurrencySymbol from './CurrencySymbol';
+import Typography from '../elements/Typography';
+import QuantityControls from '../elements/QuantityControls';
 
 const ProductListDynamic = ({
   lineInfo,
@@ -79,31 +81,23 @@ const ProductListDynamic = ({
               <ProductImage
                 descripcion={item.descripcion}
                 style={styles.productImage}
-                baseUrl="https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/"
+                type='articulo'
               />
-              <Text style={styles.productName}>{item.descripcion}</Text>
+              <Typography variant='body' color={Colors.text} t={item.descripcion} />
               {type === 'extra' && (
-                <Text style={styles.productPrice}>
-                  <CurrencySymbol />
-                  {item.pvp1.toFixed(2)}
-                </Text>
+                <Typography variant='body' color={Colors.text} t={`$${(item.pvp1).toFixed(2)}`} />
               )}
               <View style={styles.quantityContainer}>
-                <TouchableOpacity
-                  onPress={() => handleQuantityChange(item.id, -1, type)}
-                  style={styles.quantityButton}
-                >
-                  <Ionicons name="remove-outline" size={20} color={Colors.textsecondary} />
-                </TouchableOpacity>
-                <Text style={styles.quantityText}>
-                  {type === 'included' ? includedQuantities[item.id] || 0 : extraQuantities[item.id] || 0}
-                </Text>
-                <TouchableOpacity
-                  onPress={() => handleQuantityChange(item.id, 1, type)}
-                  style={styles.quantityButton}
-                >
-                  <Ionicons name="add-outline" size={20} color={Colors.textsecondary} />
-                </TouchableOpacity>
+              <QuantityControls
+                quantity={
+                  type === 'included'
+                    ? includedQuantities[item.id] || 0
+                    : extraQuantities[item.id] || 0
+                }
+                onIncrease={() => handleQuantityChange(item.id, 1, type)}
+                onDecrease={() => handleQuantityChange(item.id, -1, type)}
+                disabled={isDisabled}
+              />
               </View>
             </View>
           );

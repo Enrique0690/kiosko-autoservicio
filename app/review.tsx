@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'expo-router';
-import { StyleSheet, View, Text, Platform, Animated, TouchableOpacity } from 'react-native';
-import { WebView } from 'react-native-webview'; 
+import { StyleSheet, View, Animated } from 'react-native';
 import NextButton from '@/components/elements/NextButton';
 
 const Review = () => {

@@ -163,6 +163,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
       setIdleTimeLeft((prev) => {
         if (prev >= 1800) {
           clearInterval(interval);
+          clearCart();
           router.replace('/'); 
           return 0;
         }

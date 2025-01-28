@@ -4,6 +4,7 @@ import { useDataContext } from '@/components/DataContext/datacontext';
 import ProductImage from './productimage';
 import { Colors } from '@/constants/Colors';
 import { useLocalSearchParams } from 'expo-router';
+import Typography from '../elements/Typography';
 
 const Lines = ({ onCategoryPress, selectedCategoryId }: { 
   onCategoryPress: (id: number) => void;
@@ -50,14 +51,7 @@ const Lines = ({ onCategoryPress, selectedCategoryId }: {
                 style={styles.categoryImage}
                 type='linea'
               />
-              <Text
-                style={[
-                  styles.categoryText,
-                  item.id === selectedCategoryId && styles.selectedCategoryText,
-                ]}
-              >
-                {item.descripcion}
-              </Text>
+              <Typography variant='body' color={Colors.text} t={item.descripcion} />
             </TouchableOpacity>
           </View>
         ))}
@@ -104,11 +98,6 @@ const styles = StyleSheet.create({
   selectedCategoryImage: {
     borderColor: Colors.primary,
     borderWidth: 2,
-  },
-  categoryText: {
-    fontSize: 30,
-    color: '#555',
-    textAlign: 'center',
   },
   selectedCategoryText: {
     color: Colors.primary,

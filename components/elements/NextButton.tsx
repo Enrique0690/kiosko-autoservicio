@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, Pressable, View } from 'react-native';
 import { Colors } from '@/constants/Colors';
+import Typography from './Typography';
 
 interface CustomButtonProps {
     text: string;
@@ -14,11 +15,11 @@ const NextButton = ({ text, onPress, bottomPercentage = 20 }: CustomButtonProps)
             <Pressable
                 style={({ pressed }) => [
                     styles.button,
-                    pressed && styles.buttonPressed,    
+                    pressed && styles.buttonPressed,
                 ]}
                 onPress={onPress}
             >
-                <Text style={styles.buttonText}>{text}</Text>
+                <Typography variant='title' color={Colors.primary} t={text} />
             </Pressable>
         </View>
     );

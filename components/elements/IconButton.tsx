@@ -1,13 +1,14 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
+import Typography from './Typography';
 
 const IconButton = ({ iconName, text, onPress }: any) => {
   return (
     <TouchableOpacity style={styles.optionButton} onPress={onPress}>
       <Ionicons name={iconName} size={150} color={Colors.primary} />
-      <Text style={styles.buttonText}>{text}</Text>
+      <Typography variant='title' color={Colors.primary} t={text} />
     </TouchableOpacity>
   );
 };

@@ -1,11 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { useDataContext } from '@/components/DataContext/datacontext';
 import RenderProductItem from './renderproductitem';
 import { Colors } from '@/constants/Colors';
 
 const NUM_COLUMNS = 3;
-
+const { height: screenHeight } = Dimensions.get('window');
 const Products = ({ selectedCategoryId }: { selectedCategoryId: number | null}) => {
   const { products } = useDataContext();
   const filteredProducts = products.filter((product) => product.habilitado && product.idLinea === selectedCategoryId  );
@@ -49,8 +49,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
-    paddingBottom: 30,
-  },
+    minHeight: screenHeight,
+  }, 
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',

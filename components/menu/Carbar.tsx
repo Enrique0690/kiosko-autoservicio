@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { useDataContext } from '@/components/DataContext/datacontext';
 import { Colors } from '@/constants/Colors';
 import CurrencySymbol from './CurrencySymbol';
+import Typography from '../elements/Typography';
 
 const Carbar = () => {
   const { total } = useDataContext(); 
@@ -11,9 +12,9 @@ const Carbar = () => {
 
   return (
     <View style={styles.bottomBar}>
-      <Text style={styles.totalTextLeft}>TOTAL: <CurrencySymbol />{total.toFixed(2)}</Text>
+      <Typography variant='subtitle' color={Colors.text} t={`TOTAL: $${total.toFixed(2)}`} />
       <TouchableOpacity style={styles.continueButton} onPress={() => router.replace('/menu/shopping-cart')}>
-        <Text style={styles.buttonText}>CONTINUAR</Text>
+        <Typography variant='title' color={Colors.primary} t='CONTINUAR' />
       </TouchableOpacity>
     </View>
   );

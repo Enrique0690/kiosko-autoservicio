@@ -6,6 +6,7 @@ import { useDataContext } from '@/components/DataContext/datacontext';
 import ProductImage from '@/components/menu/productimage';
 import ProductListDynamic from '@/components/menu/productlistdynamic';
 import { Colors } from '@/constants/Colors';
+import Typography from '@/components/elements/Typography';
 
 type Quantities = Record<number, number>;
 
@@ -185,11 +186,11 @@ const DynamicProducts = () => {
         <TouchableOpacity style={styles.headerItem} onPress={() => {
           const LineId = currentProduct?.idLinea;
           router.replace(`/menu?lineId=${LineId}`);}}>
-          <Ionicons name="arrow-back" size={35} color={Colors.primary} />
-          <Text style={styles.headerText}>{currentProduct.descripcion}</Text>
+          <Ionicons name="arrow-back" size={40} color={Colors.primary} />
+          <Typography variant='subtitle' color={Colors.primary} t={currentProduct.descripcion} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.continueButton} onPress={handleAddToCart}>
-          <Text style={styles.headerText}>CONTINUAR</Text>
+          <Typography variant='subtitle' color={Colors.primary} t='CONTINUAR' />
         </TouchableOpacity>
       </View>
 
@@ -205,9 +206,7 @@ const DynamicProducts = () => {
               missingLines.includes(index) && showFeedback && styles.missingLine,
             ]}
           >
-            <Text style={styles.sectionTitle}>
-              Incluye {lineInfo.lineDescription} - {lineInfo.cantidadIncluye} (obligatorio)
-            </Text>
+            <Typography variant='subtitle' color={Colors.textsecondary} t={`Incluye ${lineInfo.lineDescription} - ${lineInfo.cantidadIncluye} (obligatorio)`} />
             <ProductListDynamic
               lineInfo={lineInfo}
               type="included"
@@ -219,7 +218,7 @@ const DynamicProducts = () => {
         ))}
         {dynamicLinesInfo.map((lineInfo, index) => (
           <View key={index} style={styles.dynamicLineContainer}>
-            <Text style={styles.sectionTitle}>Extras {lineInfo.lineDescription}</Text>
+            <Typography variant='subtitle' color={Colors.textsecondary} t={`Extras ${lineInfo.lineDescription}`} />
             <ProductListDynamic
               lineInfo={lineInfo}
               type="extra"
@@ -290,14 +289,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   payButton: {
-    backgroundColor: Colors.secondary,
+    backgroundColor: Colors.primary,
     padding: 20,
     borderRadius: 8,
     flex: 1,
     alignItems: 'center',
   },
   payButtonText: {
-    color: Colors.primary,
+    color: Colors.secondary,
     fontSize: 23,
     fontWeight: 'bold',
   },

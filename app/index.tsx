@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 import { StyleSheet, View, Text, Pressable } from 'react-native';
 import Carousel from '@/components/carousel';
 import { Colors } from '@/constants/Colors';
+import Typography from '@/components/elements/Typography';
 
 const Index = () => {
   const router = useRouter();
@@ -19,7 +20,7 @@ const Index = () => {
           style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
           onPress={handleStart}
         >
-          <Text style={styles.buttonText}>Comenzar</Text>
+          <Typography variant='largest' color={Colors.secondary} t='COMENZAR'></Typography>
         </Pressable>
       </View>
     </>
@@ -57,15 +58,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 5,
-  },
-  buttonText: {
-    color: Colors.secondary,
-    fontSize: 60,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    textShadowColor: 'rgba(0, 0, 0, 0.8)', 
-    textShadowOffset: { width: 2, height: 2 }, 
-    textShadowRadius: 3, 
   },
 });
 

@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useDataContext } from "@/components/DataContext/datacontext";
+import { useDataContext } from '@/components/DataContext/datacontext';
 import ProductImage from './productimage';
-import CurrencySymbol from './CurrencySymbol';
 import { Colors } from '@/constants/Colors';
+import Typography from '../elements/Typography';
 
 export interface Product {
   id: number;
@@ -15,6 +15,7 @@ export interface Product {
   pvp1: number;
   dinamicoLineas?: any[];
 }
+
 function RenderProductItem({ item }: { item: Product }) {
   const router = useRouter();
   const { addToCart, cart } = useDataContext();
@@ -24,7 +25,7 @@ function RenderProductItem({ item }: { item: Product }) {
   }
 
   const getItemQuantity = (productId: number) => {
-    const itemInCart = cart.find(item => item.id === productId);
+    const itemInCart = cart.find((item) => item.id === productId);
     return itemInCart ? itemInCart.cantidad : 0;
   };
 
@@ -40,10 +41,27 @@ function RenderProductItem({ item }: { item: Product }) {
 
   return (
     <View style={styles.productContainer}>
-      <TouchableOpacity onPress={handlePress} style={styles.productButton}       >
-        <ProductImage descripcion={item.descripcion} style={styles.productImage} type='articulo' />
-        <Text style={styles.productName}>{item.descripcion}</Text>
-        <Text style={styles.productPrice}><CurrencySymbol />{(item.pvp1).toFixed(2)}</Text>
+      <TouchableOpacity onPress={handlePress} style={styles.productButton}>
+        {/* Imagen del producto */}
+        <ProductImage descripcion={item.descripcion} style={styles.productImage} type="articulo" />
+        
+        {/* Contenedor de la descripción */}
+        <View style={styles.descriptionContainer}>
+          <Typography
+            variant="body"
+            color={Colors.text}
+            t={item.descripcion}
+          />
+        </View>
+
+        {/* Precio */}
+        <Typography
+          variant="body"
+          color={Colors.primary}
+          t={`$${item.pvp1.toFixed(2)}`}
+        />
+
+        {/* Cantidad en el carrito */}
         {quantity > 0 && (
           <View style={styles.quantityBadge}>
             <Text style={styles.quantityText}>{quantity}</Text>
@@ -58,7 +76,6 @@ const styles = StyleSheet.create({
   productContainer: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: Colors.background,
     paddingVertical: 15,
     position: 'relative',
   },
@@ -74,17 +91,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     resizeMode: 'cover',
   },
-  productName: {
-    fontSize: 24,
-    fontWeight: '500',
-    color: '#333',
-    marginBottom: 5,
-    textAlign: 'center',
-  },
-  productPrice: {
-    fontSize: 18,
-    fontWeight: '500',
-    color: '#4CAF50',
+  descriptionContainer: {
+    width: '80%', // Igual ancho que la imagen
+    height: 40, // Alto fijo para limitar la descripción
+    justifyContent: 'flex-start', // Asegura que el texto comience desde arriba
+    overflow: 'hidden', // Esconde el texto que se desborda
   },
   emptyItem: {
     backgroundColor: 'transparent',

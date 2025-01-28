@@ -61,7 +61,6 @@ const styles = StyleSheet.create({
   },
   categoriesColumn: {
     flex: 0.8,
-    backgroundColor: Colors.neutralWhite,
   },
   productsColumn: {
     flex: 2.9,
