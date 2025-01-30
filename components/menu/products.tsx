@@ -6,40 +6,27 @@ import { Colors } from '@/constants/Colors';
 
 const NUM_COLUMNS = 3;
 const { height: screenHeight } = Dimensions.get('window');
-const Products = ({ selectedCategoryId }: { selectedCategoryId: number | null}) => {
-  const { products } = useDataContext();
-  const filteredProducts = products.filter((product) => product.habilitado && product.idLinea === selectedCategoryId  );
-  
-  const chunkArray = (data: any[], numColumns: number) => {
-    const result = [];
-    for (let i = 0; i < data.length; i += numColumns) {
-      result.push(data.slice(i, i + numColumns));
-    }
-    return result;
-  };
 
-  const productRows = chunkArray(filteredProducts, NUM_COLUMNS);
+const Products = ({ selectedCategoryId }: { selectedCategoryId: number | null }) => {
+  const { products } = useDataContext();
+  const filteredProducts = products.filter((product) => product.habilitado && product.idLinea === selectedCategoryId);
 
   return (
     <View style={styles.container}>
-      {selectedCategoryId && filteredProducts.length > 0 ? (
-        productRows.map((row, rowIndex) => (
-          <View key={`row-${rowIndex}`} style={styles.row}>
-            {row.map((item) => (
-                <RenderProductItem key={item.id} item={item} />
+      {selectedCategoryId ? (
+        filteredProducts.length > 0 ? (
+          <View style={styles.gridContainer}>
+            {filteredProducts.map((item) => (
+              <View key={item.id} style={styles.gridItem}>
+                <RenderProductItem key={item.id} item={item as any} />
+              </View>
             ))}
-            {row.length < NUM_COLUMNS &&
-              [...Array(NUM_COLUMNS - row.length)].map((_, index) => (
-                <View key={`empty-${index}`} style={[styles.itemContainer, styles.emptyItem]} />
-              ))}
           </View>
-        ))
+        ) : (
+          <Text style={styles.noProductsText}>No hay productos en esta categoría.</Text>
+        )
       ) : (
-        <Text style={styles.noProductsText}>
-          {selectedCategoryId
-            ? 'No hay productos en esta categoría.'
-            : 'Selecciona una categoría para ver los productos.'}
-        </Text>
+        <Text style={styles.noProductsText}>Selecciona una categoría para ver los productos.</Text>
       )}
     </View>
   );
@@ -48,28 +35,25 @@ const Products = ({ selectedCategoryId }: { selectedCategoryId: number | null}) 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
+    paddingTop: 30,
     minHeight: screenHeight,
-  }, 
-  row: {
+    paddingHorizontal: 10,
+  },
+  gridContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start', 
+  },
+  gridItem: {
+    width: `${100 / NUM_COLUMNS}%`,
+    padding: 5,
+    alignItems: 'center',
   },
   noProductsText: {
     fontSize: 16,
     color: Colors.textsecondary,
     textAlign: 'center',
     marginTop: 20,
-  },
-  itemContainer: {
-    flex: 1,
-    margin: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  emptyItem: {
-    backgroundColor: 'transparent',
-    borderWidth: 0,
   },
 });
 

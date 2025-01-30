@@ -38,7 +38,7 @@ interface DataContextType {
   users: any[];
   settings: any[];
   cart: CartItem[];
-  addToCart: (product: Product) => void;
+  addToCart: (product: Product, cantidad: number) => void; 
   removeFromCart: (id: number) => void;
   clearCart: () => void;
   total: number;
@@ -53,7 +53,7 @@ interface DataContextType {
   isInvoiceRequested: boolean;
   setIsInvoiceRequested: (value: boolean) => void;
   clientData: ClientData;
-  setClientData: (data: ClientData) => void;
+  setClientData: (data: any) => void;
   sendOrderData: (orderData: any) => Promise<void>;
   orderDetails: any;
   setOrderDetails: (details: any) => void;
@@ -118,23 +118,25 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   };
   
 
-  const addToCart = (product: Product) => {
+  const addToCart = (product: Product, cantidad: number) => {
     setCart((prevCart) => {
       const existingProductIndex = prevCart.findIndex((item) => item.id === product.id);
   
       if (existingProductIndex > -1) {
         return prevCart.map((item, index) =>
           index === existingProductIndex
-            ? { ...item, cantidad: item.cantidad + 1 }
+            ? { ...item, cantidad: item.cantidad + cantidad } // Suma la cantidad seleccionada
             : item
         );
       }
+  
       const newRowNumber = prevCart.length + 1; 
       return [
         ...prevCart,
-        { ...product, cantidad: 1, rowNumber: newRowNumber }, 
+        { ...product, cantidad, rowNumber: newRowNumber }, // Usa la cantidad proporcionada
       ];
     });
+  
     resetTimer(); 
   };  
 

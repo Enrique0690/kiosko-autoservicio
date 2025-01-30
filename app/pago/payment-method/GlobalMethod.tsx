@@ -93,7 +93,7 @@ const GlobalMethod = () => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size={120} color={Colors.secondary} />
+        <ActivityIndicator size={120} color={Colors.success} />
         <Text style={styles.loadingText}>Procesando la orden...</Text>
       </View>
     );

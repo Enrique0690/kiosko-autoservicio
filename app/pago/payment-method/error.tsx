@@ -104,14 +104,14 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     retryButton: {
-        backgroundColor: Colors.secondary,
+        backgroundColor: Colors.primary,
         paddingVertical: 15,
         paddingHorizontal: 30,
         borderRadius: 10,
         marginTop: 20,
     },
     retryButtonText: {
-        color: Colors.primary,
+        color: Colors.secondary,
         fontSize: 30
     },
 });

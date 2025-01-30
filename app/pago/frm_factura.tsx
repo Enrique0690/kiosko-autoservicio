@@ -86,22 +86,37 @@ const frmFactura = () => {
 
   const validateFields = () => {
     let errors: { [key: string]: string } = {};
+    
     if (!idValue) errors.idValue = 'Ingrese su Cédula, RUC o Pasaporte';
     else {
       const idValidation = validationRules.IDNumber(idValue);
       if (idValidation) errors.idValue = idValidation;
     }
+    
     if (!razonSocial) errors.razonSocial = 'Ingrese su Razón Social';
     if (!telefono) errors.telefono = 'Ingrese su Teléfono';
+    else {
+      const phoneValidation = validationRules.phone(telefono);
+      if (phoneValidation) errors.telefono = phoneValidation;
+    }
+    
     if (!email) errors.email = 'Ingrese su Email';
+    else {
+      const emailValidation = validationRules.email(email);
+      if (emailValidation) errors.email = emailValidation;
+    }
+    
     if (!address) errors.address = 'Ingrese su Dirección';
+    
     setFieldError(errors);
+    
     if (Object.keys(errors).length > 0) {
       const firstErrorField = formFields.find((field) => errors[field.name]);
       firstErrorField?.ref.current?.focus();
     }
+    
     return Object.keys(errors).length === 0;
-  };
+  };  
 
   const handleContinuePress = () => {
     if (validateFields()) {
@@ -167,7 +182,6 @@ const frmFactura = () => {
               value={idValue}
               onChangeText={(text) => handleInputChange('idValue', text, setIdValue, 'numeric')}
               keyboardType="numeric"
-              maxLength={id === 'Cedula' ? 10 : id === 'Ruc' ? 13 : 8}
             />
             <TouchableOpacity
               style={styles.icon}
@@ -202,7 +216,6 @@ const frmFactura = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F7F7',
   },
   formContainer: {
     marginTop: 50,
@@ -283,7 +296,7 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
   continueButton: {
-    backgroundColor: '#388E3C',
+    backgroundColor: Colors.primary,
     paddingVertical: 18,
     paddingHorizontal: 40,
     borderRadius: 8,

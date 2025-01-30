@@ -6,7 +6,7 @@ import Header from '@/components/header';
 import { Colors } from '@/constants/Colors';
 import CartItem from '@/components/menu/CarItem';
 import AlertModal from '@/components/elements/AlertModal';
-import CurrencySymbol from '@/components/menu/CurrencySymbol';
+import PayButton from '@/components/elements/PayButton';
 import Typography from '@/components/elements/Typography';
 
 interface Product {
@@ -25,7 +25,7 @@ const ShoppingCart = () => {
   const router = useRouter();
   const [observations, setObservations] = useState('');
   const inputRef = useRef<TextInput>(null);
-  const handleIncrement = (product: CartItem) => addToCart(product);
+  const handleIncrement = (product: CartItem) => addToCart(product, 1);
   const [inputHeight, setInputHeight] = useState(40);
 
   const handleContentSizeChange = (e: any) => {
@@ -39,7 +39,7 @@ const ShoppingCart = () => {
     } else {
       const updatedProduct = { ...product, cantidad: product.cantidad - 1 };
       removeFromCart(product.id);
-      addToCart(updatedProduct);
+      addToCart(updatedProduct, product.cantidad - 1);
     }
   };
 
@@ -72,31 +72,24 @@ const ShoppingCart = () => {
             <CartItem key={item.id} item={item} onIncrement={handleIncrement} onDecrement={handleDecrement} />
           ))}
         </View>
-      </ScrollView>
-      <View style={styles.totalContainer}>
+        <View style={styles.totalContainer}>
         <Typography variant='body' color={Colors.text} t={`${totalItems} producto${totalItems > 1 ? 's' : ''} - Total: $${total.toFixed(2)}`} />
       </View>
-      <View style={styles.observationsContainer}>
-        <Typography variant='subtitle' color={Colors.text} t='Observaciones:' />
-      </View>
+      </ScrollView>
       <TouchableOpacity onPress={handleFocusInput}>
           <TextInput
             ref={inputRef}
             placeholder="Escribe tus observaciones aquí..."
             value={observations}
             onChangeText={setObservations}
-            style={[styles.observationsInput, { height: inputHeight }]}
+            style={[styles.observationsInput]}
             multiline
             onContentSizeChange={handleContentSizeChange}
           />
         </TouchableOpacity>
-
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.payButton} onPress={handlePay}>
-          <Typography variant='subtitle' color={Colors.secondary} t={`Pagar ${total.toFixed(2)}`} />
-        </TouchableOpacity>
+        <View style={styles.footer}>
+        <PayButton onPress={handlePay} text={`Pagar $${total.toFixed(2)}`} />
       </View>
-
       <AlertModal visible={totalItems === 0} message="No hay elementos en el carrito" onClose={() => router.replace('/menu')} />
     </View>
   );
@@ -151,7 +144,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
     marginTop: 10,
-    height: 100,
+    height: 125,
     textAlignVertical: 'top',
     fontSize: 25,
   },

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Colors } from '@/constants/Colors';
@@ -15,18 +15,44 @@ interface HeaderProps {
 
 const Header = ({ centerText, rightButtonText, rightButtonRoute, rightButtonIcon, leftButtonText, leftButtonRoute }: HeaderProps) => {
   const router = useRouter();
-
+  const handleRightButtonPress = () => {
+    if (typeof rightButtonRoute === 'string') {
+      router.replace(rightButtonRoute as any);
+    } else if (typeof rightButtonRoute === 'function') {
+      rightButtonRoute();
+    }
+  };
   return (
     <View style={styles.header}>
-      <TouchableOpacity style={styles.headerItem} onPress={() => router.replace(leftButtonRoute)}>
-        <Ionicons name='arrow-back' size={35} color={Colors.primary} />
-        <Typography variant='subtitle' color={Colors.primary} t={leftButtonText} />
-      </TouchableOpacity>
-      <Typography variant='title' color={Colors.textsecondary} t={centerText} />
-      <TouchableOpacity style={styles.headerItem} onPress={() => router.replace(rightButtonRoute)}>
-        <Typography variant='subtitle' color={Colors.primary} t={rightButtonText} />
-        <Ionicons name={rightButtonIcon} size={35} color={Colors.primary} />
-      </TouchableOpacity>
+      <View style={[styles.headerItem, styles.leftContainer]}>
+        {leftButtonText && leftButtonRoute ? (
+          <TouchableOpacity onPress={() => router.replace(leftButtonRoute)} style={styles.leftButton}>
+            <Ionicons name="arrow-back" size={35} color={Colors.primary} />
+            <Typography variant="body" color={Colors.primary} t={leftButtonText} />
+          </TouchableOpacity>
+        ) : (
+          <View style={styles.empty} />  
+        )}
+      </View>
+      <View style={styles.centerContainer}>
+        {centerText ? (
+          <Typography variant="title" color={Colors.textsecondary} t={centerText} />
+        ) : (
+          <View style={styles.empty} />  
+        )}
+      </View>
+
+      {/* Botón derecho alineado a la derecha */}
+      <View style={[styles.headerItem, styles.rightContainer]}>
+        {rightButtonText && rightButtonRoute && rightButtonIcon ? (
+          <TouchableOpacity onPress={handleRightButtonPress} style={styles.rightButton}>
+            <Ionicons name={rightButtonIcon} size={35} color={Colors.primary} />
+            <Typography variant="body" color={Colors.primary} t={rightButtonText} />
+          </TouchableOpacity>
+        ) : (
+          <View style={styles.empty} />  
+        )}
+      </View>
     </View>
   );
 };
@@ -44,13 +70,32 @@ const styles = StyleSheet.create({
     height: 80,
   },
   headerItem: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
   },
-  centerContainer: {
+  leftContainer: {
     flex: 1,
+    alignItems: 'flex-start',
+  },
+  rightContainer: {
+    flex: 1,
+    alignItems: 'flex-end',
+  },
+  centerContainer: {
+    flex: 2.5, 
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  empty: {
+    width: 50, 
+  },
+  leftButton: {
+    flexDirection: 'column', 
+    alignItems: 'flex-start', 
+  },
+  rightButton: {
+    flexDirection: 'column', 
+    alignItems: 'flex-end',
   }
 });
 

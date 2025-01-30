@@ -71,7 +71,6 @@ const PaymentMethod = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F7F7',
   },
   totalText: {
     color: Colors.text,
@@ -79,7 +78,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   body: {
-    flex: 1,
+    flex: 0.7,
     paddingHorizontal: 20,
     alignItems: 'center',
     backgroundColor: 'transparent',
@@ -94,9 +93,10 @@ const styles = StyleSheet.create({
     letterSpacing: 1.5,
   },
   buttonContainer: {
+    flex: 1,
     flexDirection: 'column',
-    width: '65%',
-    height: '70%',
+    width: '60%',
+    height: '20%',
   }
 });
 

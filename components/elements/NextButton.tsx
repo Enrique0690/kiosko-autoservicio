@@ -19,7 +19,7 @@ const NextButton = ({ text, onPress, bottomPercentage = 20 }: CustomButtonProps)
                 ]}
                 onPress={onPress}
             >
-                <Typography variant='title' color={Colors.primary} t={text} />
+                <Typography variant='title' color={Colors.secondary} t={text} />
             </Pressable>
         </View>
     );
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
         width: '100%',
         paddingVertical: 40,
         borderRadius: 8, 
-        backgroundColor: Colors.secondary, 
+        backgroundColor: Colors.primary, 
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.darkSecondary, 
     },
     buttonText: {
-        color: Colors.primary,
+        color: Colors.secondary,
         fontSize: 24,
         fontWeight: '600',
         textTransform: 'uppercase',

@@ -1,8 +1,7 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View} from 'react-native';
 import { useRouter } from 'expo-router';
 import { useDataContext } from '@/components/DataContext/datacontext';
-import { Ionicons } from '@expo/vector-icons';
 import Header from '@/components/header';
 import { Colors } from '@/constants/Colors';
 import AlertModal from '@/components/elements/AlertModal';
@@ -35,7 +34,7 @@ const PaymentMethod = () => {
       <Header
         leftButtonText='Regresar'
         leftButtonRoute='/menu/shopping-cart'
-        centerText='Selecciona tu forma de pago'
+        centerText='Facturación'
       />
       <View style={styles.body}>
         <View style={styles.buttonContainer}>
@@ -51,7 +50,6 @@ const PaymentMethod = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F7F7',
   },
   totalText: {
     color: Colors.text,
@@ -66,6 +64,8 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'column',
+    width: '60%',
+    height: '50%',
   }
 });
 

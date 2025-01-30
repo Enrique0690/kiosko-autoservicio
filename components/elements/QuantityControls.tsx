@@ -3,47 +3,44 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
 
+interface QuantityControlsProps {
+  quantity: number;
+  onIncrease: () => void;
+  onDecrease: () => void;
+  disabled?: boolean;
+  cantidadIncluye?: number;
+  type?: 'included' | 'extra';
+  sizeMultiplier?: number;
+}
+
 const QuantityControls = ({
   quantity,
   onIncrease,
   onDecrease,
   disabled,
-}: {
-  quantity: number;
-  onIncrease: () => void;
-  onDecrease: () => void;
-  disabled?: boolean;
-}) => {
+  cantidadIncluye,
+  type,
+  sizeMultiplier = 1,
+}: QuantityControlsProps) => {
+  const isDecreaseDisabled = disabled || quantity === 0;
+  const isIncreaseDisabled = disabled || (type === 'included' && quantity === cantidadIncluye);
+
+  const buttonSize = 40 * sizeMultiplier;
+  const textSize = 20 * sizeMultiplier;
+  const marginHorizontal = 22 * sizeMultiplier;
+
   return (
     <View style={styles.quantityContainer}>
       <TouchableOpacity
         onPress={onDecrease}
-        style={[
-          styles.quantityButton,
-          disabled && styles.disabledButton,
-        ]}
-        disabled={disabled}
-      >
-        <Ionicons
-          name="remove-outline"
-          size={20}
-          color={Colors.secondary}
-        />
+        style={[styles.quantityButton, { width: buttonSize, height: buttonSize }, isDecreaseDisabled && styles.disabledButton,]} disabled={isDecreaseDisabled}>
+        <Ionicons name="remove-outline" size={20 * sizeMultiplier} color="#000" />
       </TouchableOpacity>
-      <Text style={styles.quantityText}>{quantity}</Text>
-      <TouchableOpacity
-        onPress={onIncrease}
-        style={[
-          styles.quantityButton,
-          disabled && styles.disabledButton,
-        ]}
-        disabled={disabled}
-      >
-        <Ionicons
-          name="add-outline"
-          size={20}
-          color={Colors.secondary}
-        />
+      <Text style={[styles.quantityText, { fontSize: textSize, marginHorizontal: marginHorizontal }]}> {quantity} </Text>
+      <TouchableOpacity onPress={onIncrease}
+        style={[styles.quantityButton, { width: buttonSize, height: buttonSize }, isIncreaseDisabled && styles.disabledButton,]}
+        disabled={isIncreaseDisabled} >
+        <Ionicons name="add-outline" size={20 * sizeMultiplier} color="#000" />
       </TouchableOpacity>
     </View>
   );
@@ -58,21 +55,19 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   quantityButton: {
-    backgroundColor: Colors.primary,
     borderRadius: 8,
-    width: 40,
-    height: 40,
     alignItems: 'center',
     justifyContent: 'center',
+    borderColor: '#414141',
+    borderWidth: 1,
   },
   disabledButton: {
-    backgroundColor: Colors.disable,
+    borderColor: Colors.disable,
+    opacity: 0.5,
   },
   quantityText: {
-    fontSize: 18,
     fontWeight: 'bold',
     color: Colors.text,
-    marginHorizontal: 12,
   },
 });
 

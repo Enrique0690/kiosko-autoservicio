@@ -7,14 +7,16 @@ import CurrencySymbol from './CurrencySymbol';
 import Typography from '../elements/Typography';
 
 const Carbar = () => {
-  const { total } = useDataContext(); 
+  const { total, cart } = useDataContext(); 
   const router = useRouter();
+  const isCartEmpty = cart.length === 0;
 
   return (
     <View style={styles.bottomBar}>
       <Typography variant='subtitle' color={Colors.text} t={`TOTAL: $${total.toFixed(2)}`} />
-      <TouchableOpacity style={styles.continueButton} onPress={() => router.replace('/menu/shopping-cart')}>
-        <Typography variant='title' color={Colors.primary} t='CONTINUAR' />
+      <TouchableOpacity style={[styles.continueButton]}
+       onPress={() => router.replace('/menu/shopping-cart')} disabled={isCartEmpty}>
+        <Typography variant='title' color={isCartEmpty ? Colors.disable : Colors.primary} t='CONTINUAR' />
       </TouchableOpacity>
     </View>
   );
@@ -53,6 +55,10 @@ const styles = StyleSheet.create({
   buttonText: {
     color: Colors.primary,
     fontSize: 30,
+  },
+  disabledButton: {
+    backgroundColor: Colors.disable, 
+    borderColor: Colors.disable, 
   },
 });
 

@@ -51,14 +51,16 @@ const ProductListDynamic = ({
 
   return (
     <View style={styles.container}>
-      {shouldShowArrows && (
+      {shouldShowArrows ? (
         <TouchableOpacity
-          style={[styles.arrowButton, isAtStart && styles.disabledButton]}
+          style={[styles.arrowButton, isAtStart && styles.disabledButton, !isAtStart && { width: 40 }]}
           onPress={() => scrollBy('left')}
           disabled={isAtStart}
         >
           <Ionicons name="chevron-back" size={32} color={isAtStart ? Colors.neutralGray : Colors.textsecondary} />
         </TouchableOpacity>
+      ): (
+        <View style={[styles.arrowButton, { minWidth: 40 }]} /> 
       )}
       <FlatList
         ref={flatListRef}
@@ -78,39 +80,41 @@ const ProductListDynamic = ({
 
           return (
             <View style={[styles.productContainer, isDisabled && styles.disabledProduct]}>
-              <ProductImage
-                descripcion={item.descripcion}
-                style={styles.productImage}
-                type='articulo'
-              />
-              <Typography variant='body' color={Colors.text} t={item.descripcion} />
+              <ProductImage descripcion={item.descripcion} style={styles.productImage} type='articulo' />
+              <View style={styles.descriptionContainer}>
+                <Typography variant='body' color={Colors.text} t={item.descripcion} />
+              </View>
               {type === 'extra' && (
                 <Typography variant='body' color={Colors.text} t={`$${(item.pvp1).toFixed(2)}`} />
               )}
               <View style={styles.quantityContainer}>
-              <QuantityControls
-                quantity={
-                  type === 'included'
-                    ? includedQuantities[item.id] || 0
-                    : extraQuantities[item.id] || 0
-                }
-                onIncrease={() => handleQuantityChange(item.id, 1, type)}
-                onDecrease={() => handleQuantityChange(item.id, -1, type)}
-                disabled={isDisabled}
-              />
+                <QuantityControls
+                  quantity={
+                    type === 'included'
+                      ? includedQuantities[item.id] || 0
+                      : extraQuantities[item.id] || 0
+                  }
+                  onIncrease={() => handleQuantityChange(item.id, 1, type)}
+                  onDecrease={() => handleQuantityChange(item.id, -1, type)}
+                  disabled={isDisabled}
+                  cantidadIncluye={lineInfo.cantidadIncluye}
+                  type={type}
+                />
               </View>
             </View>
           );
         }}
       />
-      {shouldShowArrows && (
+      {shouldShowArrows ? (
         <TouchableOpacity
-          style={[styles.arrowButton, isAtEnd && styles.disabledButton]}
+          style={[styles.arrowButton, isAtEnd && styles.disabledButton, !isAtEnd && { width: 40 }]}
           onPress={() => scrollBy('right')}
           disabled={isAtEnd}
         >
           <Ionicons name="chevron-forward" size={32} color={isAtEnd ? Colors.neutralGray : Colors.textsecondary} />
         </TouchableOpacity>
+      ): (
+        <View style={[styles.arrowButton]} /> 
       )}
     </View>
   );
@@ -131,43 +135,20 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     elevation: 8,
     backgroundColor: '#fff',
-    width: 200, 
+    width: 200,
     overflow: 'hidden',
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
   },
   productImage: {
-    width: '100%', 
-    aspectRatio: 1.5, 
-    resizeMode: 'contain', 
+    width: '100%',
+    aspectRatio: 1,
+    resizeMode: 'contain',
     borderTopRightRadius: 8,
     borderTopLeftRadius: 8,
-  },
-  productName: {
-    fontSize: 18,
-    marginTop: 2,
-    color: Colors.textsecondary,
-    textAlign: 'center',
-  },
-  productPrice: {
-    fontSize: 18,
-    color: Colors.textsecondary,
-    textAlign: 'center',
   },
   quantityContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  quantityButton: {
-    marginHorizontal: 8,
-    borderRadius: 8,
-    width: 30,
-    height: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  quantityText: {
-    fontSize: 18,
-    color: Colors.textsecondary,
   },
   arrowButton: {
     padding: 5,
@@ -180,6 +161,12 @@ const styles = StyleSheet.create({
   disabledProduct: {
     backgroundColor: '#D3D3D3',
     opacity: 0.5,
+  },
+  descriptionContainer: {
+    width: '80%',
+    height: 50,
+    justifyContent: 'flex-start',
+    overflow: 'hidden',
   },
 });
 

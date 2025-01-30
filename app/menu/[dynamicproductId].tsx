@@ -7,6 +7,9 @@ import ProductImage from '@/components/menu/productimage';
 import ProductListDynamic from '@/components/menu/productlistdynamic';
 import { Colors } from '@/constants/Colors';
 import Typography from '@/components/elements/Typography';
+import useQuantityChange from '@/components/dynamic/useQuantityChange';
+import useGetProductsdynamic from '@/components/dynamic/useGetProductsdynamic';
+import useValidateDynamicLines from '@/components/dynamic/useValidateDynamicLines';
 
 type Quantities = Record<number, number>;
 
@@ -21,6 +24,9 @@ const DynamicProducts = () => {
   const [extraQuantities, setExtraQuantities] = useState<Quantities>({});
   const [missingLines, setMissingLines] = useState<number[]>([]);
   const [showFeedback, setShowFeedback] = useState<boolean>(false);
+  const { getProductsdynamic } = useGetProductsdynamic(products);
+  const { validateDynamicLines } = useValidateDynamicLines(dynamicLinesInfo, includedQuantities, setMissingLines);
+  const { handleQuantityChange } = useQuantityChange(dynamicLinesInfo, includedQuantities, extraQuantities, setIncludedQuantities, setExtraQuantities);
 
   useEffect(() => {
     const product = products.find((p) => p.id === Number(dynamicproductId));
@@ -71,93 +77,13 @@ const DynamicProducts = () => {
     setMissingLines(incompleteLines);
   }, [includedQuantities, dynamicLinesInfo]);
 
-  const handleQuantityChange = (productId: number, delta: number, type: 'included' | 'extra') => {
-    if (type === 'included') {
-      setIncludedQuantities((prevQuantities: Quantities) => {
-        const currentQuantity = prevQuantities[productId] || 0;
-        const newQuantity = currentQuantity + delta;
-
-        const line = dynamicLinesInfo.find((lineInfo) => lineInfo.products.some((p: unknown) => {
-          if (typeof p === 'object' && p !== null && 'id' in p) {
-            return (p as { id: number }).id === productId;
-          }
-          return false;
-        }));
-        const totalQuantityInLine = Object.keys(prevQuantities)
-          .filter((id) => line && line.products.some((p: unknown) => {
-            if (typeof p === 'object' && p !== null && 'id' in p) {
-              return (p as { id: number }).id === Number(id);
-            }
-            return false;
-          }))
-          .reduce((acc, id) => acc + prevQuantities[Number(id)], 0);
-
-        const newTotalQuantityInLine = totalQuantityInLine + (delta > 0 ? 1 : -1);
-
-        if (line && newTotalQuantityInLine <= line.cantidadIncluye) {
-          return {
-            ...prevQuantities,
-            [productId]: newQuantity >= 0 ? newQuantity : 0,
-          };
-        }
-        return prevQuantities;
-      });
-    } else {
-      setExtraQuantities((prevQuantities: Quantities) => {
-        const currentQuantity = prevQuantities[productId] || 0;
-        const newQuantity = currentQuantity + delta;
-
-        return {
-          ...prevQuantities,
-          [productId]: newQuantity >= 0 ? newQuantity : 0,
-        };
-      });
-    }
-  };
-
-  const getProductsdynamic = (quantities: Record<number, number>) => {
-    return Object.keys(quantities)
-      .map((productId) => {
-        const product = products.find((p) => p.id === Number(productId));
-        if (product) {
-          return {
-            ...product,
-            pvpSeleccionado: "pvp1",
-            cantidad: quantities[Number(productId)],
-            __cantidad: quantities[Number(productId)],
-            _visualCantidad: quantities[Number(productId)],
-            _pagaIva: true,
-            __pvp1: product.pvp1,
-          };
-        }
-        return null;
-      })
-      .filter((item) => item !== null);
-  };
-
-  const validateIncludedProducts = () => {
-    const incompleteLines: number[] = [];
-    dynamicLinesInfo.forEach((line, index) => {
-      const selectedQuantity = Object.keys(includedQuantities)
-        .filter((productId) =>
-          line.products.some((p: any) => p.id === Number(productId))
-        )
-        .reduce((acc, productId) => acc + includedQuantities[Number(productId)], 0);
-      if (selectedQuantity < line.cantidadIncluye) {
-        incompleteLines.push(index);
-      }
-    });
-    setMissingLines(incompleteLines);
-    return incompleteLines.length === 0;
-  };
-
   const handleAddToCart = () => {
-    const isValid = validateIncludedProducts();
+    const isValid = validateDynamicLines();
     if (!isValid) return setShowFeedback(true);
 
     if (currentProduct) {
-      const includedProducts = getProductsdynamic(includedQuantities);
-      const extraProducts = getProductsdynamic(extraQuantities);
+      const includedProducts = getProductsdynamic(includedQuantities, {});
+      const extraProducts = getProductsdynamic(extraQuantities, {});
       const extraTotal = extraProducts.reduce((acc, product) => acc + product.__pvp1 * product.cantidad, 0);
       const mainProduct = {
         ...currentProduct,
@@ -166,7 +92,7 @@ const DynamicProducts = () => {
         pvpSeleccionado: 'pvp1',
         pvp1: currentProduct.pvp1 + extraTotal,
       };
-      addToCart(mainProduct);
+      addToCart(mainProduct, 1);
       const LineId = currentProduct.idLinea;
       router.replace(`/menu?lineId=${LineId}`);
     }
@@ -185,7 +111,8 @@ const DynamicProducts = () => {
       <View style={styles.header}>
         <TouchableOpacity style={styles.headerItem} onPress={() => {
           const LineId = currentProduct?.idLinea;
-          router.replace(`/menu?lineId=${LineId}`);}}>
+          router.replace(`/menu?lineId=${LineId}`);
+        }}>
           <Ionicons name="arrow-back" size={40} color={Colors.primary} />
           <Typography variant='subtitle' color={Colors.primary} t={currentProduct.descripcion} />
         </TouchableOpacity>

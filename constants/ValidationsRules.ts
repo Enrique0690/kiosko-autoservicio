@@ -5,12 +5,12 @@ export const validationRules: Record<string, (value: string) => string | null> =
         return textRegex.test(value.trim()) ? null : 'Solo se permiten letras.';
     },
     number: (value) => {
-        const numberRegex = /^[0-9]*$/;
+        const numberRegex = /^[0-9]{10}$/;
         return numberRegex.test(value.trim()) ? null : 'Solo se permiten números.';
     },
     email: (value) => {
         const trimmedEmail = value.trim();
-        const EMAIL_FORMAT = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const EMAIL_FORMAT = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         if (!EMAIL_FORMAT.test(trimmedEmail)) return 'Correo electrónico inválido.';
         if (trimmedEmail.length > 254) return 'Correo electrónico demasiado largo.';
         if (/[^\x00-\x7F]/.test(trimmedEmail)) return 'El correo electrónico no puede contener caracteres Unicode.';

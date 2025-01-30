@@ -1,21 +1,30 @@
 import React, { useState, useCallback } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
+import { useRouter } from 'expo-router';
 import Lines from '../../components/menu/lines';
 import Products from '../../components/menu/products';
 import { useDataContext } from '@/components/DataContext/datacontext';
 import Header from '@/components/header';
-import { Colors } from '@/constants/Colors';
 import Carbar from '@/components/menu/Carbar';
+import { Colors } from '@/constants/Colors';
 import AlertModal from '@/components/elements/AlertModal';
 
 const Menu = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
-  const { totalItems } = useDataContext();
-  const [modalVisible, setModalVisible] = useState(false);
+  const { totalItems} = useDataContext();
+  const router = useRouter();
+  const [AlertModalVisible, setAlertModalVisible] = useState(false);
   const handleCategoryPress = useCallback((idLinea: number) => {
     setSelectedCategoryId(idLinea);
   }, []);
-
+  const viewcart = () => {
+    if (totalItems === 0) {
+      setAlertModalVisible(true);
+    } else {
+      router.push('/menu/shopping-cart');
+    }
+  }
+  
   return (
     <View style={styles.container}>
       <Header
@@ -23,7 +32,7 @@ const Menu = () => {
         leftButtonRoute={'/pedido'}
         centerText="Selecciona tus productos"
         rightButtonIcon={'cart-outline'}
-        rightButtonRoute={'/menu/shopping-cart'}
+        rightButtonRoute={viewcart}
         rightButtonText={'Ver carrrito (' + totalItems + ')'}
       />
       <View style={styles.columns}>
@@ -37,11 +46,7 @@ const Menu = () => {
         </View>
       </View>
       <Carbar />
-      <AlertModal
-        visible={modalVisible}
-        message="El carrito no puede estar vacío, seleccione un producto"
-        onClose={() => setModalVisible(false)}
-      />
+      <AlertModal visible={AlertModalVisible} message="No hay elementos en el carrito" onClose={() => setAlertModalVisible(false)} />
     </View>
   );
 };
@@ -64,6 +69,8 @@ const styles = StyleSheet.create({
   },
   productsColumn: {
     flex: 2.9,
+    backgroundColor: Colors.background,
+    
   }
 });
 

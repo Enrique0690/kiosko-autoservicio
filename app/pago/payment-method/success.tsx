@@ -5,6 +5,7 @@ import { useDataContext } from "@/components/DataContext/datacontext";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import CurrencySymbol from "@/components/menu/CurrencySymbol";
+import Typography from "@/components/elements/Typography";
 
 const Success = () => {
   const router = useRouter();
@@ -14,7 +15,7 @@ const Success = () => {
   const handleNewOrder = () => {
     clearCart();
     stopTimer();
-    router.replace("/");
+    router.replace('/');
   };
 
   useEffect(() => {
@@ -34,25 +35,20 @@ const Success = () => {
     <View style={styles.container}>
       <View style={styles.successContainer}>
         <View style={styles.iconContainer}>
-          <Ionicons name="checkmark-circle-outline" size={100} color={Colors.primary} />
+          <Ionicons name='checkmark-circle-outline' size={100} color={Colors.primary} />
         </View>
-        <Text style={styles.successText}>¡LISTO!</Text>
+        <Typography variant='title' color={Colors.primary} t='¡LISTO!' />
         
         <View style={styles.detailsContainer}>
-          <Text style={styles.instructionText}>Retira tu recibo y acércate a recibir tu producto.</Text>
+          <Typography variant='body' color={Colors.text} t='Retira tu recibo y acércate a recibir tu producto.' />
           <View style={styles.separator} />
-          <Text style={styles.instructionText}>Tu número de pedido es: <Text style={styles.boldText}>{orderDetails.orderNumber}</Text></Text>
-          <Text style={styles.instructionText}>Método de pago: <Text style={styles.boldText}>{orderDetails.formapago}</Text></Text>
-          <Text style={styles.instructionText}>Valor a cancelar: <Text style={styles.boldText}> <CurrencySymbol />{total.toFixed(2)} </Text></Text>
+          <Typography variant='body' color={Colors.text} t='Tu numero de pedido es:' />
+          <Typography variant='subtitle' color={Colors.text} t={orderDetails.orderNumber} />
         </View>
-
-        <View style={styles.separator} />
-
-        <Text style={styles.thanksText}>¡GRACIAS POR TU COMPRA!</Text>
       </View>
       
       <TouchableOpacity style={styles.newOrderButton} onPress={handleNewOrder}>
-        <Text style={styles.newOrderButtonText}>FINALIZAR</Text>
+        <Typography variant='subtitle' color={Colors.secondary} t='Nuevo pedido' />
       </TouchableOpacity>
     </View>
   );
@@ -61,68 +57,46 @@ const Success = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: Colors.neutralWhite,
     padding: 20,
   },
   successContainer: {
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 40,
-    width: "100%",
+    width: '100%',
     maxWidth: 500,
     paddingHorizontal: 20,
     paddingVertical: 40,
     borderRadius: 8,
     borderColor: Colors.success,
     borderWidth: 5,
-    boxShadow: "15px 10px 10px rgba(0, 0, 0, 0.2)",
+    boxShadow: '15px 10px 10px rgba(0, 0, 0, 0.2)',
   },
   iconContainer: {
     width: 100,
     height: 100,
     borderRadius: 50,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  successText: {
-    fontSize: 40,
-    fontWeight: "bold",
-    color: Colors.success,
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 20,
   },
   detailsContainer: {
-    width: "100%",
+    width: '100%',
     paddingVertical: 15,
     paddingHorizontal: 10,
     borderRadius: 8,
     marginBottom: 20,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  instructionText: {
-    fontSize: 25,
-    textAlign: "center",
-    color: Colors.text,
-    marginVertical: 5,
-  },
-  boldText: {
-    fontWeight: "bold",
-    color: Colors.textsecondary,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   separator: {
-    width: "60%",
+    width: '60%',
     height: 1,
-    backgroundColor: "#dee2e6",
+    backgroundColor: '#dee2e6',
     marginVertical: 15,
-  },
-  thanksText: {
-    fontSize: 35,
-    textAlign: "center",
-    color: Colors.success,
-    marginBottom: 20,
   },
   newOrderButton: {
     backgroundColor: Colors.success,

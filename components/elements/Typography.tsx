@@ -7,9 +7,10 @@ interface TextComponentProps {
   variant?: Variant;
   color?: string;
   t?: string;
+  style?: any;
 }
 
-const Typography= ({ variant = 'default', color = '#000', t = '' }: TextComponentProps) => {
+const Typography= ({ variant = 'default', color = '#000', t = '', style }: TextComponentProps) => {
   const variantStyles: Record<Variant, any> = {
     default: styles.default,
     title: styles.title,
@@ -20,7 +21,7 @@ const Typography= ({ variant = 'default', color = '#000', t = '' }: TextComponen
   };
 
   return (
-    <Text style={[variantStyles[variant], { color }]}>
+    <Text style={[variantStyles[variant], { color }, style]}>
       {t}
     </Text>
   );
@@ -37,7 +38,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     textAlign: 'center',
-    fontSize: 35,
+    fontSize: 40,
   },
   body: {
     textAlign: 'center',
