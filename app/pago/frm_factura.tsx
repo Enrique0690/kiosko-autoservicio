@@ -39,7 +39,7 @@ const frmFactura = () => {
   { name: 'address', ref: addressRef, value: address, setValue: setAddress, placeholder: 'Dirección' }
   ];
 
-  useEffect(() => {
+  /*useEffect(() => {
     const isLengthValid =
       (id === 'Cedula' && idValue.length === 10) ||
       (id === 'Ruc' && idValue.length === 13) ||
@@ -65,7 +65,7 @@ const frmFactura = () => {
     if (debouncedValue) {
       handleSearchPress(debouncedValue);
     }
-  }, [debouncedValue]);
+  }, [debouncedValue]);*/
 
   const handleSearchPress = async (value?: string) => {
     setIsLoading(true);
@@ -121,11 +121,12 @@ const frmFactura = () => {
   const handleContinuePress = () => {
     if (validateFields()) {
       setClientData({
-        identification: idValue,
+        cedula: idValue,
         razonSocial,
         telefono,
         email,
-        address,
+        direccion: address,
+        descripcion: razonSocial,
       });
       setIsInvoiceRequested(true);
       router.replace('/pago/payment-method');
@@ -156,7 +157,7 @@ const frmFactura = () => {
         leftButtonRoute={'/pago'}
         centerText={'Ingrese sus datos'}
         rightButtonIcon={'arrow-forward-outline'}
-        rightButtonRoute={'/pago/payment-method'}
+        rightButtonRoute={handleContinuePress}
         rightButtonText={'Contirnuar'}
       />
       <ScrollView>

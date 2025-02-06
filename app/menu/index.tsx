@@ -21,7 +21,7 @@ const Menu = () => {
     if (totalItems === 0) {
       setAlertModalVisible(true);
     } else {
-      router.push('/menu/shopping-cart');
+      router.replace('/menu/shopping-cart');
     }
   }
   

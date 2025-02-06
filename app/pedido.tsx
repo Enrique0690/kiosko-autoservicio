@@ -5,6 +5,7 @@ import { useDataContext } from "@/components/DataContext/datacontext";
 import { Colors } from "@/constants/Colors";
 import IconButton from "@/components/elements/IconButton";
 import Typography from "@/components/elements/Typography";
+import { Ionicons } from "@expo/vector-icons";
 
 const Pedido = () => {
   const router = useRouter();
@@ -30,6 +31,7 @@ const Pedido = () => {
 
   return (
     <View style={styles.container}>
+      <Ionicons name="arrow-back" size={35} color={Colors.neutralWhite}  />
       <Typography variant='largest' color={Colors.textsecondary} t='¿Quieres comer aquí o para llevar?' />
       <View style={styles.optionsContainer}>
         <IconButton iconName="restaurant-outline" text="COMER AQUI" onPress={handleComerAqui} />

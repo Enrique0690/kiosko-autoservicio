@@ -18,7 +18,7 @@ export interface Product {
   dinamicoLineas?: any[];
 }
 
-function RenderProductItem({ item }: { item: Product }) {
+const RenderProductItem = React.memo(({ item }: { item: Product }) => {
   const router = useRouter();
   const [isModalVisible, setModalVisible] = useState(false);
   const [isDynamicModalVisible, setDynamicModalVisible] = useState(false);
@@ -79,7 +79,7 @@ function RenderProductItem({ item }: { item: Product }) {
       )}
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   productContainer: {

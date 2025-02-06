@@ -11,7 +11,7 @@ import { calcularIVA } from '@/utils/ArticuloWithCals';
 
 const PaymentMethod = () => {
   const router = useRouter();
-  const { total, cart, settings, setOrderDetails } = useDataContext();
+  const { total, cart, settings, setOrderDetails, clientData } = useDataContext();
   useEffect(() => {
     updateOrderDetails(setOrderDetails);
     const resultado = calcularIVA(cart, settings);
@@ -22,7 +22,6 @@ const PaymentMethod = () => {
       ivaTotal: resultado.ivaTotal,
       total: resultado.total,
     }));
-    
   }, []);
   const handlePaymentMethod = (method: 'cash' | 'deuna' | 'card') => {
     switch (method) {

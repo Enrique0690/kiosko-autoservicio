@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { Modal, View, Text, StyleSheet, TouchableOpacity, Animated, Easing, TouchableWithoutFeedback, ScrollView, Dimensions } from 'react-native';
 import { Colors } from '@/constants/Colors';
 import Typography from '../elements/Typography';
@@ -33,28 +33,28 @@ function ProductModalDynamic({ visible, onClose, item }: ProductModalDynamicProp
     const scrollViewRef = useRef<ScrollView | null>(null);
     const lineRefs = useRef<(View | null)[]>([]);
     const windowHeight = Dimensions.get('window').height;
-    const translateY = useRef(new Animated.Value(windowHeight)).current; 
+    const translateY = useRef(new Animated.Value(windowHeight)).current;
 
     const animateModal = (toValue: number, callback?: () => void) => {
-            Animated.timing(translateY, {
-                toValue,
-                duration: 500,
-                easing: Easing.cubic,
-                useNativeDriver: true,
-            }).start(callback);
-        };
+        Animated.timing(translateY, {
+            toValue,
+            duration: 300,
+            easing: Easing.out(Easing.exp),
+            useNativeDriver: true,
+        }).start(() => {
+            if (callback) callback();
+        });
+    };
 
-    useEffect(() => {
-        if (visible) {
-            animateModal(0);
-        } else {
-            animateModal(windowHeight, onClose);
-        }
-    }, [visible]);
+    useLayoutEffect(() => {
+            if (visible) {
+                animateModal(0);
+            }
+        }, [visible]);
 
     useEffect(() => {
         if (item) {
-            setTotal(item.pvp1); 
+            setTotal(item.pvp1);
             const linesInfo = item.dinamicoLineas?.map((dynamicLine: any) => {
                 const line = lines.find((l) => l.id === dynamicLine.id);
                 const productsForLine = products.filter((p) => p.idLinea === dynamicLine.id && p.habilitado);
@@ -87,13 +87,13 @@ function ProductModalDynamic({ visible, onClose, item }: ProductModalDynamicProp
                     line.products.some((p: any) => p.id === Number(productId))
                 )
                 .reduce((acc, productId) => acc + includedQuantities[Number(productId)], 0);
-    
+
             if (selectedQuantity < line.cantidadIncluye) {
-                incompleteLines.push(index); 
+                incompleteLines.push(index);
             }
         });
         setMissingLines(incompleteLines);
-    }, [includedQuantities, dynamicLinesInfo]);     
+    }, [includedQuantities, dynamicLinesInfo]);
 
     const handleAddToCart = () => {
         const isValid = validateDynamicLines();
@@ -106,7 +106,7 @@ function ProductModalDynamic({ visible, onClose, item }: ProductModalDynamicProp
                     scrollViewRef.current?.scrollTo({ y, animated: true });
                 });
             }
-            return; 
+            return;
         }
 
         if (item) {
@@ -150,10 +150,10 @@ function ProductModalDynamic({ visible, onClose, item }: ProductModalDynamicProp
                             </TouchableOpacity>
                             <ProductImage descripcion={item.descripcion} style={styles.productImage} type="articulo" />
                             <ScrollView ref={scrollViewRef} style={styles.content}>
-                            <Typography variant="title" color={Colors.text} t={item.descripcion} style={styles.productDescription} />
-                            <View style={styles.productInfoContainer}>
-                                <Typography variant="body" color={Colors.text} t={item.descripcion} style={styles.productDescription} />
-                            </View>
+                                <Typography variant="title" color={Colors.text} t={item.descripcion} style={styles.productDescription} />
+                                <View style={styles.productInfoContainer}>
+                                    <Typography variant="body" color={Colors.text} t={item.descripcion} style={styles.productDescription} />
+                                </View>
                                 {dynamicLinesInfo.map((lineInfo, index) => (
                                     <View
                                         key={index}
@@ -185,7 +185,7 @@ function ProductModalDynamic({ visible, onClose, item }: ProductModalDynamicProp
                                         />
                                     </View>
                                 ))}
-                                
+
                             </ScrollView>
                             <PayButton onPress={handleAddToCart} text={`Agregar al carrito`} />
                         </Animated.View>

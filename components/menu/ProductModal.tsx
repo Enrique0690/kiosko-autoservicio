@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useLayoutEffect, useRef } from 'react';
 import { Modal, View, StyleSheet, TouchableOpacity, Animated, Easing, TouchableWithoutFeedback, Dimensions } from 'react-native';
 import { Colors } from '@/constants/Colors';
 import Typography from '../elements/Typography';
@@ -19,27 +19,27 @@ function ProductModal({ visible, onClose, item }: ProductModalProps) {
     const [quantity, setQuantity] = useState(0);
     const [initialQuantity, setInitialQuantity] = useState(0);
     const windowHeight = Dimensions.get('window').height;
-    const translateY = useRef(new Animated.Value(windowHeight)).current; 
+    const translateY = useRef(new Animated.Value(windowHeight)).current;
 
     const animateModal = (toValue: number, callback?: () => void) => {
         Animated.timing(translateY, {
             toValue,
-            duration: 500,
-            easing: Easing.cubic,
+            duration: 300,
+            easing: Easing.out(Easing.exp),
             useNativeDriver: true,
-        }).start(callback);
+        }).start(() => {
+            if (callback) callback();
+        });
     };
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (visible) {
             const itemInCart = cart.find(cartItem => cartItem.id === item.id);
             setInitialQuantity(itemInCart ? itemInCart.cantidad : 0);
             setQuantity(itemInCart ? itemInCart.cantidad : 0);
             animateModal(0);
-        } else {
-            animateModal(windowHeight, onClose);
         }
-    }, [visible, cart, item.id]);
+    }, [visible]);
 
     const handleIncrement = () => {
         setQuantity(prev => prev + 1);
@@ -62,7 +62,7 @@ function ProductModal({ visible, onClose, item }: ProductModalProps) {
             <TouchableWithoutFeedback onPress={() => animateModal(windowHeight, onClose)}>
                 <View style={styles.overlay}>
                     <TouchableWithoutFeedback>
-                    <Animated.View
+                        <Animated.View
                             style={[styles.modalContainer, { transform: [{ translateY }] }]}
                         >
                             <TouchableOpacity onPress={() => animateModal(windowHeight, onClose)} style={styles.closeButton}>
@@ -76,7 +76,7 @@ function ProductModal({ visible, onClose, item }: ProductModalProps) {
                             </View>
                             <QuantityControls quantity={quantity} onIncrease={handleIncrement} onDecrease={handleDecrement} sizeMultiplier={2} />
                             <View style={styles.footer}>
-                                <PayButton onPress={handleAddToCart} text="Agregar al carrito" />
+                                <PayButton onPress={handleAddToCart} text="Agregar al carrito" disabled={quantity === 0} />
                             </View>
                         </Animated.View>
                     </TouchableWithoutFeedback>
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
         width: '100%',
         paddingHorizontal: 20,
         paddingVertical: 20,
-    },
+    }
 });
 
 export default ProductModal;

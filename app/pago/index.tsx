@@ -38,7 +38,7 @@ const PaymentMethod = () => {
       />
       <View style={styles.body}>
         <View style={styles.buttonContainer}>
-          <IconButton iconName='help-circle-outline' text='Consumidor Final' onPress={handleEndConsumer} />
+          <IconButton iconName='man-outline' text='Consumidor Final' onPress={handleEndConsumer} />
           <IconButton iconName='document-text-outline' text='Ingresa tus datos' onPress={handleInvoice} />
         </View>
         <AlertModal visible={total === 0} message='No hay elementos en el carrito' onClose={() => router.replace('/menu')} />

@@ -110,14 +110,15 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const sendOrderData = async (orderData: any) => {
     const apiService = await createApiService();
     try {
-      await apiService.sendOrder(orderData);
+      const response = await apiService.sendOrder(orderData);
+      console.log('Respuesta del servidor data:', response);  
+      return response.data || response; 
     } catch (err) {
       console.error('Error al enviar los datos del pedido:', err);
-      throw err;  
+      throw err;
     }
   };
   
-
   const addToCart = (product: Product, cantidad: number) => {
     setCart((prevCart) => {
       const existingProductIndex = prevCart.findIndex((item) => item.id === product.id);

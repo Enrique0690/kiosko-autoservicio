@@ -6,10 +6,10 @@ import Success from '@/app/pago/payment-method/success';
 import ErrorScreen from '@/app/pago/payment-method/error';
 
 const GlobalMethod = () => {
-  const { total, orderDetails, cart, sendOrderData, clearCart } = useDataContext();
+  const { total, orderDetails, cart, clientData, sendOrderData, clearCart } = useDataContext();
   const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState<string | null>(null); 
   const [error, setError] = useState<string | null>(null);
+  const [orderId, setOrderId] = useState<any | null>(null);
 
   const SendOrder = async () => {
     const orderData = {
@@ -32,6 +32,7 @@ const GlobalMethod = () => {
           pvpSeleccionado: item.pvpSeleccionado,
           articulosDinamicos: item.articulosDinamicos,
           total: item.pvp1,
+          cuenta: clientData,
         })),
       },
       token: new Date().valueOf(),
@@ -42,23 +43,22 @@ const GlobalMethod = () => {
       },
     };
     try {
-      await sendOrderData(orderData); 
-      console.log('Datos enciados: ', orderData);
-      setMessage('Pedido enviado correctamente');
-      setError(null);  
+      const response = await sendOrderData(orderData);
+      console.log('Respuesta del servidor:', response);  
+      setOrderId(response);
+      setError(null);
       return true;
     } catch (error) {
       console.error('Error al enviar el pedido:', error);
-      setMessage(null);  
-      setError('Hubo un error al procesar la orden. Intente nuevamente.');  
+      setError('Hubo un error al procesar la orden. Intente nuevamente.');
       return false;
-    } 
+    }
   };
-  
+
   const PrintOrder = async () => {
     if (window.electronAPI) {
       try {
-        await window.electronAPI.printOrder(orderDetails);
+        await window.electronAPI.printOrder(orderId);
         return true;
       } catch (error) {
         console.error('Error al imprimir:', error);
@@ -73,12 +73,11 @@ const GlobalMethod = () => {
   useEffect(() => {
     const processOrder = async () => {
       const sendOrderSuccess = await SendOrder();
-      
+
       if (sendOrderSuccess) {
         const printOrderSuccess = await PrintOrder();
-        
+
         if (printOrderSuccess) {
-          setMessage('Orden procesada correctamente');
         } else {
           setError('Hubo un error al intentar imprimir la orden');
         }
@@ -88,7 +87,7 @@ const GlobalMethod = () => {
       setLoading(false);
     };
     processOrder();
-  }, []); 
+  }, []);
 
   if (loading) {
     return (
