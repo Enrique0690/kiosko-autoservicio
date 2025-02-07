@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { StyleSheet, View, Text} from 'react-native';
 import { useRouter } from 'expo-router';
-import { useDataContext } from '@/components/DataContext/datacontext';
+import { useDataContext } from '@/components/contexts/useDataContext';
 import Header from '@/components/header';
 import { Colors } from '@/constants/Colors';
 import AlertModal from '@/components/elements/AlertModal';

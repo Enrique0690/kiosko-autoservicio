@@ -23,11 +23,6 @@ const CartItem = ({ item, onIncrement, onDecrement }: CartItemProps) => {
   return (
     <View style={styles.productItem}>
       <View style={styles.productImageContainer}>
-        <ProductImage
-          descripcion={item.descripcion}
-          style={styles.productImage}
-          type='articulo'
-        />
       </View>
       <View style={styles.descriptionContainer}>
         <Typography variant='body' color={Colors.text} t={item.descripcion} />

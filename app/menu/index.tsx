@@ -3,7 +3,7 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import Lines from '../../components/menu/lines';
 import Products from '../../components/menu/products';
-import { useDataContext } from '@/components/DataContext/datacontext';
+import { useDataContext } from '@/components/contexts/useDataContext';
 import Header from '@/components/header';
 import Carbar from '@/components/menu/Carbar';
 import { Colors } from '@/constants/Colors';

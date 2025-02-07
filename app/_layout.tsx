@@ -2,11 +2,12 @@ import { Stack } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StyleSheet, View } from "react-native";
 import { DataProvider } from "@/components/DataContext/datacontext";
+import { AppProvider } from "@/components/contexts";
 
 export default function Layout() {
   const insets = useSafeAreaInsets();
   return (
-    <DataProvider>
+    <AppProvider>
       <View style={[styles.safeArea, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
         <Stack
           screenOptions={{
@@ -16,7 +17,7 @@ export default function Layout() {
           }}
         />
       </View>
-    </DataProvider>
+    </AppProvider>
   );
 }
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
-import { useDataContext } from "@/components/DataContext/datacontext";
+import { useDataContext } from "@/components/contexts/useDataContext";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import CurrencySymbol from "@/components/menu/CurrencySymbol";

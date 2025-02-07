@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, ActivityIndicator } from 'react-native';
-import { useDataContext } from '@/components/DataContext/datacontext';
+import { useDataContext } from '@/components/contexts/useDataContext';
 import { Colors } from '@/constants/Colors';
 import Success from '@/app/pago/payment-method/success';
 import ErrorScreen from '@/app/pago/payment-method/error';

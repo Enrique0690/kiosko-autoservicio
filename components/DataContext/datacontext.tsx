@@ -2,7 +2,6 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { useRouter } from 'expo-router';
 import createApiService from './api';
 import { LoadingComponent, ErrorComponent } from './chargingstatus';
-import { ImageCacheProvider } from './Context/ImageCacheContext';
 
 interface Product {
   id: number;
@@ -122,7 +121,6 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const addToCart = (product: Product, cantidad: number) => {
     setCart((prevCart) => {
       const existingProductIndex = prevCart.findIndex((item) => item.id === product.id);
-  
       if (existingProductIndex > -1) {
         return prevCart.map((item, index) =>
           index === existingProductIndex
@@ -130,7 +128,6 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
             : item
         );
       }
-  
       const newRowNumber = prevCart.length + 1; 
       return [
         ...prevCart,
@@ -149,10 +146,8 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const clearCart = () => {
     setCart([]);
   };
-
   const total = cart.reduce((acc, item) => acc + item.cantidad * item.pvp1, 0);
   const totalItems = cart.reduce((acc, item) => acc + item.cantidad, 0);
-
   const retry = () => {
     fetchData();
   };
@@ -173,14 +168,11 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         return prev + 1;
       });
     }, 1000);
-
     setTimer(interval);
   };
   
   const stopTimer = () => {
-    if (timer) {
-      clearInterval(timer);
-    } 
+    if (timer) clearInterval(timer);
   };
   
   const resetTimer = () => {
@@ -221,7 +213,6 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <DataContext.Provider value={contextValue}>
-    <ImageCacheProvider>
       {loading ? (
         <LoadingComponent />
       ) : error ? (
@@ -229,7 +220,6 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
       ) : (
         children
       )}
-    </ImageCacheProvider>
   </DataContext.Provider>
   );
 };

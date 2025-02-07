@@ -1,7 +1,7 @@
 import React from "react";
 import { useRouter } from "expo-router";
-import { StyleSheet, View, Text } from "react-native";
-import { useDataContext } from "@/components/DataContext/datacontext";
+import { StyleSheet, View } from "react-native";
+import { useDataContext } from "@/components/contexts/useDataContext";
 import { Colors } from "@/constants/Colors";
 import IconButton from "@/components/elements/IconButton";
 import Typography from "@/components/elements/Typography";

@@ -1,7 +1,7 @@
 import React, { useEffect} from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useDataContext } from '@/components/DataContext/datacontext';
+import { useDataContext } from '../contexts/useDataContext';
 import { updateOrderDetails } from '@/utils/updateOrderDetails';
 
 const BuyButton = () => {

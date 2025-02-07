@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useDataContext } from '@/components/DataContext/datacontext';
+import { useDataContext } from '@/components/contexts/useDataContext';
 import Header from '@/components/header';
 import { Colors } from '@/constants/Colors';
 import CartItem from '@/components/menu/CarItem';

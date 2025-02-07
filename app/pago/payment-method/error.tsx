@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
-import { useDataContext } from "@/components/DataContext/datacontext";
+import { useDataContext } from "@/components/contexts/useDataContext";
 
 const ErrorScreen = () => {
     const router = useRouter();

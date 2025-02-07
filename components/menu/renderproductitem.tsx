@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useDataContext } from '@/components/DataContext/datacontext';
+import { useDataContext } from '../contexts/useDataContext';
 import ProductImage from './productimage';
 import { Colors } from '@/constants/Colors';
 import Typography from '../elements/Typography';
@@ -50,7 +50,6 @@ const RenderProductItem = React.memo(({ item }: { item: Product }) => {
   return (
     <View style={styles.productContainer}>
       <TouchableOpacity onPress={handlePress} style={styles.productButton}>
-        <ProductImage descripcion={item.descripcion} style={styles.productImage} type="articulo" />
         <View style={styles.descriptionContainer}>
           <Typography variant="body" color={Colors.text} t={item.descripcion} />
         </View>

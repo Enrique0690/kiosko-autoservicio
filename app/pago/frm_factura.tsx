@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, ActivityIndicator, ScrollView, KeyboardTypeOptions } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useDataContext } from '@/components/DataContext/datacontext';
+import { useDataContext } from '@/components/contexts/useDataContext';
 import Header from '@/components/header';
 import { fetchPersonData } from '@/components/frmfactura/fetchPersonData';
 import { Ionicons } from '@expo/vector-icons';

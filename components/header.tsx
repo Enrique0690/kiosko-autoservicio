@@ -42,7 +42,6 @@ const Header = ({ centerText, rightButtonText, rightButtonRoute, rightButtonIcon
         )}
       </View>
 
-      {/* Botón derecho alineado a la derecha */}
       <View style={[styles.headerItem, styles.rightContainer]}>
         {rightButtonText && rightButtonRoute && rightButtonIcon ? (
           <TouchableOpacity onPress={handleRightButtonPress} style={styles.rightButton}>

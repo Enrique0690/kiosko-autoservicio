@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
-import { useDataContext } from '@/components/DataContext/datacontext';
+import { useDataContext } from '../contexts/useDataContext';
 import ProductImage from './productimage';
 import { Colors } from '@/constants/Colors';
 import { useLocalSearchParams } from 'expo-router';
@@ -46,11 +46,6 @@ const Lines = ({ onCategoryPress, selectedCategoryId }: {
               ]}
               onPress={() => onCategoryPress(item.id)}
             >
-              <ProductImage
-                descripcion={item.descripcion}
-                style={styles.categoryImage}
-                type='linea'
-              />
               <Typography variant='body' color={Colors.text} t={item.descripcion} />
             </TouchableOpacity>
           </View>

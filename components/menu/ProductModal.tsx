@@ -4,7 +4,7 @@ import { Colors } from '@/constants/Colors';
 import Typography from '../elements/Typography';
 import ProductImage from './productimage';
 import { Ionicons } from '@expo/vector-icons';
-import { useDataContext } from '../DataContext/datacontext';
+import { useDataContext } from '../contexts/useDataContext';
 import QuantityControls from '../elements/QuantityControls';
 import PayButton from '../elements/PayButton';
 
@@ -68,7 +68,6 @@ function ProductModal({ visible, onClose, item }: ProductModalProps) {
                             <TouchableOpacity onPress={() => animateModal(windowHeight, onClose)} style={styles.closeButton}>
                                 <Ionicons name="close-circle" size={70} color="rgba(247, 247, 247, 0.4)" />
                             </TouchableOpacity>
-                            <ProductImage descripcion={item.descripcion} style={styles.productImage} type="articulo" />
                             <Typography variant="title" color={Colors.text} t={item.descripcion} style={styles.productDescription} />
                             <Typography variant="subtitle" color={Colors.primary} t={`$${item.pvp1.toFixed(2)}`} style={styles.productPrice} />
                             <View style={styles.productInfoContainer}>

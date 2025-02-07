@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { StyleSheet, View, Text, ScrollView } from 'react-native';
 import { Colors } from '@/constants/Colors';
-import { useDataContext } from '@/components/DataContext/datacontext';
+import { useDataContext } from '@/components/contexts/useDataContext';
 import Header from '@/components/header';
 import { updateOrderDetails } from '@/utils/updateOrderDetails';
 import BuyButton from '@/components/menu/BuyButton';
