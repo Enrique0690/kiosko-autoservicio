@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import ApiService from './services';
-import { Product } from './types';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useRef } from 'react';
 import { View, ActivityIndicator, Text, StyleSheet } from 'react-native';
+import createApiService from '../DataContext/api';
+import { Product } from './types';
 
 interface DataContextType {
   lines: any[];
@@ -22,35 +22,109 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const [settings, setSettings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const imageCacheRef = useRef<Record<string, Blob>>({});
+
+  const fetchImage = async (name: string, isLine: boolean = false): Promise<Blob | null> => {
+    const baseUrl = isLine
+      ? 'https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/Lineas'
+      : 'https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos';
+
+    const encodedName = encodeURIComponent(name);
+    const cacheKey = isLine ? `line-${name}` : name;
+    if (imageCacheRef.current[cacheKey]) return imageCacheRef.current[cacheKey];
+
+    for (const ext of ['png', 'jpg']) {
+      const imageUrl = `${baseUrl}/${encodedName}.${ext}`;
+      try {
+        const response = await fetch(imageUrl);
+        if (
+          response.ok &&
+          response.headers.get('content-type')?.startsWith('image/')
+        ) {
+          const blob = await response.blob();
+          imageCacheRef.current[cacheKey] = blob;
+          return blob;
+        }
+      } catch (error) {
+      }
+    }
+    return null;
+  };
+
+  const fetchImagesWithConcurrencyLimit = async (
+    items: any[],
+    isLine: boolean = false,
+    concurrencyLimit: number = 20
+  ) => {
+    const results = [...items];
+    let index = 0;
+
+    const worker = async () => {
+      while (index < items.length) {
+        const currentIndex = index;
+        index++;
+        const item = items[currentIndex];
+        const imageBlob = await fetchImage(item.descripcion, isLine);
+        results[currentIndex] = { ...item, image: imageBlob };
+      }
+    };
+
+    const workers = [];
+    const workerCount = Math.min(concurrencyLimit, items.length);
+    for (let i = 0; i < workerCount; i++) {
+      workers.push(worker());
+    }
+    await Promise.all(workers);
+    return results;
+  };
 
   const fetchData = async () => {
-    const apiService = await ApiService();
+    const apiService = await createApiService();
     try {
       const [fetchedLines, fetchedProducts, fetchedUsers, fetchedSettings] = await Promise.all([
         apiService.fetchLines(),
         apiService.fetchProducts(),
         apiService.fetchUsers(),
-        apiService.fetchSettings()
+        apiService.fetchSettings(),
       ]);
 
       const porcentajeIVA = fetchedSettings.porcentajeIVA / 100;
-      const processedProducts = fetchedProducts.map((product: Product) => ({
+
+      const enabledLines = fetchedLines.filter((line: any) => line.usarEnVentas);
+      const enabledProducts = fetchedProducts.filter((product: Product) =>
+        product.habilitado &&
+        enabledLines.some((line: any) => line.id === product.idLinea)
+      );
+
+      const initialProducts = enabledProducts.map((product: any) => ({
         ...product,
         pvp1: product.pagaIva ? product.pvp1 * (1 + porcentajeIVA) : product.pvp1,
+        image: null,
       }));
 
-      setLines(fetchedLines);
+      const initialLines = enabledLines.map((line: any) => ({
+        ...line,
+        image: null,
+      }));
+
+      const processedProducts = await fetchImagesWithConcurrencyLimit(initialProducts, false, 20);
+      const processedLines = await fetchImagesWithConcurrencyLimit(initialLines, true, 20);
+
       setProducts(processedProducts);
+      setLines(processedLines);
       setUsers(fetchedUsers);
       setSettings(fetchedSettings);
+      setLoading(false);
     } catch (err) {
+      console.error('Error al cargar datos:', err);
       setError('Error cargando datos');
-    } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   if (loading) {
     return (
@@ -62,7 +136,9 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   }
 
   return (
-    <DataContext.Provider value={{ lines, products, users, settings, loading, error, retry: fetchData }}>
+    <DataContext.Provider
+      value={{ lines, products, users, settings, loading, error, retry: fetchData }}
+    >
       {children}
     </DataContext.Provider>
   );

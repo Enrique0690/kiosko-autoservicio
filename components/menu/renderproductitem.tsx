@@ -7,16 +7,7 @@ import { Colors } from '@/constants/Colors';
 import Typography from '../elements/Typography';
 import ProductModal from './ProductModal';
 import ProductModalDynamic from './ProductModalDynamic';
-
-export interface Product {
-  id: number;
-  idLinea: number;
-  descripcion: string;
-  habilitado: boolean;
-  existencia: number;
-  pvp1: number;
-  dinamicoLineas?: any[];
-}
+import { Product } from '../contexts/types';
 
 const RenderProductItem = React.memo(({ item }: { item: Product }) => {
   const router = useRouter();
@@ -50,6 +41,7 @@ const RenderProductItem = React.memo(({ item }: { item: Product }) => {
   return (
     <View style={styles.productContainer}>
       <TouchableOpacity onPress={handlePress} style={styles.productButton}>
+        <ProductImage image={item.image} style={styles.productImage} />
         <View style={styles.descriptionContainer}>
           <Typography variant="body" color={Colors.text} t={item.descripcion} />
         </View>

@@ -46,6 +46,10 @@ const Lines = ({ onCategoryPress, selectedCategoryId }: {
               ]}
               onPress={() => onCategoryPress(item.id)}
             >
+              <ProductImage
+                image={item.image}
+                style={styles.categoryImage}
+              />
               <Typography variant='body' color={Colors.text} t={item.descripcion} />
             </TouchableOpacity>
           </View>

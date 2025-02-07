@@ -14,6 +14,7 @@ interface CartItemProps {
     pvp1: number;
     cantidad: number;
     articulosDinamicos?: { descripcion: string, cantidad: number }[];
+    image?: any;
   };
   onIncrement: (product: any) => void;
   onDecrement: (product: any) => void;
@@ -23,6 +24,7 @@ const CartItem = ({ item, onIncrement, onDecrement }: CartItemProps) => {
   return (
     <View style={styles.productItem}>
       <View style={styles.productImageContainer}>
+        <ProductImage image={item.image} style={styles.productImage} />
       </View>
       <View style={styles.descriptionContainer}>
         <Typography variant='body' color={Colors.text} t={item.descripcion} />
@@ -69,24 +71,24 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   productImageContainer: {
-    flex: 0.5, 
+    flex: 0.5,
     alignItems: 'center',
   },
   descriptionContainer: {
-    flex: 2, 
+    flex: 2,
     alignItems: 'flex-start',
   },
   dynamicItemsContainer: {
     marginTop: 5,
   },
   quantityContainer: {
-    flex: 1, 
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
   },
   priceContainer: {
-    flex: 1, 
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'flex-end',
   },

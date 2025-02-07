@@ -80,7 +80,7 @@ const ProductListDynamic = ({
 
           return (
             <View style={[styles.productContainer, isDisabled && styles.disabledProduct]}>
-              <ProductImage descripcion={item.descripcion} style={styles.productImage} type='articulo' />
+              <ProductImage image={item.image} style={styles.productImage}/>
               <View style={styles.descriptionContainer}>
                 <Typography variant='body' color={Colors.text} t={item.descripcion} />
               </View>

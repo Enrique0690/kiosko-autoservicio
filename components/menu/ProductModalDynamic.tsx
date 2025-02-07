@@ -4,7 +4,7 @@ import { Colors } from '@/constants/Colors';
 import Typography from '../elements/Typography';
 import ProductImage from './productimage';
 import { Ionicons } from '@expo/vector-icons';
-import { useDataContext } from '../DataContext/datacontext';
+import { useDataContext } from '../contexts/useDataContext';
 import PayButton from '../elements/PayButton';
 import useGetProductsdynamic from '../dynamic/useGetProductsdynamic';
 import useQuantityChange from '../dynamic/useQuantityChange';
@@ -148,7 +148,7 @@ function ProductModalDynamic({ visible, onClose, item }: ProductModalDynamicProp
                             <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
                                 <Ionicons name="close-circle" size={70} color="rgba(255, 255, 240, 0.8)" />
                             </TouchableOpacity>
-                            <ProductImage descripcion={item.descripcion} style={styles.productImage} type="articulo" />
+                            <ProductImage image={item.image} style={styles.productImage}/>
                             <ScrollView ref={scrollViewRef} style={styles.content}>
                                 <Typography variant="title" color={Colors.text} t={item.descripcion} style={styles.productDescription} />
                                 <View style={styles.productInfoContainer}>

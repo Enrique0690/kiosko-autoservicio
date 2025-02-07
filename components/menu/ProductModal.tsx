@@ -68,6 +68,7 @@ function ProductModal({ visible, onClose, item }: ProductModalProps) {
                             <TouchableOpacity onPress={() => animateModal(windowHeight, onClose)} style={styles.closeButton}>
                                 <Ionicons name="close-circle" size={70} color="rgba(247, 247, 247, 0.4)" />
                             </TouchableOpacity>
+                            <ProductImage image={item.image} style={styles.productImage}/>
                             <Typography variant="title" color={Colors.text} t={item.descripcion} style={styles.productDescription} />
                             <Typography variant="subtitle" color={Colors.primary} t={`$${item.pvp1.toFixed(2)}`} style={styles.productPrice} />
                             <View style={styles.productInfoContainer}>
