@@ -6,13 +6,13 @@ import { Colors } from '@/constants/Colors';
 import { useLocalSearchParams } from 'expo-router';
 import Typography from '../elements/Typography';
 
-const Lines = ({ onCategoryPress, selectedCategoryId }: { 
+const Lines = ({ onCategoryPress, selectedCategoryId }: {
   onCategoryPress: (id: number) => void;
   selectedCategoryId: number | null;
 }) => {
   const { lines } = useDataContext();
   const filteredLines = lines.filter((line) => line.usarEnVentas);
-  
+
   const { lineId } = useLocalSearchParams();
   const [selectedLine, setSelectedLine] = useState<number | null>(null);
 
@@ -46,10 +46,7 @@ const Lines = ({ onCategoryPress, selectedCategoryId }: {
               ]}
               onPress={() => onCategoryPress(item.id)}
             >
-              <ProductImage
-                image={item.image}
-                style={styles.categoryImage}
-              />
+              <ProductImage image={item.image} style={styles.categoryImage} />
               <Typography variant='body' color={Colors.text} t={item.descripcion} />
             </TouchableOpacity>
           </View>

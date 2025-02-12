@@ -14,7 +14,7 @@ const GlobalMethod = () => {
   const SendOrder = async () => {
     const orderData = {
       data: {
-        estado: 'P',
+        estado: orderDetails.estado,
         formaDespacho: orderDetails.formaDespacho,
         mesa: orderDetails.orderNumber,
         identificador: orderDetails.uniqueCode,
@@ -34,6 +34,7 @@ const GlobalMethod = () => {
           total: item.pvp1,
           cuenta: clientData,
         })),
+        ventas: orderDetails.venta
       },
       token: new Date().valueOf(),
       timestamp: new Date().valueOf() + ':1736439145906:25',
@@ -43,13 +44,12 @@ const GlobalMethod = () => {
       },
     };
     try {
+      console.log('Datos enviados: ', orderData);
       const response = await sendOrderData(orderData);
-      console.log('Respuesta del servidor:', response);  
       setOrderId(response);
       setError(null);
       return true;
     } catch (error) {
-      console.error('Error al enviar el pedido:', error);
       setError('Hubo un error al procesar la orden. Intente nuevamente.');
       return false;
     }
@@ -61,7 +61,6 @@ const GlobalMethod = () => {
         await window.electronAPI.printOrder(orderId);
         return true;
       } catch (error) {
-        console.error('Error al imprimir:', error);
         return false;
       }
     } else {
@@ -73,19 +72,13 @@ const GlobalMethod = () => {
   useEffect(() => {
     const processOrder = async () => {
       const sendOrderSuccess = await SendOrder();
-
       if (sendOrderSuccess) {
         const printOrderSuccess = await PrintOrder();
-
-        if (printOrderSuccess) {
-        } else {
-          setError('Hubo un error al intentar imprimir la orden');
-        }
-      } else {
-        setError('Hubo un error al procesar la orden');
+        if (!printOrderSuccess) setError('Hubo un error al intentar imprimir la orden.');
       }
       setLoading(false);
     };
+
     processOrder();
   }, []);
 
@@ -100,11 +93,7 @@ const GlobalMethod = () => {
 
   return (
     <View style={styles.container}>
-      {error ? (
-        <ErrorScreen />
-      ) : (
-        <Success />
-      )}
+      {error ? (<ErrorScreen />) : (<Success />)}
     </View>
   );
 };
@@ -123,17 +112,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 30,
     color: Colors.neutralGray,
-  },
-  errorText: {
-    fontSize: 16,
-    color: 'red',
-    textAlign: 'center',
-  },
-  successText: {
-    fontSize: 16,
-    color: 'green',
-    textAlign: 'center',
-  },
+  }
 });
 
 export default GlobalMethod;

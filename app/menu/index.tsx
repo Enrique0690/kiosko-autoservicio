@@ -8,15 +8,15 @@ import Header from '@/components/header';
 import Carbar from '@/components/menu/Carbar';
 import { Colors } from '@/constants/Colors';
 import AlertModal from '@/components/elements/AlertModal';
+import ConfirmModal from '@/components/elements/ConfirmModal';
 
 const Menu = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
-  const { totalItems} = useDataContext();
+  const { totalItems, clearCart } = useDataContext();
   const router = useRouter();
   const [AlertModalVisible, setAlertModalVisible] = useState(false);
-  const handleCategoryPress = useCallback((idLinea: number) => {
-    setSelectedCategoryId(idLinea);
-  }, []);
+  const [ConfirmModalVisible, setConfirmModalVisible] = useState(false);
+  const handleCategoryPress = useCallback((idLinea: number) => { setSelectedCategoryId(idLinea); }, []);
   const viewcart = () => {
     if (totalItems === 0) {
       setAlertModalVisible(true);
@@ -24,12 +24,20 @@ const Menu = () => {
       router.replace('/menu/shopping-cart');
     }
   }
-  
+  const back = () => {
+    setConfirmModalVisible(true);
+  };
+  const handleConfirmBack = () => {
+    clearCart();
+    router.replace('/pedido');
+    setConfirmModalVisible(false); 
+  };
+
   return (
     <View style={styles.container}>
       <Header
         leftButtonText="Regresar"
-        leftButtonRoute={'/pedido'}
+        leftButtonRoute={back}
         centerText="Selecciona tus productos"
         rightButtonIcon={'cart-outline'}
         rightButtonRoute={viewcart}
@@ -47,6 +55,7 @@ const Menu = () => {
       </View>
       <Carbar />
       <AlertModal visible={AlertModalVisible} message="No hay elementos en el carrito" onClose={() => setAlertModalVisible(false)} />
+      <ConfirmModal visible={ConfirmModalVisible} message="¿Deseas regresar? Se vaciará el carrito." onClose={() => setConfirmModalVisible(false)} onConfirm={handleConfirmBack} />
     </View>
   );
 };
@@ -70,7 +79,7 @@ const styles = StyleSheet.create({
   productsColumn: {
     flex: 2.9,
     backgroundColor: Colors.background,
-    
+
   }
 });
 

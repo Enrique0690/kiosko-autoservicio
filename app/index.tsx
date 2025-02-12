@@ -1,12 +1,18 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useRouter } from 'expo-router';
 import { StyleSheet, View, Text, Pressable } from 'react-native';
 import Carousel from '@/components/carousel';
 import { Colors } from '@/constants/Colors';
 import Typography from '@/components/elements/Typography';
+import { useDataContext } from '@/components/contexts/useDataContext';
 
 const Index = () => {
   const router = useRouter();
+  const { clearCart } = useDataContext();
+
+  useEffect(() => {
+    clearCart();
+  }, []);
 
   const handleStart = () => {
     router.replace('/review');

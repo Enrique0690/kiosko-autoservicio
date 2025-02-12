@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, View, Text} from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useDataContext } from '@/components/contexts/useDataContext';
 import Header from '@/components/header';
@@ -29,22 +29,83 @@ const PaymentMethod = () => {
         setOrderDetails((prevDetails: any) => ({
           ...prevDetails,
           formapago: 'Pago en caja',
+          estado: 'P'
         }));
         break;
       case 'deuna':
         setOrderDetails((prevDetails: any) => ({
           ...prevDetails,
           formapago: 'deUna',
+          estado: 'A',
+          venta: {
+              base0: prevDetails.base0,
+              baseIva: prevDetails.baseIVA,
+              iva: prevDetails.ivaTotal,
+              total: prevDetails.total,
+              pagos: [
+                {
+                  idFormaPago: 121,
+                  total: prevDetails.total,
+                  monto: prevDetails.total,
+                }
+              ],
+              detalle: cart.map((item) => ({
+                ...item,
+                idDetalle: item.rowNumber,
+                dinamico: item.dinamico,
+                pvpSeleccionado: item.pvpSeleccionado,
+                articulosDinamicos: item.articulosDinamicos,
+                total: item.pvp1,
+                cuenta: clientData,
+              })),
+              validarCedula: true,
+              cedula: clientData.cedula,
+              direccion: clientData.direccion,
+              email: clientData.email,
+              razonSocial: clientData.razonSocial,
+              telefono: clientData.telefono,
+              pagado: prevDetails.total
+            }
         }));
         break;
       case 'card':
         setOrderDetails((prevDetails: any) => ({
           ...prevDetails,
           formapago: 'Tarjeta de crédito/debito',
+          estado: 'A',
+          venta: {
+              base0: prevDetails.base0,
+              baseIva: prevDetails.baseIVA,
+              iva: prevDetails.ivaTotal,
+              total: prevDetails.total,
+              pagos: [
+                {
+                  idFormaPago: 105,
+                  total: prevDetails.total,
+                  monto: prevDetails.total,
+                  detalle: cart.map((item) => ({
+                    ...item,
+                    idDetalle: item.rowNumber,
+                    dinamico: item.dinamico,
+                    pvpSeleccionado: item.pvpSeleccionado,
+                    articulosDinamicos: item.articulosDinamicos,
+                    total: item.pvp1,
+                    cuenta: clientData,
+                  })),
+                  validarCedula: true,
+                  cedula: clientData.cedula,
+                  direccion: clientData.direccion,
+                  email: clientData.email,
+                  razonSocial: clientData.razonSocial,
+                  telefono: clientData.telefono,
+                  pagado: prevDetails.total
+                }
+              ]
+            }
         }));
         break;
     }
-   
+
     router.replace('/pago/payment-method/GlobalMethod');
   };
 
@@ -56,11 +117,11 @@ const PaymentMethod = () => {
         centerText='Elige el método de Pago'
       />
       <View style={styles.body}>
-          <View style={styles.buttonContainer}>
-            <IconButton iconName='cash-outline' text='Pago en caja' onPress={() => handlePaymentMethod('cash')} />
-            <IconButton iconName='qr-code-outline' text='Deuna' onPress={() => handlePaymentMethod('deuna')} />
-            <IconButton iconName='card-outline' text='Tarjeta' onPress={() => handlePaymentMethod('card')} />
-          </View>
+        <View style={styles.buttonContainer}>
+          <IconButton iconName='cash-outline' text='Pago en caja' onPress={() => handlePaymentMethod('cash')} />
+          <IconButton iconName='qr-code-outline' text='Deuna' onPress={() => handlePaymentMethod('deuna')} />
+          <IconButton iconName='card-outline' text='Tarjeta' onPress={() => handlePaymentMethod('card')} />
+        </View>
         <AlertModal visible={total === 0} message='No hay elementos en el carrito' onClose={() => router.replace('/menu')} />
       </View>
     </View>

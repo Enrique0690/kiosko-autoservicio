@@ -22,11 +22,18 @@ const Header = ({ centerText, rightButtonText, rightButtonRoute, rightButtonIcon
       rightButtonRoute();
     }
   };
+  const handleLeftButtonPress = () => {
+    if (typeof leftButtonRoute === 'string') {
+      router.replace(leftButtonRoute as any);
+    } else if (typeof leftButtonRoute === 'function') {
+      leftButtonRoute();
+    }
+  };
   return (
     <View style={styles.header}>
       <View style={[styles.headerItem, styles.leftContainer]}>
         {leftButtonText && leftButtonRoute ? (
-          <TouchableOpacity onPress={() => router.replace(leftButtonRoute)} style={styles.leftButton}>
+          <TouchableOpacity onPress={handleLeftButtonPress} style={styles.leftButton}>
             <Ionicons name="arrow-back" size={35} color={Colors.primary} />
             <Typography variant="body" color={Colors.primary} t={leftButtonText} />
           </TouchableOpacity>

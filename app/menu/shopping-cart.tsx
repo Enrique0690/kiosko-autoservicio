@@ -37,11 +37,9 @@ const ShoppingCart = () => {
     if (product.cantidad <= 1) {
       removeFromCart(product.id);
     } else {
-      const updatedProduct = { ...product, cantidad: product.cantidad - 1 };
-      removeFromCart(product.id);
-      addToCart(updatedProduct, product.cantidad - 1);
+      addToCart(product, -1); 
     }
-  };
+  };  
 
   const handlePay = () => {
     setOrderDetails((prevDetails: any) => ({
