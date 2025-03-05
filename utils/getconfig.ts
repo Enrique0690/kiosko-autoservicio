@@ -1,4 +1,3 @@
-// src/utils/config.ts
 let configCache: any = null;
 
 export const getConfig = async () => {

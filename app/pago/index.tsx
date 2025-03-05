@@ -13,7 +13,7 @@ const PaymentMethod = () => {
 
   const handleEndConsumer = () => {
     setClientData({
-      identification: '9999999999999',
+      cedula: '9999999999999',
       razonSocial: 'Consumidor Final',
       telefono: '',
       email: '',

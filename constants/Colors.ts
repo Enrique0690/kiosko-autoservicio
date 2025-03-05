@@ -2,7 +2,7 @@
  * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
  * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
  */
-
+import { useConfig } from "@/components/contexts";
 import { BackHandler } from "react-native";
 
 export const Colors = {
@@ -29,4 +29,8 @@ export const Colors = {
   overlay: 'rgba(0, 0, 0, 0.5)',
 
   background: '#FFF',
+};
+
+export const updateColors = (configColors: Partial<typeof Colors>) => {
+  Object.assign(Colors, configColors);
 };

@@ -25,7 +25,7 @@ const GlobalMethod = () => {
         total: orderDetails.total,
         descuentoTotal: 0,
         maxIdDetalle: cart.length,
-        detalle: cart.map((item) => ({
+        detalle: cart.map((item: any) => ({
           ...item,
           idDetalle: item.rowNumber,
           dinamico: item.dinamico,
@@ -44,43 +44,62 @@ const GlobalMethod = () => {
       },
     };
     try {
-      console.log('Datos enviados: ', orderData);
       const response = await sendOrderData(orderData);
+      console.log('Respuesta del servidor:', response);  
       setOrderId(response);
       setError(null);
       return true;
     } catch (error) {
+      console.error('Error al enviar el pedido:', error);
       setError('Hubo un error al procesar la orden. Intente nuevamente.');
       return false;
     }
   };
-
   const PrintOrder = async () => {
+    if (!orderId) {
+      return false;
+    }  
     if (window.electronAPI) {
       try {
-        await window.electronAPI.printOrder(orderId);
+        await window.electronAPI.printOrder({ id: orderId }); 
+        console.log('✅ Orden enviada con éxito');
         return true;
       } catch (error) {
+        console.error('❌ Error al imprimir:', error);
         return false;
       }
     } else {
-      console.log('No está en el entorno de Electron');
+      console.warn('⚠️ No está en el entorno de Electron');
       return true;
     }
-  };
+  }; 
 
   useEffect(() => {
     const processOrder = async () => {
+      setLoading(true);
+      setError(null);
       const sendOrderSuccess = await SendOrder();
-      if (sendOrderSuccess) {
+      if (!sendOrderSuccess) {
+        setError('Hubo un error al procesar la orden');
+        setLoading(false);
+        return;
+      }
+    };
+    processOrder();
+  }, []);
+  
+  useEffect(() => {
+    const print = async () => {
+      if (orderId) {
         const printOrderSuccess = await PrintOrder();
-        if (!printOrderSuccess) setError('Hubo un error al intentar imprimir la orden.');
+        if (!printOrderSuccess) {
+          setError('Hubo un error al intentar imprimir la orden');
+        }
       }
       setLoading(false);
     };
-
-    processOrder();
-  }, []);
+    print();
+  }, [orderId]); 
 
   if (loading) {
     return (

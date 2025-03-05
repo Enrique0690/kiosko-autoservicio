@@ -2,6 +2,8 @@ import React, { createContext, useContext, useState, useEffect, ReactNode, useRe
 import { View, ActivityIndicator, Text, StyleSheet } from 'react-native';
 import createApiService from '../DataContext/api';
 import { Product } from './types';
+import { useConfig } from './ConfigProvider';
+import LoadingScreen from './LoadingScreen';
 
 interface DataContextType {
   lines: any[];
@@ -24,11 +26,13 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const imageCacheRef = useRef<Record<string, string>>({});
+  const { config } = useConfig();
 
   const fetchImage = async (name: string, isLine: boolean = false): Promise<string | null> => {
+    console.log('la configuracion es ', config);
     const baseUrl = isLine
-      ? 'https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos/Lineas'
-      : 'https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/Imagenes_Articulos';
+      ? `${config!.runfoodserviceUrl}/Imagenes_Articulos/Lineas`
+      : `${config!.runfoodserviceUrl}/Imagenes_Articulos`;
   
     const encodedName = encodeURIComponent(name);
     const cacheKey = isLine ? `line-${name}` : name;
@@ -117,14 +121,12 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     fetchData();
+    console.log(config)
   }, []);
 
   if (loading) {
     return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color="#2E7D32" />
-        <Text style={styles.text}>Cargando datos...</Text>
-      </View>
+      <LoadingScreen />
     );
   }
 
@@ -137,17 +139,3 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
 };
 
 export const useData = () => useContext(DataContext)!;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
-  },
-  text: {
-    marginTop: 10,
-    fontSize: 16,
-    color: '#333',
-  },
-});
