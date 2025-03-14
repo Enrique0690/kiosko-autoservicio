@@ -4,13 +4,9 @@ import axios from 'axios';
 // Generar un código alfanumérico único
 const generateUniqueCode = (): string => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  const part1 = Array.from({ length: 3 }, () =>
+  return Array.from({ length: 6 }, () =>
     chars.charAt(Math.floor(Math.random() * chars.length))
   ).join('');
-  const part2 = Array.from({ length: 3 }, () =>
-    chars.charAt(Math.floor(Math.random() * chars.length))
-  ).join('');
-  return `${part1}-${part2}`;
 };
 
 const formatDate = (date: string) => {
@@ -33,18 +29,6 @@ const getOrderNumber = async (): Promise<number> => {
 
   await AsyncStorage.setItem('orderData', JSON.stringify(orderData));
   return orderData.orderNumber;
-};
-
-const getOrderNumber2 = async (): Promise<number> => {
-  try {
-    const response = await axios.get(
-      'https://ec-s1.runfoodapp.com/apps/demo.kiosk/api/v1/LOCAL_NETWORK/PEDIDO/GET_NUMERO?formaDespacho=KIOSKO'
-    );
-    return parseInt(response.data.value, 10); 
-  } catch (error) {
-    console.error('Error al obtener el número de pedido desde el servidor:', error);
-    throw new Error('Error al obtener el número de pedido');
-  }
 };
 
 // Función principal para actualizar los detalles del pedido

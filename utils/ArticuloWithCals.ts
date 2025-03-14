@@ -4,7 +4,9 @@ export const calcularIVA = (cart: any[], settings: any) => {
     let ivaTotal = 0;
     let total = 0;
     cart.forEach(item => {
-        if (item.pagaIva) {
+        if (item.dinamico) {
+            total += item.pvp1 * item.cantidad;
+        } else if (item.pagaIva) {
             const base = item.pvp1 / (1 + settings.porcentajeIVA / 100);
             const iva = item.pvp1 - base;
             baseIVA += base * item.cantidad;
